@@ -1,0 +1,15 @@
+Follow the google C++ style guide:
+https://google-styleguide.googlecode.com/svn/trunk/cppguide.html
+
+Notable features of the guide:
+  Indent with 2 spaces, no tabs
+  Cap line length at 80 columns
+
+  Braces should be used like so:
+  void foo(void) {
+    //Code
+    //Code
+  }
+
+Other style choices:
+  Comment with // only

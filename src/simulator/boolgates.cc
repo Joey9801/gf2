@@ -28,6 +28,18 @@ void BaseBoolgate::step(std::vector<bool>& a, std::vector<bool>& b) {
   return;
 }
 
+XorGate::XorGate() :
+  BaseComponent("Xor", 2, 1)
+{
+  pinMap["I1"] = 0;
+  pinMap["I2"] = 1;
+}
+
+void XorGate::step(std::vector<bool>& a, std::vector<bool>& b) {
+  b[_outputs[0]] = a[_inputs[0]] ^ a[_inputs[1]];
+  return;
+}
+
 bool AndGate::_compare(bool a, bool b) {
   return a && b;
 }

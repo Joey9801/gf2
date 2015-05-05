@@ -36,6 +36,11 @@ void BaseComponent::connectInputs(std::vector<unsigned int> nodes) {
 }
 
 void BaseComponent::connectInput(std::string name, unsigned int node) {
+  if(pinMap.find(name) == pinMap.end()) {
+    //TODO raise an error
+    return;
+  }
+
   unsigned int index = pinMap[name];
   connectInput(index, node);
 }

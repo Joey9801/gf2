@@ -18,6 +18,15 @@ class BaseBoolgate : public BaseComponent {
     virtual bool _compare(bool a, bool b) =0;
 };
 
+//Note that Xor does not inherit from BaseBoolgate, since it
+//can only have exactly 2 inputs.
+class XorGate : public BaseComponent {
+  public:
+    XorGate();
+    
+    void step(std::vector<bool>& a, std::vector<bool>& b);
+};
+
 class AndGate : public BaseBoolgate {
   public:
     AndGate() : BaseBoolgate("And") {}

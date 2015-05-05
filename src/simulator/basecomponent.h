@@ -22,7 +22,7 @@ class BaseComponent {
     virtual void connectInput(unsigned int index, unsigned int node);
 
   protected:
-    virtual bool _compare(bool a, bool b) =0;
+    //virtual bool _compare(bool a, bool b) =0;
     std::string _name;
 
     pin_map pinMap;

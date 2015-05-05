@@ -7,14 +7,14 @@ BaseBoolgate::BaseBoolgate(std::string name) :
     pinMap["I" + std::to_string(i+1)] = i;
 }
 
-void BaseBoolgate::connectInput(unsigned int index, unsigned int node) {
+void BaseBoolgate::setInput(unsigned int inputId, unsigned int node) {
   // Allows for an arbitrary number of inputs
   // Unused inputs connected to index#0, the zero constant in networks
-  if(index >= _inputs.size()){
-    _inputs.resize(index+1, 0);
+  if(inputId >= _inputs.size()){
+    _inputs.resize(inputId+1, 0);
   }
 
-  _inputs[index] = node;
+  _inputs[inputId] = node;
   return;
 }
 

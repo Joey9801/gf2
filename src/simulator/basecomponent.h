@@ -13,13 +13,29 @@ class BaseComponent {
     BaseComponent(std::string name, unsigned int numInputs, unsigned int numOutputs);
     virtual ~BaseComponent();
     virtual void step(std::vector<bool>& a, std::vector<bool>& b) =0;
+    
+    //Network functions
+    virtual unsigned int addComponent(std::string) {return 0;}
+    virtual unsigned int addInput(void) {return 0;}
+    virtual unsigned int addOutput(void) {return 0;}
+    virtual void connect(unsigned int, unsigned int, unsigned int, unsigned int) {}
+    virtual void connectInput(unsigned int, unsigned int, unsigned int) {}
+    virtual void connectOutput(unsigned int, unsigned int, unsigned int) {}
 
     std::string getName();
 
-    void connectOutputs(unsigned int index);
-    void connectInputs(std::vector<unsigned int> nodes);
-    virtual void connectInput(std::string name, unsigned int node);
-    virtual void connectInput(unsigned int index, unsigned int node);
+    unsigned int getOutputNode(unsigned int pinOut);
+    unsigned int getOutputNode(std::string name);
+    unsigned int numOutputs(void);
+
+    unsigned int getInputNode(unsigned int pinIn);
+    unsigned int getInputNode(std::string name);
+    unsigned int numInputs(void);
+
+    virtual void setOutput(unsigned int outputId, unsigned int node);
+    virtual void setInputs(std::vector<unsigned int> nodes);
+    virtual void setInput(std::string name, unsigned int node);
+    virtual void setInput(unsigned int inputId, unsigned int node);
 
   protected:
     //virtual bool _compare(bool a, bool b) =0;

@@ -15,6 +15,12 @@ CFLAGS := -std=c++11 -O -Wall -Werror -pedantic
 LIB := -Llib
 INC := -I include
 
+all: $(TARGET) $(TESTTARGET)
+
+main: $(TARGET)
+
+tests: $(TESTTARGET)
+
 $(TARGET): $(OBJECTS)
 	@echo " Linking main..."
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
@@ -37,7 +43,8 @@ clean:
 	@echo " Cleaning..."; 
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET) $(TESTTARGET)"; $(RM) -r $(BUILDDIR) $(TARGET) $(TESTTARGET)
 
-tests: $(TESTTARGET)
 
-.PHONY: clean
+.PHONY: all
+.PHONY: main
 .PHONY: tests
+.PHONY: clean

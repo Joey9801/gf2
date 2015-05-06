@@ -37,7 +37,7 @@ $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
 $(BUILDDIR)/tests/%.o: $(TESTDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/tests
 	@mkdir -p $(@D)
-	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	@echo " $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<
 
 clean:
 	@echo " Cleaning..."; 

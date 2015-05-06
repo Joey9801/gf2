@@ -7,6 +7,7 @@ TARGET := bin/runner
 TESTTARGET := bin/tester
 
 SRCEXT := cc
+HDREXT := h
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 TESTSOURCES := $(shell find $(TESTDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/main/%,$(SOURCES:.$(SRCEXT)=.o))
@@ -15,7 +16,8 @@ CFLAGS := -std=c++11 -O -Wall -Werror -pedantic
 LIB := -Llib
 INC := -I include
 
-all: $(TARGET) $(TESTTARGET)
+all: main tests
+	$(TESTTARGET)
 
 main: $(TARGET)
 
@@ -25,9 +27,13 @@ $(TARGET): $(OBJECTS)
 	@echo " Linking main..."
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
+-include $(OBJECTS:.o=.d)
+-include $(TESTOBJECTS:.o=.d)
+
 $(BUILDDIR)/main/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/main
 	@mkdir -p $(@D)
+	@echo " gcc -MM -MT"$@" $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d"; gcc -MM -MT"$@" $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
@@ -37,10 +43,11 @@ $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
 $(BUILDDIR)/tests/%.o: $(TESTDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/tests
 	@mkdir -p $(@D)
+	@echo " gcc -MM -MT"$@" $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d"; gcc -MM -MT"$@" $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d
 	@echo " $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<
 
 clean:
-	@echo " Cleaning..."; 
+	@echo " Cleaning...";
 	@echo " $(RM) -r $(BUILDDIR) $(TARGET) $(TESTTARGET)"; $(RM) -r $(BUILDDIR) $(TARGET) $(TESTTARGET)
 
 

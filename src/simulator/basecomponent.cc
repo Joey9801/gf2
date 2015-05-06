@@ -40,7 +40,7 @@ unsigned int BaseComponent::numOutputs(void) {
 }
 
 unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
-  return _outputs[pinIn];
+  return _inputs[pinIn];
 }
 
 unsigned int BaseComponent::getInputNode(std::string  name) {

@@ -87,3 +87,7 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
 
   return;
 }
+
+unsigned int Network::countComponents(void) {
+  return _components.size();
+}

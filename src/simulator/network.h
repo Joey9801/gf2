@@ -25,6 +25,8 @@ class Network : public BaseComponent
     //Connecting a component to an input
     void connectInput(unsigned int inputId, unsigned int idIn, unsigned int pinIn);
     void connectOutput(unsigned int outputId, unsigned int idOut, unsigned int pinOut);
+
+    unsigned int countComponents(void);
   private:
     component_map _componentMap;
 

@@ -12,7 +12,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 TESTSOURCES := $(shell find $(TESTDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/main/%,$(SOURCES:.$(SRCEXT)=.o))
 TESTOBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/tests/%,$(TESTSOURCES:.$(SRCEXT)=.o))
-CFLAGS := -std=c++11 -O -Wall -Werror -pedantic
+CFLAGS := -std=c++0x -O -Wall -pedantic
 LIB := -Llib
 INC := -I include
 
@@ -33,7 +33,7 @@ $(TARGET): $(OBJECTS)
 $(BUILDDIR)/main/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/main
 	@mkdir -p $(@D)
-	@echo " gcc -MM -MT"$@" $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d"; gcc -MM -MT"$@" $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d
+	@echo " $(CC) -MM -MT"$@" $(INC) $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d"; $(CC) -MM -MT"$@" $(INC) $(CFLAGS) $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/main/$*.d
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
@@ -43,7 +43,7 @@ $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
 $(BUILDDIR)/tests/%.o: $(TESTDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR)/tests
 	@mkdir -p $(@D)
-	@echo " gcc -MM -MT"$@" $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d"; gcc -MM -MT"$@" $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d
+	@echo " $(CC) -MM -MT"$@" $(INC) $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d"; $(CC) -MM -MT"$@" $(INC) $(CFLAGS) $(TESTDIR)/$*.$(SRCEXT) > $(BUILDDIR)/tests/$*.d
 	@echo " $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -I $(SRCDIR) -c -o $@ $<
 
 clean:

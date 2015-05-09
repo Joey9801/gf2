@@ -76,8 +76,10 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   for(unsigned int i=0; i<_inputs.size(); i++)
     _nodesA[_inputMap[i]] = a[_inputs[i]];
 
-  for(auto c : _components)
-    c->step(_nodesA, _nodesB);
+  for(std::vector<BaseComponent*>::iterator c = _components.begin();
+        c != _components.end();
+        c++)
+    (*c)->step(_nodesA, _nodesB);
 
   _nodesA.swap(_nodesB);
 

@@ -2,6 +2,7 @@
 #define BOOLGATES_H_
 
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "basecomponent.h"

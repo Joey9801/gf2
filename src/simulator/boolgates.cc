@@ -3,8 +3,12 @@
 BaseBoolgate::BaseBoolgate(std::string name) :
     BaseComponent(name, 0, 1)
 {
-  for(int i=0; i<16; i++)
-    pinMap["I" + std::to_string(i+1)] = i;
+  std::stringstream stream;
+  for(int i=0; i<16; i++) {
+    stream.str(std::string());
+    stream << "I" << (i+1);
+    pinMap[stream.str()] = i;
+  }
 }
 
 void BaseBoolgate::setInput(unsigned int inputId, unsigned int node) {
@@ -21,8 +25,10 @@ void BaseBoolgate::setInput(unsigned int inputId, unsigned int node) {
 void BaseBoolgate::step(std::vector<bool>& a, std::vector<bool>& b) {
   bool current = _compare(1, 0) ^ _compare(1, 1);
 
-  for(unsigned int i : _inputs)
-    current = _compare(current, a[i]);
+  for(std::vector<unsigned int>::iterator i = _inputs.begin();
+       i != _inputs.end();
+       i++)
+    current = _compare(current, a[*i]);
 
   b[_outputs[0]] = current;
   return;

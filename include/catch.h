@@ -34,7 +34,7 @@
 #elif defined __GNUC__
 #    pragma GCC diagnostic ignored "-Wvariadic-macros"
 #    pragma GCC diagnostic ignored "-Wunused-variable"
-#    pragma GCC diagnostic push
+//#    pragma GCC diagnostic push
 #    pragma GCC diagnostic ignored "-Wpadded"
 #endif
 
@@ -9420,7 +9420,7 @@ using Catch::Detail::Approx;
 #        pragma clang diagnostic pop
 #    endif
 #elif defined __GNUC__
-#    pragma GCC diagnostic pop
+//#    pragma GCC diagnostic pop
 #endif
 
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED

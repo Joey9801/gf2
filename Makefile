@@ -12,7 +12,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 TESTSOURCES := $(shell find $(TESTDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/main/%,$(SOURCES:.$(SRCEXT)=.o))
 TESTOBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/tests/%,$(TESTSOURCES:.$(SRCEXT)=.o))
-CFLAGS := -std=c++0x -O -Wall -pedantic
+CFLAGS := -std=c++0x -O -Wall -Werror -pedantic
 LIB := -Llib
 INC := -I include
 
@@ -24,6 +24,7 @@ main: $(TARGET)
 tests: $(TESTTARGET)
 
 $(TARGET): $(OBJECTS)
+	@mkdir -p $(dir $(TARGET));
 	@echo " Linking main..."
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
@@ -37,6 +38,8 @@ $(BUILDDIR)/main/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 $(TESTTARGET): $(filter-out build/main/main.o, $(OBJECTS)) $(TESTOBJECTS)
+	@mkdir -p $(dir $(TESTTARGET));
+	@echo " Linking main..."
 	@echo " Linking tests..."
 	@echo " $(CC) $^ -o $(TESTTARGET) $(LIB)"; $(CC) $^ -o $(TESTTARGET) $(LIB)
 

@@ -41,7 +41,8 @@ class BaseComponent {
     //virtual bool _compare(bool a, bool b) =0;
     std::string _name;
 
-    pin_map pinMap;
+    pin_map _pinInMap;
+    pin_map _pinOutMap;
 
     std::vector<unsigned int> _inputs;
     std::vector<unsigned int> _outputs;

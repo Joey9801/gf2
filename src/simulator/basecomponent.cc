@@ -27,11 +27,11 @@ unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
 }
 
 unsigned int BaseComponent::getOutputNode(std::string  name) {
-  if(pinMap.find(name) == pinMap.end()){
+  if(_pinOutMap.find(name) == _pinOutMap.end()){
     //TODO raise an error
     return 0;
   }
-  unsigned int pinOut = pinMap[name];
+  unsigned int pinOut = _pinOutMap[name];
   return getOutputNode(pinOut);
 }
 
@@ -44,11 +44,11 @@ unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
 }
 
 unsigned int BaseComponent::getInputNode(std::string  name) {
-  if(pinMap.find(name) == pinMap.end()){
+  if(_pinInMap.find(name) == _pinInMap.end()){
     //TODO raise an error
     return 0;
   }
-  unsigned int pinIn = pinMap[name];
+  unsigned int pinIn = _pinInMap[name];
   return getInputNode(pinIn);
 }
 
@@ -69,12 +69,12 @@ void BaseComponent::setInputs(std::vector<unsigned int> nodes) {
 }
 
 void BaseComponent::setInput(std::string name, unsigned int node) {
-  if(pinMap.find(name) == pinMap.end()) {
+  if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
     return;
   }
 
-  unsigned int index = pinMap[name];
+  unsigned int index = _pinInMap[name];
   setInput(index, node);
 }
 

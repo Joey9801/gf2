@@ -6,8 +6,8 @@ BaseBoolgate::BaseBoolgate(std::string name) :
   std::stringstream stream;
   for(int i=0; i<16; i++) {
     stream.str(std::string());
-    stream << "I" << (i+1);
-    pinMap[stream.str()] = i;
+    stream << "i" << (i+1);
+    _pinInMap[stream.str()] = i;
   }
 }
 
@@ -37,8 +37,9 @@ void BaseBoolgate::step(std::vector<bool>& a, std::vector<bool>& b) {
 XorGate::XorGate() :
   BaseComponent("Xor", 2, 1)
 {
-  pinMap["I1"] = 0;
-  pinMap["I2"] = 1;
+  _pinInMap["i1"] = 0;
+  _pinInMap["i2"] = 1;
+  _pinOutMap["out"] = 0;
 }
 
 void XorGate::step(std::vector<bool>& a, std::vector<bool>& b) {

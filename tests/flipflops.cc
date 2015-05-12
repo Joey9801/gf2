@@ -10,10 +10,10 @@ TEST_CASE("D-type flip flop works as expected") {
 
     std::vector<bool> nodes(6, false);
 
-    c->setInput("D", 0);
-    c->setInput("Clock", 1);
-    c->setInput("S", 2);
-    c->setInput("R", 3);
+    c->setInput("d", 0);
+    c->setInput("clock", 1);
+    c->setInput("s", 2);
+    c->setInput("r", 3);
 
     c->setOutput(0, 4);
     c->setOutput(1, 5);

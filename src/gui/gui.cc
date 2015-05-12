@@ -29,6 +29,11 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   SetMenuBar( menuBar );
   CreateStatusBar();
   SetStatusText( "" );
+
+  wxPanel *panel = new wxPanel(this, -1);
+  
+  NetworkView *myview = new NetworkView(panel, wxID_ANY, wxPoint(10,10), wxSize(300,300));
+  (void)myview;
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)
@@ -38,8 +43,8 @@ void MyFrame::OnExit(wxCommandEvent& event)
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-  wxMessageBox( "This is a Logic simulator developed for project GF2 at CUED \
-      by Joe Roberts, Duncan Barber and Daniel Potter",
+  wxMessageBox( "This is a logic simulator developed for project GF2 at CUED \
+by Joe Roberts, Duncan Barber and Daniel Potter",
   "About this program", wxOK | wxICON_INFORMATION );
 }
 
@@ -47,17 +52,13 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event)
 {
   wxFileDialog* OpenDialog = new wxFileDialog(
   this, _("Choose a file to open"), wxEmptyString, wxEmptyString, 
-  _("Network files (*.def)|*.def"),
+  _("Network definition files (*.def)|*.def"),
   wxFD_OPEN, wxDefaultPosition);
 
-// Creates a "open file" dialog with 4 file types
+// Creates a "open file" dialog
   if (OpenDialog->ShowModal() == wxID_OK) // if the user click "Open" instead of "Cancel"
   {
-    CurrentDocPath = OpenDialog->GetPath();
-    // Sets our current document to the file the user selected
-    MainEditBox->LoadFile(CurrentDocPath); //Opens that file
-    SetTitle(wxString("Edit - ") << 
-    OpenDialog->GetFilename()); // Set the Title to reflect the file open
+    CurrentNetfilePath = OpenDialog->GetPath();
   }
 
   // Clean up after ourselves

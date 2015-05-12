@@ -5,6 +5,7 @@
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
 #endif
+#include "networkview.h"
 
 //#include "../simulator/network.h"
 
@@ -20,9 +21,9 @@ class MyFrame: public wxFrame
 {
 public:
   MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
-  wxTextCtrl *MainEditBox;
-  // The Path to the file we have open
-  wxString CurrentDocPath;
+
+  // The Path to the network file we have open
+  wxString CurrentNetfilePath;
 private:
   void OnLoadNetwork(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);

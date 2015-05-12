@@ -9,6 +9,10 @@ Network::Network(void) :
   _componentMap["Nor"] = &createComponent<NorGate>;
   _componentMap["Xor"] = &createComponent<XorGate>;
   _componentMap["DType"] = &createComponent<DType>;
+
+  //Make room for the const values
+  _nodesA.resize(2);
+  _nodesB.resize(2);
 }
 
 Network::~Network() {}
@@ -77,12 +81,18 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   for(unsigned int i=0; i<_inputs.size(); i++)
     _nodesA[_inputMap[i]] = a[_inputs[i]];
 
+  _nodesA[0] = false;
+  _nodesA[1] = true;
+
   for(std::vector<BaseComponent*>::iterator c = _components.begin();
         c != _components.end();
         c++)
     (*c)->step(_nodesA, _nodesB);
 
   _nodesA.swap(_nodesB);
+
+  _nodesA[0] = false;
+  _nodesA[1] = true;
 
   //Export the outputs
   for(unsigned int i=0; i<_outputs.size(); i++)

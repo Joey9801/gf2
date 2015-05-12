@@ -8,6 +8,7 @@ Network::Network(void) :
   _componentMap["Or"] = &createComponent<OrGate>;
   _componentMap["Nor"] = &createComponent<NorGate>;
   _componentMap["Xor"] = &createComponent<XorGate>;
+  _componentMap["DType"] = &createComponent<DType>;
 }
 
 Network::~Network() {}

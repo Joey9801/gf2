@@ -22,6 +22,62 @@ BaseComponent::~BaseComponent(void)
 {
 }
 
+void BaseComponent::renameInput(std::string oldName, std::string newName) {
+  if(_pinInMap.find(oldName) == _pinInMap.end()) {
+    //TODO raise an error
+    return;
+  }
+
+  unsigned int index = _pinInMap[oldName];
+  _pinInMap.erase(oldName);
+  _pinInMap[newName] = index;
+  
+  return;
+}
+
+void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
+  std::string oldName;
+  for(pin_map::iterator it = _pinInMap.begin();
+      it != _pinInMap.end();
+      it++) {
+    if( it->second == inputId )
+      oldName = it->first;
+  }
+
+  _pinInMap.erase(oldName);
+  _pinInMap[newName] = inputId;
+
+  return;
+}
+
+void BaseComponent::renameOutput(std::string oldName, std::string newName) {
+  if(_pinOutMap.find(oldName) == _pinOutMap.end()) {
+    //TODO raise an error
+    return;
+  }
+
+  unsigned int index = _pinOutMap[oldName];
+  _pinOutMap.erase(oldName);
+  _pinOutMap[newName] = index;
+  
+  return;
+}
+
+void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
+  std::string oldName;
+  for(pin_map::iterator it = _pinOutMap.begin();
+      it != _pinOutMap.end();
+      it++) {
+    if( it->second == outputId )
+      oldName = it->first;
+  }
+
+  _pinOutMap.erase(oldName);
+  _pinOutMap[newName] = outputId;
+
+  return;
+}
+
 unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
   return _outputs[pinOut];
 }

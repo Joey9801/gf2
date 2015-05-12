@@ -18,7 +18,9 @@ class Network : public BaseComponent
 
     unsigned int addComponent(std::string type);
     unsigned int addInput(void);
+    unsigned int addInput(std::string);
     unsigned int addOutput(void);
+    unsigned int addOutput(std::string);
 
     //Connecting two components
     void connect(unsigned int idOut, unsigned int pinOut, unsigned int idIn, unsigned int pinIn);

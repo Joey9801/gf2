@@ -47,11 +47,23 @@ unsigned int Network::addInput(void) {
   return inputId;
 }
 
+unsigned int Network::addInput(std::string name) {
+  unsigned int id = addInput();
+  renameInput(id, name);
+  return id;
+}
+
 unsigned int Network::addOutput(void) {
   unsigned int outputId = _outputs.size();
   _outputMap.push_back(0);
   _outputs.push_back(0);
   return outputId;
+}
+
+unsigned int Network::addOutput(std::string name) {
+  unsigned int id = addOutput();
+  renameOutput(id, name);
+  return id;
 }
 
 //Connect a member component to another member component

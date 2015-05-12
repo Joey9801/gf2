@@ -24,6 +24,11 @@ class BaseComponent {
 
     std::string getName();
 
+    void renameInput(std::string oldName, std::string newName);
+    void renameInput(unsigned int inputId, std::string newName);
+    void renameOutput(std::string oldName, std::string newName);
+    void renameOutput(unsigned int outputId, std::string newName);
+
     unsigned int getOutputNode(unsigned int pinOut);
     unsigned int getOutputNode(std::string name);
     unsigned int numOutputs(void);

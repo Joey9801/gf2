@@ -6,6 +6,7 @@
 
 #include "basecomponent.h"
 #include "boolgates.h"
+#include "flipflops.h"
 
 class Network : public BaseComponent
 {

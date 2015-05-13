@@ -44,7 +44,9 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
       oldName = it->first;
   }
 
-  _pinInMap.erase(oldName);
+  if(!oldName.empty())
+    _pinInMap.erase(oldName);
+
   _pinInMap[newName] = inputId;
 
   return;
@@ -112,16 +114,23 @@ unsigned int BaseComponent::numInputs(void) {
   return _inputs.size();
 }
 
-// Each component gets a continuous chunk of nodes for its outputs
-// The index argument is the first node in this chunk
 void BaseComponent::setOutput(unsigned int outputId, unsigned int node) {
   _outputs[outputId] = node;
   return;
 }
 
-void BaseComponent::setInputs(std::vector<unsigned int> nodes) {
-  _inputs = nodes;
+void BaseComponent::setOutput(std::string name, unsigned int node) {
+  if(_pinOutMap.find(name) == _pinOutMap.end()) {
+    //TODO raise an error
+    return;
+  }
+  unsigned int index = _pinOutMap[name];
+  setOutput(index, node);
   return;
+}
+
+void BaseComponent::setInput(unsigned int inputId, unsigned int node) {
+  _inputs[inputId] = node;
 }
 
 void BaseComponent::setInput(std::string name, unsigned int node) {
@@ -132,10 +141,6 @@ void BaseComponent::setInput(std::string name, unsigned int node) {
 
   unsigned int index = _pinInMap[name];
   setInput(index, node);
-}
-
-void BaseComponent::setInput(unsigned int inputId, unsigned int node) {
-  _inputs[inputId] = node;
 }
 
 std::string BaseComponent::getName(void) {

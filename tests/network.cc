@@ -38,9 +38,9 @@ TEST_CASE("gates can be connected to the network IO", "[network]") {
 
     WHEN("The IO is connected by numeric id") {
       //Connect the gate to the network IO
-      net->connectInput(in1, gate, 0);
-      net->connectInput(in2, gate, 1);
-      net->connectOutput(out1, gate, 0);
+      net->connect(0, in1, gate, 0);
+      net->connect(0, in2, gate, 1);
+      net->connect(gate, 0, 1, out1);
 
       //Connect the network IO the root nodelist
       net->setInput(in1, 0);
@@ -87,11 +87,11 @@ TEST_CASE("gates can be connected internally", "[network]") {
     unsigned int g4 = net->addComponent("Nand");
 
     //Internally connect the gates to the network IO
-    net->connectInput(in1, g1, 0);
-    net->connectInput(in2, g1, 1);
-    net->connectInput(in1, g2, 0);
-    net->connectInput(in2, g3, 1);
-    net->connectOutput(out1, g4, 0);
+    net->connect(0, in1, g1, 0);
+    net->connect(0, in2, g1, 1);
+    net->connect(0, in1, g2, 0);
+    net->connect(0, in2, g3, 1);
+    net->connect(g4, 0, 1, out1);
 
     //Create the interal connections between the gates
     net->connect(g1, 0, g2, 1);

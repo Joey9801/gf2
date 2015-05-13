@@ -36,6 +36,37 @@ SCENARIO("Inputs to bool gates can be assigned numerical id's", "[boolgates]") {
   }
 }
 
+SCENARIO("Inputs to bool gates can be assigned by name", "[boolgates]") {
+  GIVEN("A boolgate derived from BaseBoolgate") {
+    BaseComponent * gate = new AndGate();
+
+    REQUIRE( gate->numInputs() == 0 );
+    REQUIRE( gate->numOutputs() == 1);
+
+    WHEN("Input 0 is assigned") {
+      gate->setInput("i1", 0);
+
+      THEN("There is 1 input") {
+        REQUIRE( gate->numInputs() == 1);
+      }
+    }
+
+    WHEN("Input N (N>numInputs()) is assigned") {
+      // N=3
+      gate->setInput("i4", 0);
+
+      THEN("numInputs is then N+1") {
+        REQUIRE( gate->numInputs() == 4 );
+      }
+      AND_THEN("The unassigned inputs point to node 0") {
+        REQUIRE( gate->getInputNode(0) == 0 );
+        REQUIRE( gate->getInputNode(1) == 0 );
+        REQUIRE( gate->getInputNode(2) == 0 );
+      }
+    }
+  }
+}
+
 SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
   GIVEN("An And gate") {

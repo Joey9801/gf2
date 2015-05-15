@@ -34,7 +34,7 @@ class BaseComponent {
     virtual void setInput(unsigned int inputId, unsigned int node);
     virtual void setInput(std::string name, unsigned int node);
 
-    virtual void config(std::string key, std::string value) {}
+    virtual void configure(std::string key, std::string value) {}
 
   protected:
     std::string _name;

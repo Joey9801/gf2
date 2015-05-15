@@ -15,7 +15,7 @@ class SignalGenerator : public BaseComponent
 
     void step(std::vector<bool>& a, std::vector<bool>& b);
 
-    void config(std::string key, std::string value);
+    void configure(std::string key, std::string value);
 
   private:
     unsigned int _period;

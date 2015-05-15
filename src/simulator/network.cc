@@ -62,6 +62,7 @@ Network::Network(void) :
   _componentConstructor["Nor"] = &createComponent<NorGate>;
   _componentConstructor["Xor"] = &createComponent<XorGate>;
   _componentConstructor["DType"] = &createComponent<DType>;
+  _componentConstructor["SigGen"] = &createComponent<SignalGenerator>;
 
   //Make room for the const values
   _nodesA.resize(2);
@@ -102,6 +103,19 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   unsigned int componentId = addComponent(type);
   renameComponent(componentId, name);
   return componentId;
+}
+
+void Network::configureComponent(std::string name, std::string key, std::string value) {
+  unsigned int componentId = findComponent(name);
+  BaseComponent * c = _components[componentId];
+  c->configure(key, value);
+  return;
+}
+
+void Network::configureComponent(unsigned int componentId, std::string key, std::string value) {
+  BaseComponent * c = _components[componentId];
+  c->configure(key, value);
+  return;
 }
 
 void Network::renameComponent(std::string oldName, std::string newName) {

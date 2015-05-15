@@ -7,6 +7,7 @@
 #include "basecomponent.h"
 #include "boolgates.h"
 #include "flipflops.h"
+#include "signalgenerator.h"
 
 //Dummy IO component
 class DummyIO : public BaseComponent
@@ -35,6 +36,9 @@ class Network : public BaseComponent
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
+
+    void configureComponent(std::string name, std::string key, std::string value);
+    void configureComponent(unsigned int componentId, std::string key, std::string value);
 
     void renameComponent(std::string oldName, std::string newName);
     void renameComponent(unsigned int id, std::string newName);

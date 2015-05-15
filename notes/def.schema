@@ -23,5 +23,11 @@
                 input_name : dest_component_nickname[.dest_output_name]
             }
         }
+        component_nickname : {
+            type : includes.include_nickname,
+            inputs : {
+                input_name : dest_component_nickname[.dest_output_name]
+            }
+        }
     }
 }

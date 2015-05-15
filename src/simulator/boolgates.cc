@@ -9,6 +9,7 @@ BaseBoolgate::BaseBoolgate(std::string name) :
     stream << "i" << (i+1);
     _pinInMap[stream.str()] = i;
   }
+  _pinOutMap["out"] = 0;
 }
 
 void BaseBoolgate::setInput(unsigned int inputId, unsigned int node) {

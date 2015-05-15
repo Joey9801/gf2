@@ -8,6 +8,7 @@
 #include "boolgates.h"
 #include "flipflops.h"
 #include "signalgenerator.h"
+#include "monitor.h"
 
 //Dummy IO component
 class DummyIO : public BaseComponent
@@ -67,7 +68,11 @@ class Network : public BaseComponent
 
     unsigned int countComponents(void);
 
-  private:
+    void setMonitor(Monitor * m);
+    unsigned int addMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(unsigned int pointId);
+
+  protected:
     constructor_map _componentConstructor;
 
     std::map<std::string, unsigned int> _componentNames;
@@ -78,6 +83,10 @@ class Network : public BaseComponent
 
     std::vector<bool> _nodesA;
     std::vector<bool> _nodesB;
+
+    Monitor * _monitor;
+
+    std::map<unsigned int, unsigned int> _monitorPoints;
 };
 
 #endif

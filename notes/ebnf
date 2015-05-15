@@ -8,7 +8,7 @@ letter = "a" | "b" | "c" | "d" | "e" | "f" | "g"
        | "V" | "W" | "X" | "Y" | "Z" ;
 digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
-character = { letter | digit | "_" } ;
+character = letter | digit | "_" ;
 value = character, { character } ;
 string = "\"", { character }, "\"";
 pair  = value, ":", (value | dict | string);

@@ -7,6 +7,8 @@
 #include "basecomponent.h"
 #include "boolgates.h"
 #include "flipflops.h"
+#include "signalgenerator.h"
+#include "monitor.h"
 
 //Dummy IO component
 class DummyIO : public BaseComponent
@@ -36,6 +38,9 @@ class Network : public BaseComponent
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
 
+    void configureComponent(std::string name, std::string key, std::string value);
+    void configureComponent(unsigned int componentId, std::string key, std::string value);
+
     void renameComponent(std::string oldName, std::string newName);
     void renameComponent(unsigned int id, std::string newName);
     unsigned int findComponent(unsigned int componentId);
@@ -57,13 +62,19 @@ class Network : public BaseComponent
         unsigned int idIn = findComponent(componentIn);
 
         unsigned int node = _components[idOut]->getOutputNode(pinOut);
-        _components[idIn]->setInput(pinIn, node);
+        _components[idIn]->connectInput(pinIn, node);
         return;
       }
 
     unsigned int countComponents(void);
 
-  private:
+    void setMonitor(Monitor * m);
+    unsigned int addMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(unsigned int pointId);
+
+    NodeTreeBase * getNodeTree(void);
+
+  protected:
     constructor_map _componentConstructor;
 
     std::map<std::string, unsigned int> _componentNames;
@@ -74,6 +85,31 @@ class Network : public BaseComponent
 
     std::vector<bool> _nodesA;
     std::vector<bool> _nodesB;
+
+    Monitor * _monitor;
+
+    std::map<unsigned int, unsigned int> _monitorPoints;
+};
+
+// Special type of network which can operate independantly from anything else
+// Should only be used as the Root of the whole network
+class RootNetwork : public Network
+{
+  public:
+    RootNetwork();
+    ~RootNetwork();
+
+    void step(void);
+
+    unsigned int addInput(void);
+    unsigned int addInput(std::string);
+    unsigned int addOutput(void);
+    unsigned int addOutput(std::string);
+
+    void setInput(unsigned int inputId, bool value);
+    void setInput(std::string inputName, bool value);
+    bool getOutput(unsigned int outputId);
+    bool getOutput(std::string outputName);
 };
 
 #endif

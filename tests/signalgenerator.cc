@@ -18,7 +18,7 @@ SCENARIO("SignalGenerator works as expected", "[signalgenerator]") {
     }
 
     WHEN("The data is configured") {
-      s.config("data", "1011");
+      s.configure("data", "1011");
       THEN("It is cycled with a period of 1") {
         s.step(a, a);
         REQUIRE( a[0] == true );
@@ -36,8 +36,8 @@ SCENARIO("SignalGenerator works as expected", "[signalgenerator]") {
     }
 
     WHEN("The period is also set") {
-      s.config("data", "01");
-      s.config("period", "2");
+      s.configure("data", "01");
+      s.configure("period", "2");
       THEN("The data is cycled with that period") {
         s.step(a, a);
         REQUIRE( a[0] == false );
@@ -61,8 +61,8 @@ SCENARIO("SignalGenerator is usable upcasted to a BasePointer", "[signalgenerato
     std::vector<bool> a(1, false);
 
     WHEN("Everything is configured") {
-      s->config("data", "01");
-      s->config("period", "2");
+      s->configure("data", "01");
+      s->configure("period", "2");
       THEN("Everything works") {
         s->step(a, a);
         REQUIRE( a[0] == false );

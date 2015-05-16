@@ -27,7 +27,7 @@ void SignalGenerator::step(std::vector<bool>& a, std::vector<bool>& b) {
   return;
 }
 
-void SignalGenerator::config(std::string key, std::string value) {
+void SignalGenerator::configure(std::string key, std::string value) {
   if(key=="data") {
 
     _data.clear();

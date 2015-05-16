@@ -9,9 +9,10 @@ BaseBoolgate::BaseBoolgate(std::string name) :
     stream << "i" << (i+1);
     _pinInMap[stream.str()] = i;
   }
+  _pinOutMap["out"] = 0;
 }
 
-void BaseBoolgate::setInput(unsigned int inputId, unsigned int node) {
+void BaseBoolgate::connectInput(unsigned int inputId, unsigned int node) {
   // Allows for an arbitrary number of inputs
   // Unused inputs connected to index#0, the zero constant in networks
   if(inputId >= _inputs.size()){

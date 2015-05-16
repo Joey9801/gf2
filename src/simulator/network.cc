@@ -62,6 +62,7 @@ Network::Network(void) :
   _componentConstructor["Nor"] = &createComponent<NorGate>;
   _componentConstructor["Xor"] = &createComponent<XorGate>;
   _componentConstructor["DType"] = &createComponent<DType>;
+  _componentConstructor["SigGen"] = &createComponent<SignalGenerator>;
 
   //Make room for the const values
   _nodesA.resize(2);
@@ -90,7 +91,7 @@ unsigned int Network::addComponent(std::string type) {
   unsigned int componentId = _components.size();
   BaseComponent * c = _componentConstructor[type]();
   for(unsigned int i=0; i<c->numOutputs(); i++)
-    c->setOutput(i, _nodesA.size()+i);
+    c->connectOutput(i, _nodesA.size()+i);
 
   _components.push_back(c);
   _nodesA.resize(_nodesA.size() + c->numOutputs(), false);
@@ -102,6 +103,19 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   unsigned int componentId = addComponent(type);
   renameComponent(componentId, name);
   return componentId;
+}
+
+void Network::configureComponent(std::string name, std::string key, std::string value) {
+  unsigned int componentId = findComponent(name);
+  BaseComponent * c = _components[componentId];
+  c->configure(key, value);
+  return;
+}
+
+void Network::configureComponent(unsigned int componentId, std::string key, std::string value) {
+  BaseComponent * c = _components[componentId];
+  c->configure(key, value);
+  return;
 }
 
 void Network::renameComponent(std::string oldName, std::string newName) {
@@ -151,7 +165,7 @@ unsigned int Network::addInput(void) {
   _nodesB.push_back(false);
 
   _inputDummy->addOutput();
-  _inputDummy->setOutput(inputId, _nodesA.size()-1);
+  _inputDummy->connectOutput(inputId, _nodesA.size()-1);
 
   return inputId;
 }
@@ -195,10 +209,174 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
 
   _outputDummy->loadOutputs(_nodesA, b, _outputs);
 
+  for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
+      it != _monitorPoints.end();
+      it++)
+    _monitor->setValue( it->first, _nodesA[it->second]);
+
   return;
 }
 
 unsigned int Network::countComponents(void) {
   //-2 to account for the two dummy components
   return _components.size() - 2;
+}
+
+void Network::setMonitor(Monitor * m) {
+  _monitor = m;
+  return;
+}
+
+unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
+  if(not _monitor) {
+    // TODO raise an error - monitor not set
+  }
+  if(signature.size() < 2) {
+    // TODO raise an error - not enough information in the signature
+    return 0;
+  }
+
+  unsigned int componentId = findComponent(signature.back());
+  BaseComponent * c = _components[componentId];
+  unsigned int pointId = 0;
+
+  if(signature.size() == 2) {
+    // This is the network containing the node to monitor
+    unsigned int node = c->getOutputNode(signature.front());
+    pointId = _monitor->addMonitorPoint();
+
+    _monitorPoints[pointId] = node;
+  }
+  else {
+    //Attempt to cast the component as a Network
+    Network * net = dynamic_cast<Network*>(c);
+    if(not net) {
+      //TODO raise an error, the component in the signature wasn't a network
+      return 0;
+    }
+    signature.pop_back();
+    pointId = net->addMonitorPoint(signature);
+  }
+
+  return pointId;
+}
+
+void Network::removeMonitorPoint(unsigned int pointId) {
+  if(_monitorPoints.find(pointId) == _monitorPoints.end()) {
+    //TODO raise an error
+    return;
+  }
+  _monitorPoints.erase(pointId);
+  // We can't currently remove the logged data in the monitor
+  // since it's stored as a simple vector, so removing it
+  // would change the indicies of other points
+  return;
+}
+
+NodeTreeBase * Network::getNodeTree(void) {
+  NodeTreeBase * n = new NodeTreeNetwork();
+
+  n->name = _name;
+
+  for(std::vector<BaseComponent*>::iterator it=_components.begin();
+      it != _components.end();
+      it ++)
+    n->children.push_back( (*it)->getNodeTree() );
+
+  for(pin_map::iterator it = _componentNames.begin();
+      it != _componentNames.end();
+      it ++)
+    n->children[(*it).second]->nickname = (*it).first;
+
+  n->inputNodes = _inputs;
+  n->outputNodes = _outputs;
+
+  n->inputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
+    n->inputNames[(*it).second] = (*it).first;
+
+  n->outputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
+    n->outputNames[(*it).second] = (*it).first;
+
+  return n;
+}
+
+RootNetwork::RootNetwork(void)
+  : Network()
+{
+}
+
+RootNetwork::~RootNetwork() {}
+
+void RootNetwork::step(void) {
+  _nodesA[0] = false;
+  _nodesA[1] = true;
+
+  for(std::vector<BaseComponent*>::iterator c = _components.begin();
+        c != _components.end();
+        c++)
+    (*c)->step(_nodesA, _nodesB);
+
+  _nodesA.swap(_nodesB);
+
+  _nodesA[0] = false;
+  _nodesA[1] = true;
+
+  for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
+      it != _monitorPoints.end();
+      it++)
+    _monitor->setValue( it->first, _nodesA[it->second]);
+}
+
+
+unsigned int RootNetwork::addInput(void) {
+  unsigned int inputId = _inputs.size();
+  _inputs.push_back(_nodesA.size());
+  _nodesA.push_back(false);
+  _nodesB.push_back(false);
+  return inputId;
+}
+unsigned int RootNetwork::addInput(std::string name) {
+  unsigned int inputId = addInput();
+  renameInput(inputId, name);
+  return inputId;
+}
+unsigned int RootNetwork::addOutput(void) {
+  unsigned int outputId = _outputs.size();
+  _outputs.push_back(0);
+  return outputId;
+}
+unsigned int RootNetwork::addOutput(std::string name) {
+  unsigned int outputId = addOutput();
+  renameOutput(outputId, name);
+  return outputId;
+}
+
+void RootNetwork::setInput(unsigned int inputId, bool value) {
+  unsigned int node = _inputs[inputId];
+  _nodesA[node] = value;
+  return;
+}
+void RootNetwork::setInput(std::string inputName, bool value) {
+  if(_pinInMap.find(inputName) == _pinInMap.end()) {
+    // TODO raise an error
+    return;
+  }
+  unsigned int inputId = _pinInMap[inputName];
+  setInput(inputId, value);
+  return;
+}
+
+bool RootNetwork::getOutput(unsigned int outputId) {
+  unsigned int node = _outputs[outputId];
+  return _nodesA[node];
+}
+bool RootNetwork::getOutput(std::string outputName) {
+  if(_pinOutMap.find(outputName) == _pinOutMap.end() ) {
+    // TODO raise an error
+    return false;
+  }
+  unsigned int outputId = _pinOutMap[outputName];
+  return getOutput(outputId);
 }

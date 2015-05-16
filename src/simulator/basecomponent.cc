@@ -114,35 +114,54 @@ unsigned int BaseComponent::numInputs(void) {
   return _inputs.size();
 }
 
-void BaseComponent::setOutput(unsigned int outputId, unsigned int node) {
+void BaseComponent::connectOutput(unsigned int outputId, unsigned int node) {
   _outputs[outputId] = node;
   return;
 }
 
-void BaseComponent::setOutput(std::string name, unsigned int node) {
+void BaseComponent::connectOutput(std::string name, unsigned int node) {
   if(_pinOutMap.find(name) == _pinOutMap.end()) {
     //TODO raise an error
     return;
   }
   unsigned int index = _pinOutMap[name];
-  setOutput(index, node);
+  connectOutput(index, node);
   return;
 }
 
-void BaseComponent::setInput(unsigned int inputId, unsigned int node) {
+void BaseComponent::connectInput(unsigned int inputId, unsigned int node) {
   _inputs[inputId] = node;
 }
 
-void BaseComponent::setInput(std::string name, unsigned int node) {
+void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
     return;
   }
 
   unsigned int index = _pinInMap[name];
-  setInput(index, node);
+  connectInput(index, node);
 }
 
 std::string BaseComponent::getName(void) {
   return _name;
+}
+
+NodeTreeBase * BaseComponent::getNodeTree(void) {
+  NodeTreeBase * n = new NodeTreeGate();
+
+  n->name = _name;
+
+  n->inputNodes = _inputs;
+  n->outputNodes = _outputs;
+
+  n->inputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
+    n->inputNames[(*it).second] = (*it).first;
+
+  n->outputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
+    n->outputNames[(*it).second] = (*it).first;
+
+  return n;
 }

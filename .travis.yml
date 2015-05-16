@@ -1,0 +1,15 @@
+language: cpp
+
+compiler:
+    - gcc
+
+before_install:
+    - echo $LANG
+    - make clean
+
+install:
+    - make main
+    - make tests
+
+script:
+    - ./bin/tester

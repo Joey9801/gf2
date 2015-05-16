@@ -8,7 +8,7 @@ wxEND_EVENT_TABLE()
 
 bool MyApp::OnInit()
 {
-  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(50, 50), wxSize(450, 340) );
+  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(50, 50), wxSize(800, 600) );
   frame->Show( true );
   return true;
 }
@@ -30,10 +30,31 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   CreateStatusBar();
   SetStatusText( "" );
 
-  wxPanel *panel = new wxPanel(this, -1);
-  
-  NetworkView *myview = new NetworkView(panel, wxID_ANY, wxPoint(10,10), wxSize(300,300));
-  (void)myview;
+  wxSplitterWindow *splittermain = new wxSplitterWindow(this, wxID_ANY);
+
+  wxBoxSizer *sizertop = new wxBoxSizer(wxVERTICAL);
+  wxSplitterWindow *splittertop = new wxSplitterWindow(splittermain, wxID_ANY);
+  splittertop->SetSashGravity(0.5);
+  splittertop->SetMinimumPaneSize(20); // Smallest size of pane allowed
+  sizertop->Add(splittertop, 1,wxEXPAND,0);
+
+  NetworkView *netview = new NetworkView(splittertop, wxID_ANY);
+
+  ComponentView *compview = new ComponentView(splittertop, wxID_ANY);  
+
+  splittertop->SplitVertically(netview, compview);
+  splittermain->SetSizer(sizertop);
+  sizertop->SetSizeHints(this);
+
+  OutputPlot *outputplot = new OutputPlot(splittermain, wxID_ANY);
+
+  wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
+  sizermain->Add(splittermain, 1,wxEXPAND,0);
+  splittermain->SetSashGravity(0.5);
+  splittermain->SetMinimumPaneSize(20); // Smallest size of pane allowed
+  splittermain->SplitHorizontally(splittertop, outputplot);
+  this->SetSizer(sizermain);
+  sizermain->SetSizeHints(this);
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)

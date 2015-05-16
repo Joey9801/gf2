@@ -5,7 +5,12 @@
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
 #endif
+#include <wx/splitter.h>
+#include <wx/sizer.h>
+
 #include "networkview.h"
+#include "componentview.h"
+#include "outputplot.h"
 
 //#include "../simulator/network.h"
 

@@ -62,7 +62,7 @@ class Network : public BaseComponent
         unsigned int idIn = findComponent(componentIn);
 
         unsigned int node = _components[idOut]->getOutputNode(pinOut);
-        _components[idIn]->setInput(pinIn, node);
+        _components[idIn]->connectInput(pinIn, node);
         return;
       }
 

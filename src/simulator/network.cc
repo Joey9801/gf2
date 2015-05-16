@@ -91,7 +91,7 @@ unsigned int Network::addComponent(std::string type) {
   unsigned int componentId = _components.size();
   BaseComponent * c = _componentConstructor[type]();
   for(unsigned int i=0; i<c->numOutputs(); i++)
-    c->setOutput(i, _nodesA.size()+i);
+    c->connectOutput(i, _nodesA.size()+i);
 
   _components.push_back(c);
   _nodesA.resize(_nodesA.size() + c->numOutputs(), false);
@@ -165,7 +165,7 @@ unsigned int Network::addInput(void) {
   _nodesB.push_back(false);
 
   _inputDummy->addOutput();
-  _inputDummy->setOutput(inputId, _nodesA.size()-1);
+  _inputDummy->connectOutput(inputId, _nodesA.size()-1);
 
   return inputId;
 }

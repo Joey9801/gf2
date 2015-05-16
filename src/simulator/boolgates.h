@@ -13,7 +13,7 @@ class BaseBoolgate : public BaseComponent {
     virtual ~BaseBoolgate() {}
 
     void step(std::vector<bool>& a, std::vector<bool>& b);
-    void setInput(unsigned int inputId, unsigned int node);
+    void connectInput(unsigned int inputId, unsigned int node);
 
   protected:
     virtual bool _compare(bool a, bool b) =0;

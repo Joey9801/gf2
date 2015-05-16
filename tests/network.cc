@@ -57,9 +57,9 @@ SCENARIO("Gates can be connected to the network IO", "[network]") {
 
     unsigned int gate = net.addComponent("Xor", "test-gate");
 
-    net.setInput("in-foo", 0);
-    net.setInput("in-bar", 1);
-    net.setOutput("out-asdf", 2);
+    net.connectInput("in-foo", 0);
+    net.connectInput("in-bar", 1);
+    net.connectOutput("out-asdf", 2);
 
     std::vector<bool> nodes(3, false);
 
@@ -140,9 +140,9 @@ SCENARIO("gates can be connected internally", "[network]") {
     net.connect(g3, 0, g4, 1);
 
     //Connect the network to the root nodelist
-    net.setInput(in1, 0);
-    net.setInput(in2, 1);
-    net.setOutput(out1, 2);
+    net.connectInput(in1, 0);
+    net.connectInput(in2, 1);
+    net.connectOutput(out1, 2);
 
     std::vector<bool> nodes(3, false);
 

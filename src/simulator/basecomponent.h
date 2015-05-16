@@ -31,10 +31,10 @@ class BaseComponent {
     unsigned int getInputNode(std::string name);
     unsigned int numInputs(void);
 
-    virtual void setOutput(unsigned int outputId, unsigned int node);
-    virtual void setOutput(std::string name, unsigned int node);
-    virtual void setInput(unsigned int inputId, unsigned int node);
-    virtual void setInput(std::string name, unsigned int node);
+    virtual void connectOutput(unsigned int outputId, unsigned int node);
+    virtual void connectOutput(std::string name, unsigned int node);
+    virtual void connectInput(unsigned int inputId, unsigned int node);
+    virtual void connectInput(std::string name, unsigned int node);
 
     virtual void configure(std::string key, std::string value) {}
 

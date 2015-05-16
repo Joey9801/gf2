@@ -13,7 +13,7 @@ SCENARIO("Inputs to bool gates can be assigned numerical id's", "[boolgates]") {
     REQUIRE( gate->numOutputs() == 1);
 
     WHEN("Input 0 is assigned") {
-      gate->setInput(0, 0);
+      gate->connectInput(0, 0);
 
       THEN("There is 1 input") {
         REQUIRE( gate->numInputs() == 1);
@@ -22,7 +22,7 @@ SCENARIO("Inputs to bool gates can be assigned numerical id's", "[boolgates]") {
 
     WHEN("Input N (N>numInputs()) is assigned") {
       unsigned int N = 3;
-      gate->setInput(N, 0);
+      gate->connectInput(N, 0);
 
       THEN("numInputs is then N+1") {
         REQUIRE( gate->numInputs() == N+1 );
@@ -44,7 +44,7 @@ SCENARIO("Inputs to bool gates can be assigned by name", "[boolgates]") {
     REQUIRE( gate->numOutputs() == 1);
 
     WHEN("Input 0 is assigned") {
-      gate->setInput("i1", 0);
+      gate->connectInput("i1", 0);
 
       THEN("There is 1 input") {
         REQUIRE( gate->numInputs() == 1);
@@ -53,7 +53,7 @@ SCENARIO("Inputs to bool gates can be assigned by name", "[boolgates]") {
 
     WHEN("Input N (N>numInputs()) is assigned") {
       // N=3
-      gate->setInput("i4", 0);
+      gate->connectInput("i4", 0);
 
       THEN("numInputs is then N+1") {
         REQUIRE( gate->numInputs() == 4 );
@@ -74,9 +74,9 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
     WHEN("There are two inputs") {
       std::vector<bool> a(3, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setOutput(0, 2);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectOutput(0, 2);
 
       THEN("The truth table is correct") {
         bool in1, in2;
@@ -95,10 +95,10 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
     
     WHEN("There are three inputs") {
       std::vector<bool> a(4, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setInput(2, 2);
-      gate->setOutput(0, 3);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectInput(2, 2);
+      gate->connectOutput(0, 3);
 
       THEN("The truth table is correct") {
         bool in1, in2, in3;
@@ -126,9 +126,9 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
     WHEN("There are two inputs") {
       std::vector<bool> a(3, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setOutput(0, 2);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectOutput(0, 2);
 
       THEN("The truth table is correct") {
         bool in1, in2;
@@ -147,10 +147,10 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
     
     WHEN("There are three inputs") {
       std::vector<bool> a(4, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setInput(2, 2);
-      gate->setOutput(0, 3);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectInput(2, 2);
+      gate->connectOutput(0, 3);
 
       THEN("The truth table is correct") {
         bool in1, in2, in3;
@@ -178,9 +178,9 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
     WHEN("There are two inputs") {
       std::vector<bool> a(3, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setOutput(0, 2);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectOutput(0, 2);
 
       THEN("The truth table is correct") {
         bool in1, in2;
@@ -199,10 +199,10 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
     
     WHEN("There are three inputs") {
       std::vector<bool> a(4, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setInput(2, 2);
-      gate->setOutput(0, 3);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectInput(2, 2);
+      gate->connectOutput(0, 3);
 
       THEN("The truth table is correct") {
         bool in1, in2, in3;
@@ -230,9 +230,9 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
     WHEN("There are two inputs") {
       std::vector<bool> a(3, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setOutput(0, 2);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectOutput(0, 2);
 
       THEN("The truth table is correct") {
         bool in1, in2;
@@ -251,10 +251,10 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
     
     WHEN("There are three inputs") {
       std::vector<bool> a(4, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setInput(2, 2);
-      gate->setOutput(0, 3);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectInput(2, 2);
+      gate->connectOutput(0, 3);
 
       THEN("The truth table is correct") {
         bool in1, in2, in3;
@@ -282,9 +282,9 @@ SCENARIO("Boolgates produce correct outputs", "[boolgates]") {
 
     WHEN("There are two inputs") {
       std::vector<bool> a(3, false);
-      gate->setInput(0, 0);
-      gate->setInput(1, 1);
-      gate->setOutput(0, 2);
+      gate->connectInput(0, 0);
+      gate->connectInput(1, 1);
+      gate->connectOutput(0, 2);
 
       THEN("The truth table is correct") {
         bool in1, in2;

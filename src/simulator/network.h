@@ -91,4 +91,25 @@ class Network : public BaseComponent
     std::map<unsigned int, unsigned int> _monitorPoints;
 };
 
+// Special type of network which can operate independantly from anything else
+// Should only be used as the Root of the whole network
+class RootNetwork : public Network
+{
+  public:
+    RootNetwork();
+    ~RootNetwork();
+
+    void step(void);
+
+    unsigned int addInput(void);
+    unsigned int addInput(std::string);
+    unsigned int addOutput(void);
+    unsigned int addOutput(std::string);
+
+    void setInput(unsigned int inputId, bool value);
+    void setInput(std::string inputName, bool value);
+    bool getOutput(unsigned int outputId);
+    bool getOutput(std::string outputName);
+};
+
 #endif

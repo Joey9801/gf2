@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#include "../structures/nodetree.h"
+
 typedef std::map<std::string, unsigned int> pin_map;
 
 class BaseComponent {
@@ -35,6 +37,8 @@ class BaseComponent {
     virtual void setInput(std::string name, unsigned int node);
 
     virtual void configure(std::string key, std::string value) {}
+
+    NodeTreeBase * getNodeTree(void);
 
   protected:
     std::string _name;

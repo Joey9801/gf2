@@ -272,3 +272,32 @@ void Network::removeMonitorPoint(unsigned int pointId) {
   // would change the indicies of other points
   return;
 }
+
+NodeTreeBase * Network::getNodeTree(void) {
+  NodeTreeBase * n = new NodeTreeNetwork();
+
+  n->name = _name;
+
+  for(std::vector<BaseComponent*>::iterator it=_components.begin();
+      it != _components.end();
+      it ++)
+    n->children.push_back( (*it)->getNodeTree() );
+
+  for(pin_map::iterator it = _componentNames.begin();
+      it != _componentNames.end();
+      it ++)
+    n->children[(*it).second]->nickname = (*it).first;
+
+  n->inputNodes = _inputs;
+  n->outputNodes = _outputs;
+
+  n->inputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
+    n->inputNames[(*it).second] = (*it).first;
+
+  n->outputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
+    n->outputNames[(*it).second] = (*it).first;
+
+  return n;
+}

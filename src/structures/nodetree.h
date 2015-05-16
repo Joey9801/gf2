@@ -11,7 +11,12 @@ struct NodeTreeBase {
   NodeTreeBase(NodeType node_type) {type = node_type;}
 
   NodeType type;
+
+  // Name is the type of component (And, Nand etc..)
+  // Nickname is given to a particular instance of a component
+  // Nicknames are gauranteed to be unique within each subnetwork
   std::string name;
+  std::string nickname;
 
   // Input #0 is connected to node inputNodes[0], and has name inputNames[0]
   // Sim. for outputs.

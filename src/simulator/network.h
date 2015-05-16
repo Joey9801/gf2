@@ -72,6 +72,8 @@ class Network : public BaseComponent
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     void removeMonitorPoint(unsigned int pointId);
 
+    NodeTreeBase * getNodeTree(void);
+
   protected:
     constructor_map _componentConstructor;
 

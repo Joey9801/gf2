@@ -146,3 +146,22 @@ void BaseComponent::setInput(std::string name, unsigned int node) {
 std::string BaseComponent::getName(void) {
   return _name;
 }
+
+NodeTreeBase * BaseComponent::getNodeTree(void) {
+  NodeTreeBase * n = new NodeTreeGate();
+
+  n->name = _name;
+
+  n->inputNodes = _inputs;
+  n->outputNodes = _outputs;
+
+  n->inputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
+    n->inputNames[(*it).second] = (*it).first;
+
+  n->outputNames.resize(_pinInMap.size());
+  for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
+    n->outputNames[(*it).second] = (*it).first;
+
+  return n;
+}

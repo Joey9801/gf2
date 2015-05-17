@@ -1,7 +1,7 @@
 #include "signalgenerator.h"
 
 SignalGenerator::SignalGenerator() :
-  BaseComponent("Signal Generator", 0, 1)
+  BaseComponent("siggen", 0, 1)
 {
   _pinOutMap["out"] = 0;
   _data = std::vector<bool>(1, false);

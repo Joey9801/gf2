@@ -36,7 +36,7 @@ void BaseBoolgate::step(std::vector<bool>& a, std::vector<bool>& b) {
 }
 
 XorGate::XorGate() :
-  BaseComponent("Xor", 2, 1)
+  BaseComponent("xor", 2, 1)
 {
   _pinInMap["i1"] = 0;
   _pinInMap["i2"] = 1;

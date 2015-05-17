@@ -56,14 +56,6 @@ unsigned int DummyIO::addOutput(std::string name) {
 Network::Network(void) :
   BaseComponent("Network", 0, 0)
 {
-  _componentConstructor["And"] = &createComponent<AndGate>;
-  _componentConstructor["Nand"] = &createComponent<NandGate>;
-  _componentConstructor["Or"] = &createComponent<OrGate>;
-  _componentConstructor["Nor"] = &createComponent<NorGate>;
-  _componentConstructor["Xor"] = &createComponent<XorGate>;
-  _componentConstructor["DType"] = &createComponent<DType>;
-  _componentConstructor["SigGen"] = &createComponent<SignalGenerator>;
-
   //Make room for the const values
   _nodesA.resize(2);
   _nodesB.resize(2);
@@ -83,13 +75,13 @@ Network::~Network() {}
 
 //returns componentId
 unsigned int Network::addComponent(std::string type) {
-  if(_componentConstructor.find(type) == _componentConstructor.end()) {
+  if(componentConstructor.find(type) == componentConstructor.end()) {
     //TODO report an error
     return 0;
   }
 
   unsigned int componentId = _components.size();
-  BaseComponent * c = _componentConstructor[type]();
+  BaseComponent * c = componentConstructor[type]();
   for(unsigned int i=0; i<c->numOutputs(); i++)
     c->connectOutput(i, _nodesA.size()+i);
 

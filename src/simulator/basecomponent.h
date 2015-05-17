@@ -50,19 +50,4 @@ class BaseComponent {
     std::vector<unsigned int> _outputs;
 };
 
-//In lieu of proper reflection, the following will have to do
-//Maps strings to a (sort of) factory for components
-//  Usage:
-//    component_map componentMap;
-//    componentMap["and"] = &createComponent<AndGate>;
-//
-//    BaseComponent * gate = componentMap["and"]()
-//    //Set up in/output references
-//    gate->step(a, b);
-//    etc..
-template<typename T> BaseComponent * createComponent() {
-  return new T();
-}
-typedef std::map<std::string, BaseComponent*(*)(void)> constructor_map;
-
 #endif

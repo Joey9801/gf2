@@ -3,14 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "basecomponent.h"
-#include "boolgates.h"
-#include "flipflops.h"
-#include "signalgenerator.h"
+#include "componentconstructors.h"
 #include "monitor.h"
 
-//Dummy IO component
+extern constructor_map componentConstructor;
+
 class DummyIO : public BaseComponent
 {
   public:
@@ -75,8 +75,6 @@ class Network : public BaseComponent
     NodeTreeBase * getNodeTree(void);
 
   protected:
-    constructor_map _componentConstructor;
-
     std::map<std::string, unsigned int> _componentNames;
     std::vector<BaseComponent*> _components;
 

@@ -3,29 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "basecomponent.h"
-#include "boolgates.h"
-#include "flipflops.h"
-#include "signalgenerator.h"
+#include "dummyio.h"
+#include "componentconstructors.h"
 #include "monitor.h"
 
-//Dummy IO component
-class DummyIO : public BaseComponent
-{
-  public:
-    DummyIO();
-    ~DummyIO();
-
-    void step(std::vector<bool>& a, std::vector<bool>& b);
-    void loadInputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies);
-    void loadOutputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies);
-
-    unsigned int addInput();
-    unsigned int addInput(std::string name);
-    unsigned int addOutput();
-    unsigned int addOutput(std::string name);
-};
+extern constructor_map componentConstructor;
 
 class Network : public BaseComponent
 {
@@ -37,6 +22,8 @@ class Network : public BaseComponent
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
+    unsigned int addComponent(BaseComponent * c);
+    unsigned int addComponent(BaseComponent * c, std::string name);
 
     void configureComponent(std::string name, std::string key, std::string value);
     void configureComponent(unsigned int componentId, std::string key, std::string value);
@@ -74,9 +61,9 @@ class Network : public BaseComponent
 
     NodeTreeBase * getNodeTree(void);
 
-  protected:
-    constructor_map _componentConstructor;
+    BaseComponent * clone(void);
 
+  protected:
     std::map<std::string, unsigned int> _componentNames;
     std::vector<BaseComponent*> _components;
 

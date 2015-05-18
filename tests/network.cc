@@ -8,7 +8,7 @@ SCENARIO("Components can be added, accessed, and renamed in a Network", "[networ
     REQUIRE( net.countComponents() == 0 );
 
     WHEN("A component is added with no name") {
-      unsigned int cId = net.addComponent("And");
+      unsigned int cId = net.addComponent("and");
       THEN("The component count is 1") {
         REQUIRE( net.countComponents() == 1 );
       }
@@ -18,7 +18,7 @@ SCENARIO("Components can be added, accessed, and renamed in a Network", "[networ
       }
     }
     WHEN("A component is added with a name") {
-      unsigned int cId = net.addComponent("And", "foo-gate");
+      unsigned int cId = net.addComponent("and", "foo-gate");
       THEN("The component count is 1") {
         REQUIRE( net.countComponents() == 1 );
       }
@@ -36,10 +36,10 @@ SCENARIO("Components can be added, accessed, and renamed in a Network", "[networ
     }
 
     WHEN("N components are added") {
-      net.addComponent("And");
-      net.addComponent("And");
-      net.addComponent("And");
-      net.addComponent("And");
+      net.addComponent("and");
+      net.addComponent("and");
+      net.addComponent("and");
+      net.addComponent("and");
 
       THEN("The component count is N") {
         REQUIRE( net.countComponents() == 4 );
@@ -55,7 +55,7 @@ SCENARIO("Gates can be connected to the network IO", "[network]") {
     unsigned int in2 = net.addInput("in-bar");
     unsigned int out1 = net.addOutput("out-asdf");
 
-    unsigned int gate = net.addComponent("Xor", "test-gate");
+    unsigned int gate = net.addComponent("xor", "test-gate");
 
     net.connectInput("in-foo", 0);
     net.connectInput("in-bar", 1);
@@ -121,10 +121,10 @@ SCENARIO("gates can be connected internally", "[network]") {
     unsigned int out1 = net.addOutput();
 
     //Then create 4 Nand gates in the network
-    unsigned int g1 = net.addComponent("Nand");
-    unsigned int g2 = net.addComponent("Nand");
-    unsigned int g3 = net.addComponent("Nand");
-    unsigned int g4 = net.addComponent("Nand");
+    unsigned int g1 = net.addComponent("nand");
+    unsigned int g2 = net.addComponent("nand");
+    unsigned int g3 = net.addComponent("nand");
+    unsigned int g4 = net.addComponent("nand");
 
     //Internally connect the gates to the network IO
     net.connect(0, in1, g1, 0);

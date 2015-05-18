@@ -22,6 +22,8 @@ class Network : public BaseComponent
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
+    unsigned int addComponent(BaseComponent * c);
+    unsigned int addComponent(BaseComponent * c, std::string name);
 
     void configureComponent(std::string name, std::string key, std::string value);
     void configureComponent(unsigned int componentId, std::string key, std::string value);

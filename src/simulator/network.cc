@@ -43,6 +43,22 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   renameComponent(componentId, name);
   return componentId;
 }
+unsigned int Network::addComponent(BaseComponent * c) {
+  unsigned int componentId = _components.size();
+  for(unsigned int i=0; i<c->numOutputs(); i++)
+    c->connectOutput(i, _nodesA.size()+i);
+
+  _components.push_back(c);
+  _nodesA.resize(_nodesA.size() + c->numOutputs(), false);
+  _nodesB.resize(_nodesA.size());
+
+  return componentId;
+}
+unsigned int Network::addComponent(BaseComponent * c, std::string name) {
+  unsigned int componentId = addComponent(c);
+  renameComponent(componentId, name);
+  return componentId;
+}
 
 void Network::configureComponent(std::string name, std::string key, std::string value) {
   unsigned int componentId = findComponent(name);

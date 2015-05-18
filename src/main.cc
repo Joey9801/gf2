@@ -1,61 +1,27 @@
 #include <iostream>
 
-#include "simulator/network.h"
+#include "structures/definition.h"
 
+//This is a dummy main, feel free to overwrite it in any merge
 int main(void) {
-  Network* net = new Network();
 
-  //Create a xor gate out of nand gates as a demo
-  //http://upload.wikimedia.org/wikipedia/commons/f/fa/XOR_from_NAND.svg
-  //First create two inputs and an output
-  unsigned int in1 = net->addInput();
-  unsigned int in2 = net->addInput();
-  unsigned int out1 = net->addOutput();
+  //Manually create a definition as a demo
+  Definition d = Definition(Dict);
 
-  //Then create 4 Nand gates in the network
-  unsigned int g1 = net->addComponent("Nand");
-  unsigned int g2 = net->addComponent("Nand");
-  unsigned int g3 = net->addComponent("Nand");
-  unsigned int g4 = net->addComponent("Nand");
+  d.pairs["inputs"] = new Definition(Dict);
+  d.pairs["inputs"]->pairs["one"] = new Definition("true");
+  d.pairs["inputs"]->pairs["two"] = new Definition("false");
 
-  //Internally connect the gates to the network IO
-  net->connectInput(in1, g1, 0);
-  net->connectInput(in2, g1, 1);
-  net->connectInput(in1, g2, 0);
-  net->connectInput(in2, g3, 1);
-  net->connectOutput(out1, g4, 0);
+  d.pairs["components"] = new Definition(Dict);
+  Definition * c1 = new Definition(Dict);
+  c1->pairs["type"] = new Definition("nand");
+  c1->pairs["inputs"] = new Definition(Dict);
+  c1->pairs["inputs"]->pairs["i1"] = new Definition("inputs.one");
+  c1->pairs["inputs"]->pairs["i2"] = new Definition("inputs.one");
 
-  //Create the interal connections between the gates
-  net->connect(g1, 0, g2, 1);
-  net->connect(g1, 0, g3, 0);
-  net->connect(g2, 0, g4, 0);
-  net->connect(g3, 0, g4, 1);
+  d.pairs["components"]->pairs["gate_1"] = c1;
 
-  //Connect the network to our external nodelist
-  net->setInput(in1, 0);
-  net->setInput(in2, 1);
-  net->setOutput(out1, 2);
+  d.print();
 
-
-  //Our dummy root nodelist
-  //The first two elements are wired to the network inputs
-  //The last element is wired to the network output
-  std::vector<bool> a (3, false);
-
-  //Iterate through all possible inputs
-  for(char i=0; i<4; i++){
-    a[0] = i & (1<<0);
-    a[1] = i & (1<<1);
-
-    //Since network operates synchronously inside, three steps are
-    //needed for the new input to fully propagate
-    net->step(a, a);
-    net->step(a, a);
-    net->step(a, a);
-
-    for(int i=0; i<3; i++)
-      std::cout << a[i] << ", ";
-
-    std::cout << std::endl;
-  }
+  return 0;
 }

@@ -1,0 +1,36 @@
+Format of the following:
+  Nature of the error - is it recoverable, if so how
+All errors are to be reported if possible. Unrecoverable only means that the network wont run after parsing
+
+
+Cannot open included file (might not exist, wrong permissions, etc..) - unrecoverable only if the include is actually used
+
+Included definitions form a directed cycle (eg A include B which include A) - unrecoverable, the definition is meaningless.
+
+Initial input value could be invalid - recoverable default to false
+
+input_name doesn't exist - recoverable, ignore it
+
+input of a gate is not connected to anything - recoverable, default to false
+
+dest_component_nickname doesn't exist - recoverable, treat as unconnected/connected to const.false
+
+dest_output_name is not an output of dest_component_name - recoverable, treat as unconnected/connected to const.false
+
+not appending [.dest_output_name] if there are multiple outputs - recoverable, treat as unconnected/connected to const.false
+
+component_type is not a valid component or include - unrecoverable
+
+same component_nickname appears twice - unrecoverable
+
+same input_nickname appears twice - unrecoverable
+
+same output_nickname appears twice - unrecoverable
+
+same monitor_point_nickname appears twice - unrecoverable
+
+same input_name is connected more than once in the same component block - unrecoverable
+
+root components field missing - unrecoverable
+
+any of the other root fields missing - recoverable (no ambiguity, maybe warn?)

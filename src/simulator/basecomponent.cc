@@ -1,4 +1,7 @@
 #include "basecomponent.h"
+#include "componentconstructors.h"
+
+extern constructor_map componentConstructor;
 
 BaseComponent::BaseComponent(std::string name) :
     _name(name)
@@ -164,4 +167,15 @@ NodeTreeBase * BaseComponent::getNodeTree(void) {
     n->outputNames[(*it).second] = (*it).first;
 
   return n;
+}
+
+BaseComponent * BaseComponent::clone(void) {
+  BaseComponent * c = componentConstructor[_name]();
+
+  c->_inputs = _inputs;
+  c->_outputs = _outputs;
+  c->_pinInMap = _pinInMap;
+  c->_pinOutMap = _pinOutMap;
+
+  return c;
 }

@@ -1,8 +1,5 @@
 #include "componentview.h"
-#include <wx/version.h>
-
-//wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-//wxEND_EVENT_TABLE()
+#include <wx/treectrl.h>
 
 ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   : wxPanel(parent, id)
@@ -36,4 +33,10 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
 void ComponentView::selectComponent(BaseComponent *component)
 {
   _component = component;
+}
+
+void ComponentView::SetComponent(wxString name)
+{
+  long itemIndex = m_listview->InsertItem(0, "New Event");
+  m_listview->SetItem(itemIndex, 1, name);
 }

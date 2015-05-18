@@ -6,7 +6,6 @@
   #include <wx/wx.h>
 #endif
 
-//#include "mathplot.h"
 
 class OutputPlot: public wxPanel
 {
@@ -15,8 +14,6 @@ public:
   virtual ~OutputPlot(){};
   
 private:
-  //mpWindow *m_plot;
-  //wxDECLARE_EVENT_TABLE();
 };
 
 #endif /*outputplot.h*/

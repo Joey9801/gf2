@@ -6,6 +6,7 @@
   #include <wx/wx.h>
 #endif
 #include <wx/listctrl.h>
+#include <wx/treectrl.h>
 #include <wx/sizer.h>
 
 #include "../simulator/basecomponent.h"
@@ -18,10 +19,11 @@ public:
   
   void selectComponent(BaseComponent *component);
 
+  void SetComponent(wxString name);
+
   wxListView *m_listview;
 private:
   BaseComponent *_component;
-  //wxDECLARE_EVENT_TABLE();
 };
 
 #endif /*componentview.h*/

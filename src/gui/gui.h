@@ -19,7 +19,6 @@ class MyApp: public wxApp
   public:
     bool OnInit(); //automatically called when the application starts
   private:
-    //network *top_level_net;
 };
 
 class MyFrame: public wxFrame
@@ -30,10 +29,13 @@ public:
   // The Path to the network file we have open
   wxString CurrentNetfilePath;
 private:
+  NetworkView *_netview;
+  ComponentView *_compview;
+
   void OnLoadNetwork(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
-  wxDECLARE_EVENT_TABLE();
+  void OnCompSelect(wxTreeEvent& event);
 };
 
 enum

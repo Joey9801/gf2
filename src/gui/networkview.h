@@ -18,7 +18,7 @@ public:
   
   void loadNetwork(Network *network);
 
-  wxTreeCtrl *m_treectrl;
+  wxTreeCtrl *_treectrl;
 private:
   Network *_network;
   //wxDECLARE_EVENT_TABLE();

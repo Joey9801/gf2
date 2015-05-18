@@ -1,11 +1,5 @@
 #include "gui.h"
 
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-  EVT_MENU(ID_LoadNetwork, MyFrame::OnLoadNetwork)
-  EVT_MENU(wxID_EXIT, MyFrame::OnExit)
-  EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
-wxEND_EVENT_TABLE()
-
 bool MyApp::OnInit()
 {
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(50, 50), wxSize(800, 600) );
@@ -16,6 +10,7 @@ bool MyApp::OnInit()
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   : wxFrame(NULL, wxID_ANY, title, pos, size)
 {
+  //Create menus and attach them to menu bar
   wxMenu *menuFile = new wxMenu;
   menuFile->Append(ID_LoadNetwork, "&Open Network File\tCtrl-O",
   "Load a file defining the logic network");
@@ -24,25 +19,29 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   wxMenu *menuHelp = new wxMenu;
   menuHelp->Append(wxID_ABOUT);
   wxMenuBar *menuBar = new wxMenuBar;
-  menuBar->Append( menuFile, "&File" );
-  menuBar->Append( menuHelp, "&Help" );
-  SetMenuBar( menuBar );
+  menuBar->Append(menuFile, "&File");
+  menuBar->Append(menuHelp, "&Help");
+  SetMenuBar(menuBar);
   CreateStatusBar();
-  SetStatusText( "" );
+  SetStatusText("");
 
+  //Create Main Spitterwindow, which will be split horizontally, containing
+  //another splitterwindow and the Outputplot
   wxSplitterWindow *splittermain = new wxSplitterWindow(this, wxID_ANY);
 
+  //Sizer for top splitterwindow
   wxBoxSizer *sizertop = new wxBoxSizer(wxVERTICAL);
+  //Create Top Spitterwindow, which will be split vertically, containing the
+  //networkview and componentview
   wxSplitterWindow *splittertop = new wxSplitterWindow(splittermain, wxID_ANY);
-  splittertop->SetSashGravity(0.5);
+  splittertop->SetSashGravity(0.5); //both panes in sw resize equally
   splittertop->SetMinimumPaneSize(20); // Smallest size of pane allowed
   sizertop->Add(splittertop, 1,wxEXPAND,0);
 
-  NetworkView *netview = new NetworkView(splittertop, wxID_ANY);
+  _netview = new NetworkView(splittertop, wxID_ANY);
+  _compview = new ComponentView(splittertop, wxID_ANY);  
 
-  ComponentView *compview = new ComponentView(splittertop, wxID_ANY);  
-
-  splittertop->SplitVertically(netview, compview);
+  splittertop->SplitVertically(_netview, _compview);
   splittermain->SetSizer(sizertop);
   sizertop->SetSizeHints(this);
 
@@ -50,11 +49,25 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
   sizermain->Add(splittermain, 1,wxEXPAND,0);
-  splittermain->SetSashGravity(0.5);
+  splittermain->SetSashGravity(0.5); //both panes in sw resize equally
   splittermain->SetMinimumPaneSize(20); // Smallest size of pane allowed
   splittermain->SplitHorizontally(splittertop, outputplot);
   this->SetSizer(sizermain);
   sizermain->SetSizeHints(this);
+
+  //Bind event handlers to events dynamically:
+  //Events from Menubar
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
+  //Events from Panes
+  _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+}
+
+void MyFrame::OnCompSelect(wxTreeEvent& event)
+{
+  wxString compname = _netview->_treectrl->GetItemText(event.GetItem());
+  _compview->SetComponent(compname);
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)
@@ -64,21 +77,20 @@ void MyFrame::OnExit(wxCommandEvent& event)
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-  wxMessageBox( "This is a logic simulator developed for project GF2 at CUED \
-by Joe Roberts, Duncan Barber and Daniel Potter",
-  "About this program", wxOK | wxICON_INFORMATION );
+  wxMessageBox( "This is a logic simulator developed for project GF2 at CUED by\
+      Joe Roberts, Duncan Barber and Daniel Potter",
+      "About this program", wxOK | wxICON_INFORMATION );
 }
 
 void MyFrame::OnLoadNetwork(wxCommandEvent& event)
 {
   wxFileDialog* OpenDialog = new wxFileDialog(
-  this, _("Choose a file to open"), wxEmptyString, wxEmptyString, 
-  _("Network definition files (*.def)|*.def"),
-  wxFD_OPEN, wxDefaultPosition);
+      this, _("Choose a file to open"), wxEmptyString, wxEmptyString, 
+      _("Network definition files (*.def)|*.def"),
+      wxFD_OPEN, wxDefaultPosition);
 
-// Creates a "open file" dialog
-  if (OpenDialog->ShowModal() == wxID_OK) // if the user click "Open" instead of "Cancel"
-  {
+  // Creates a "open file" dialog
+  if (OpenDialog->ShowModal() == wxID_OK){ // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
   }
 

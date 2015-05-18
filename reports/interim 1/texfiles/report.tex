@@ -37,6 +37,12 @@
     The following report contains details of our intended approach to building the software, as well as our specification for the logic definition format.
 
 \section{General approach}
+\label{sec:general}
+    We have chosen not to use the provided simulator source, in favour of our own. This provides several advantages, most prominent of which is that a network of components is now polymorphic with the base component, such that they can be nested within each other to an arbitrary depth. This is a key feature of the simulator and related file format, as repetetive blocks of logic can be written once and included many times.
+
+    We have also chosen to break up the file parsing into two distinct stages; one which interprets the file into an interal representation but extracts no meaning, and one which takes this internal representation and builds a network. This is a good idea since it keeps the logically separate tasks of parsing and construction apart. It also allows the builder to manage recursive calls to the parser to process included files correctly.
+
+    For unit testing, we are using a framework called Catch\footnote{https://github.com/philsquared/Catch}. Catch is a header only library which supports a Behavior Driven Development style (Given-When-Then).
 
 \section{Teamwork planning}
 

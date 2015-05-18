@@ -30,28 +30,28 @@ class XorGate : public BaseComponent {
 
 class AndGate : public BaseBoolgate {
   public:
-    AndGate() : BaseBoolgate("And") {}
+    AndGate() : BaseBoolgate("and") {}
   protected:
     bool _compare(bool a, bool b);
 };
 
 class OrGate : public BaseBoolgate {
   public:
-    OrGate() : BaseBoolgate("Or") {}
+    OrGate() : BaseBoolgate("or") {}
   protected:
     bool _compare(bool a, bool b);
 };
 
 class NandGate : public BaseBoolgate {
   public:
-    NandGate() : BaseBoolgate("Nand") {}
+    NandGate() : BaseBoolgate("nand") {}
   protected:
     bool _compare(bool a, bool b);
 };
 
 class NorGate : public BaseBoolgate {
   public:
-    NorGate() : BaseBoolgate("Nor") {}
+    NorGate() : BaseBoolgate("nor") {}
   protected:
     bool _compare(bool a, bool b);
 };

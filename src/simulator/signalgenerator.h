@@ -17,6 +17,8 @@ class SignalGenerator : public BaseComponent
 
     void configure(std::string key, std::string value);
 
+    BaseComponent * clone(void);
+
   private:
     unsigned int _period;
     std::vector<bool> _data;

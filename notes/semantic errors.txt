@@ -5,17 +5,19 @@ All errors are to be reported if possible. Unrecoverable only means that the net
 
 Cannot open included file (might not exist, wrong permissions, etc..) - unrecoverable only if the include is actually used
 
+Included definitions form a directed cycle (eg A include B which include A) - unrecoverable, the definition is meaningless.
+
 Initial input value could be invalid - recoverable default to false
 
 input_name doesn't exist - recoverable, ignore it
 
 input of a gate is not connected to anything - recoverable, default to false
 
-dest_component_nickname doesn't exist - unrecoverable
+dest_component_nickname doesn't exist - recoverable, treat as unconnected/connected to const.false
 
-dest_output_name is not an output of dest_component_name - unrecoverable
+dest_output_name is not an output of dest_component_name - recoverable, treat as unconnected/connected to const.false
 
-not appending [.dest_output_name] if there are multiple outputs - unrecoverable
+not appending [.dest_output_name] if there are multiple outputs - recoverable, treat as unconnected/connected to const.false
 
 component_type is not a valid component or include - unrecoverable
 

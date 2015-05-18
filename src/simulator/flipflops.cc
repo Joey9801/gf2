@@ -1,7 +1,7 @@
 #include "flipflops.h"
 
 DType::DType() :
-  BaseComponent("D-Type", 4, 2)
+  BaseComponent("dtype", 4, 2)
 {
   _pinInMap["d"] = 0;
   _pinInMap["s"] = 1;

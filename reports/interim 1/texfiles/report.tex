@@ -48,6 +48,10 @@
 
 \section{File format}
     \subsection{Overview and motivations}
+        We reasoned that a logic simulator will primarily be used to simulate logic circuits of a reasonably large complexity, and so it would be prudent to design a file format which supports this use case well.
+
+        The format is a simple recursive key-value map, such that the 'value' can be another nested map. This allows for arbitrarily complex data to be represented, while keeping the format exceptionally easy to parse. This format easily allows for extension without altering the syntax.
+        The schema includes an 'includes' field where other definitions can be included and aliased, to be used in the definition just as though they were base components.
 
     \subsection{EBNF description}
 

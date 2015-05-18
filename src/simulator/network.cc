@@ -233,15 +233,18 @@ NodeTreeBase * Network::getNodeTree(void) {
 
   n->name = _name;
 
-  for(std::vector<BaseComponent*>::iterator it=_components.begin();
-      it != _components.end();
-      it ++)
-    n->children.push_back( (*it)->getNodeTree() );
+  //Start at 2 to  avoid including the DummyIO objects
+  for(unsigned int i=2; i<_components.size(); i++)
+    n->children.push_back( _components[i]->getNodeTree() );
 
   for(pin_map::iterator it = _componentNames.begin();
       it != _componentNames.end();
-      it ++)
-    n->children[(*it).second]->nickname = (*it).first;
+      it ++) {
+    //Sim, avoid including the DummyIO objects
+    //Ordering of the map is not as added, so if statement needed in every loop
+    if( it->second > 1 )
+      n->children[(*it).second-2]->nickname = (*it).first;
+  }
 
   n->inputNodes = _inputs;
   n->outputNodes = _outputs;

@@ -13,5 +13,5 @@ value = character, { character } ;
 string = "\"", { character | " " }, "\"";
 pair  = value, ":", (value | dict | string);
 dict = "{", [pair, {",", pair}], "}";
-comment = "//", character | whitespace | "\\\n", { character | whitespace | "\\\n" }, "\n"
-        | "/*", character | whitespace | "\n" | "", { character | whitespace | "\n" }, "*/" ;
+comment = "//", { character | whitespace | "\\\n" }, "\n"
+        | "/*", { character | whitespace | "\n" }, "*/" ;

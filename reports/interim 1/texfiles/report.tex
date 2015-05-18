@@ -58,6 +58,33 @@
     \subsection{Possibly syntax errors}
 
     \subsection{Possible semantic errors}
+        Due to the simplicity of the syntax, most of the possible errors which can occur are semantic errors. The errors which follow are divided roughly into two catagories, recoverable and unrecoverable. Unrecoverable here means that there is resulting ambiguity in the definition, or that the definition does not have meaning. Recoverable errors are still technically errors, though it is still possible to extract meaning from the definition and simulate it. All semantic errors present will be reported where possible. All semantic errors will be discovered during the Network construction, after the file is successfully parsed.
+
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{p{0.5cm}p{8cm}p{4cm}}
+                \toprule
+                \#     & Description                                                              & Type                                                 \\ \midrule
+                1      & Root components field missing                                            & Unrecoverable                                        \\
+                2      & Any of the other root field missing                                      & Recoverable (since no ambiguity)                     \\
+                3      & An included file does not exist/cannot be accessed                       & Unrecoverable, unless the include is not used        \\
+                4      & Included definitions form a directed cycle                               & Unrecoverable                                        \\
+                5      & Initial input value not valid                                            & Recoverable, treat as false                          \\
+                6      & input\_name doesn't exist                                                & Recoverable, ignore it                               \\
+                7      & Input of a gate left unconnected                                         & Recoverable, treat as unconnected/connected to false \\
+                8      & same input\_name is connected more than once in the same component block & Unrecoverable                                        \\
+                9      & dest\_component\_nickname doesn't exist                                  & Recoverable, treat as unconnected/connected to false \\
+                10     & dest\_output\_name is not an output of dest\_component\_name             & Recoverable, treat as unconnected/connected to false \\
+                11     & Not appending {[}.dest\_output\_name{]} where there are multiple outputs & Recoverable, treat as unconnected/connected to false \\
+                12     & component\_type is not a valid component or include                      & Unrecoverable                                        \\
+                13     & Same component\_nickname appears twice                                   & Unrecoverable                                        \\
+                14     & Same input\_nickname appears twice                                       & Unrecoverable                                        \\
+                15     & Same output\_nickname appears twice                                      & Unrecoverable                                        \\
+                16     & Same monitor\_point\_nickname appears twice                              & Recoverable, just rename one of them                 \\ \bottomrule
+            \end{tabular}
+        \end{table}
+
+        The handling of many of these errors is built into the rewritten simulator, such as unconnected inputs and invalid input/output/component names. Of the above the most difficult to detect will be an include loop, though this shouldn't be too difficult with a depth first search through the include tree.
 
 \null
 \vfill

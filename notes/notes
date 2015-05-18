@@ -1,0 +1,22 @@
+Follow the google C++ style guide:
+https://google-styleguide.googlecode.com/svn/trunk/cppguide.html
+
+Notable features of the guide:
+  Indent with 2 spaces, no tabs
+  Cap line length at 80 columns
+
+  Braces should be used like so:
+  void foo(void) {
+    //Code
+    //Code
+  }
+
+Other style choices:
+  Comment with // only
+
+
+
+Program operation:
+  Network builder operates with two main components, the Builder and the Parser.
+  The Builder is called first with the filepath of the definition file. The Builder then gives the filepath to the Parser, which then processes the file into some internal datastructure. The Builder then iterates through this internal structure to build the network, returning a fully connected network object.
+  When processing the parsed definition, the first thing the builder should do is loop through all the included files. For each included file it would generate a Network object by calling another instance of itself. Each of these completed network objects are then treated as a 'proto-network', which is copied into the network being built whenever requested by the definition. This should handle arbitrary levels of recursion, essentially only limited by the stack.

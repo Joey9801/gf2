@@ -10,13 +10,13 @@ TEST_CASE("D-type flip flop works as expected") {
 
     std::vector<bool> nodes(6, false);
 
-    c->setInput("D", 0);
-    c->setInput("Clock", 1);
-    c->setInput("S", 2);
-    c->setInput("R", 3);
+    c->connectInput("d", 0);
+    c->connectInput("clock", 1);
+    c->connectInput("s", 2);
+    c->connectInput("r", 3);
 
-    c->setOutput(0, 4);
-    c->setOutput(1, 5);
+    c->connectOutput(0, 4);
+    c->connectOutput(1, 5);
 
     WHEN("The clock is low") {
       nodes[1] = false;

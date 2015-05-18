@@ -1,5 +1,5 @@
 {
-    description : "A 4 bit shift register"
+    description : "A 4 bit shift register",
 
     inputs : {
         data_in : false,

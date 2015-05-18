@@ -40,6 +40,8 @@ class BaseComponent {
 
     NodeTreeBase * getNodeTree(void);
 
+    BaseComponent * clone(void);
+
   protected:
     std::string _name;
 

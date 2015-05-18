@@ -45,3 +45,12 @@ void SignalGenerator::configure(std::string key, std::string value) {
   }
   return;
 }
+
+BaseComponent * SignalGenerator::clone(void) {
+  SignalGenerator * c = new SignalGenerator();
+
+  c->_period = _period;
+  c->_data = _data;
+
+  return (BaseComponent*)c;
+}

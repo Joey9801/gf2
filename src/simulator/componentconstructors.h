@@ -8,6 +8,7 @@
 #include "boolgates.h"
 #include "flipflops.h"
 #include "signalgenerator.h"
+#include "dummyio.h"
 
 //In lieu of proper reflection, the following will have to do
 //Maps strings to a (sort of) factory for components

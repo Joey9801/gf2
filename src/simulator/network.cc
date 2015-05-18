@@ -1,58 +1,5 @@
 #include "network.h"
 
-// Dummy IO objects are used as 'virtual' components representing
-// the networks inputs and outputs. The networks inputs are represented
-// as the the inputDummy's outputs, and the networks outputs by the
-// outputDummys inputs.
-DummyIO::DummyIO() :
-  BaseComponent("Dummy IO", 0, 0)
-{
-  std::stringstream stream;
-  for(int i=0; i<16; i++) {
-    stream.str(std::string());
-    stream << "i" << (i+1);
-    _pinInMap[stream.str()] = i;
-    _pinOutMap[stream.str()] = i;
-  }
-}
-
-DummyIO::~DummyIO() {}
-
-void DummyIO::step(std::vector<bool>& a, std::vector<bool>& b) {}
-
-void DummyIO::loadInputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies) {
-  for(unsigned int i=0; i<indicies.size(); i++)
-    sink[_outputs[i]] = source[indicies[i]];
-}
-
-void DummyIO::loadOutputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies) {
-  for(unsigned int i=0; i<indicies.size(); i++)
-    sink[indicies[i]] = source[_inputs[i]];
-}
-
-unsigned int DummyIO::addInput() {
-  _inputs.push_back(0);
-  return _inputs.size()-1;
-}
-
-unsigned int DummyIO::addInput(std::string name) {
-  unsigned int id = addInput(0);
-  renameInput(id, name);
-  return id;
-}
-
-unsigned int DummyIO::addOutput() {
-  _outputs.push_back(0);
-  return _outputs.size()-1;
-}
-
-unsigned int DummyIO::addOutput(std::string name) {
-  unsigned int id = addOutput(0);
-  renameOutput(id, name);
-  return id;
-}
-
-
 Network::Network(void) :
   BaseComponent("Network", 0, 0)
 {
@@ -292,6 +239,32 @@ NodeTreeBase * Network::getNodeTree(void) {
     n->outputNames[(*it).second] = (*it).first;
 
   return n;
+}
+
+BaseComponent * Network::clone(void) {
+  Network * n = new Network();
+
+  n->_components.clear();
+  for(std::vector<BaseComponent*>::iterator it = _components.begin();
+      it != _components.end();
+      it++)
+    n->_components.push_back( (*it)->clone() );
+
+  n->_inputDummy = (DummyIO*)n->_components[0];
+  n->_outputDummy = (DummyIO*)n->_components[1];
+
+  n->_componentNames = _componentNames;
+
+  n->_nodesA.resize(_nodesA.size(), false);
+  n->_nodesB.resize(_nodesB.size(), false);
+
+  n->_inputs = _inputs;
+  n->_outputs = _outputs;
+
+  // Give it the monitor object, but don't copy over the monitor points
+  n->_monitor = _monitor;
+
+  return (BaseComponent*)n;
 }
 
 RootNetwork::RootNetwork(void)

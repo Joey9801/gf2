@@ -8,4 +8,5 @@ constructor_map componentConstructor = {
   {"xor",     &createComponent<XorGate>},
   {"dtpye",   &createComponent<DType>},
   {"siggen",  &createComponent<SignalGenerator>},
+  {"dummyio",  &createComponent<DummyIO>}
 };

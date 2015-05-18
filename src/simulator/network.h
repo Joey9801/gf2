@@ -6,26 +6,11 @@
 #include <sstream>
 
 #include "basecomponent.h"
+#include "dummyio.h"
 #include "componentconstructors.h"
 #include "monitor.h"
 
 extern constructor_map componentConstructor;
-
-class DummyIO : public BaseComponent
-{
-  public:
-    DummyIO();
-    ~DummyIO();
-
-    void step(std::vector<bool>& a, std::vector<bool>& b);
-    void loadInputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies);
-    void loadOutputs(std::vector<bool>& source, std::vector<bool>& sink, std::vector<unsigned int> indicies);
-
-    unsigned int addInput();
-    unsigned int addInput(std::string name);
-    unsigned int addOutput();
-    unsigned int addOutput(std::string name);
-};
 
 class Network : public BaseComponent
 {
@@ -73,6 +58,8 @@ class Network : public BaseComponent
     void removeMonitorPoint(unsigned int pointId);
 
     NodeTreeBase * getNodeTree(void);
+
+    BaseComponent * clone(void);
 
   protected:
     std::map<std::string, unsigned int> _componentNames;

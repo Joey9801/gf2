@@ -14,5 +14,5 @@ value = identifier | ( identifier , "." , value ) ;
 string = "\"", { character | " " }, "\"";
 pair  = identifier | string, ":", (value | dict | string);
 dict = "{", [pair, {",", pair}], "}";
-comment = ( "//", { character | whitespace | "\\\n" }, "\n" )
-        | ( "/*", { character | whitespace | "\n" }, "*/" ) ;
+comment = "//", { character | whitespace | "\\\n" }, "\n"
+        | "/*", { character | whitespace | "\n" }, "*/" ;

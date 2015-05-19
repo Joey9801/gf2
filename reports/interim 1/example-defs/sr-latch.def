@@ -1,0 +1,28 @@
+{
+    description = "A simple Nor based SR latch",
+    inputs : {
+        set : true,
+        reset : true
+    },
+    outputs : {
+        q : gate_1,
+        q_bar : gate_2
+    },
+
+    components : {
+        gate_1 : {
+            type : nor,
+            inputs : {
+                i1 : inputs.reset,
+                i2 : gate_2
+            }
+        },
+        gate_2 : {
+            type : nor,
+            inputs : {
+                i1 : inputs.set,
+                i2 : gate_1
+            }
+        }
+    }
+}

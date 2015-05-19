@@ -1,0 +1,32 @@
+{
+  description : "Divide by three circuit. Clock input frquency is divided by 3",
+  inputs : {
+    clockin : false
+  }
+  outputs : {
+    out : dtype2.q
+  }
+  components : {
+    dtype1 : {
+      type : dtype,
+      inputs : {
+        d : dtype2.q,
+        clock : inputs.clockin,
+      }
+    }
+    dtype2 : {
+      type : dtype,
+      inputs : {
+        d : nor,
+        clock : inputs.clockin,
+      }
+    }
+    nor : {
+      type : nor,
+      inputs : {
+        in1 : dtype1.q,
+        in2 : dtype2.q
+      }
+    }
+  }
+}

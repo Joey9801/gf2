@@ -24,6 +24,7 @@ Network::~Network() {}
 unsigned int Network::addComponent(std::string type) {
   if(componentConstructor.find(type) == componentConstructor.end()) {
     //TODO report an error
+    throw 1;
     return 0;
   }
 
@@ -76,6 +77,7 @@ void Network::configureComponent(unsigned int componentId, std::string key, std:
 void Network::renameComponent(std::string oldName, std::string newName) {
   if(_componentNames.find(oldName) == _componentNames.end()) {
     //TODO raise some sort of error
+    throw 1;
     return;
   }
 
@@ -106,6 +108,7 @@ unsigned int Network::findComponent(unsigned int componentId) {
 unsigned int Network::findComponent(std::string componentName) {
   if(_componentNames.find(componentName) == _componentNames.end()) {
     //TODO raise some sort of error
+    throw 1;
     return ~0;
   }
   unsigned int componentId = _componentNames[componentName];
@@ -345,6 +348,7 @@ void RootNetwork::setInput(unsigned int inputId, bool value) {
 void RootNetwork::setInput(std::string inputName, bool value) {
   if(_pinInMap.find(inputName) == _pinInMap.end()) {
     // TODO raise an error
+    throw 1;
     return;
   }
   unsigned int inputId = _pinInMap[inputName];
@@ -359,6 +363,7 @@ bool RootNetwork::getOutput(unsigned int outputId) {
 bool RootNetwork::getOutput(std::string outputName) {
   if(_pinOutMap.find(outputName) == _pinOutMap.end() ) {
     // TODO raise an error
+    throw 1;
     return false;
   }
   unsigned int outputId = _pinOutMap[outputName];

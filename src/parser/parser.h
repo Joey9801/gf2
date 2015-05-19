@@ -2,12 +2,16 @@
 #define PARSER_H_
 
 #include <string>
+#include <vector>
+#include <fstream>
 #include <istream>
+#include <iostream>
 #include <cctype>
 
 #include "../structures/definition.h"
 
 namespace Parser {
+  const std::vector<char> delimiters = {'{', '}', ':', ','};
   Definition * parseDefinition(std::string filepath);
 
   //Reads a dict from the first character after the opening brace
@@ -20,8 +24,7 @@ namespace Parser {
   //Reads an identifier
   std::string parseValue(std::istream& stream);
 
-  //Does what it says on the tin
-  void skipWhitespace(std::istream& stream);
+  bool isdelim(char c);
 }
 
 #endif

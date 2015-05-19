@@ -3,7 +3,6 @@
     inputs : {
         set : true,
         reset : true
-        asdf : what
     },
     outputs : {
         q : gate_1,

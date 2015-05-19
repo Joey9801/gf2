@@ -18,10 +18,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   menuFile->Append(wxID_EXIT);
   wxMenu *menuHelp = new wxMenu;
   menuHelp->Append(wxID_ABOUT);
+  wxMenu *menuSim = new wxMenu;
+  menuSim->Append(ID_StartSimulation, "&Run Simulation", "Start the Simulation");
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
   menuBar->Append(menuHelp, "&Help");
+  menuBar->Append(menuSim, "&Simulation");
   SetMenuBar(menuBar);
+
   CreateStatusBar();
   SetStatusText("");
 

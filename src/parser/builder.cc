@@ -1,7 +1,5 @@
 #include "builder.h"
 
-#include <iostream>
-
 namespace Builder {
   Network * build(std::string filepath) {
     Definition * def = Parser::parseDefinition(filepath);
@@ -63,7 +61,7 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        net->addInput( it->first );
+        net->addOutput( it->first );
       }
     }
     else {
@@ -106,7 +104,7 @@ namespace Builder {
           it != def->pairs["outputs"]->pairs.end();
           it++) {
         std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
-        net->connect("outputs", it->first, dest.first, dest.second);
+        net->connect(dest.first, dest.second, "outputs", it->first);
       }
     }
 

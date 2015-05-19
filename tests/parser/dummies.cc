@@ -15,7 +15,7 @@ namespace Dummy {
     }
     for(unsigned int i=0; i<5; i++) {
       s1.str("");
-      s1 << "i" << i;
+      s1 << "o" << i;
       s2.str("");
       s2 << "gate" << i << ".out";
       def->pairs["outputs"]->pairs[s1.str()] = new Definition(s2.str());

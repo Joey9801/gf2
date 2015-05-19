@@ -11,9 +11,11 @@ character = letter | digit | "_" ;
 
 identifier = character, { character } ;
 value = identifier, [ ".", identifier ] ;
-string = "\"", { character | whitespace }, "\"";
+string = "\"", { character | whitespace | punctuation - "\""}, "\"";
 
 pair  = (identifier | string), ":", (value | dict | string);
 dict = "{", [pair, {",", pair}], "}";
 
-comment = "/*", { character | whitespace }, "*/" ;
+comment = "/*", { character | whitespace | punctuation }, "*/" ;
+
+grammar = dict; (* Definition file has exactly one root dict *)

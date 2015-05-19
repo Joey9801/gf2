@@ -43,6 +43,12 @@
     For unit testing, we are using a framework called Catch\footnote{https://github.com/philsquared/Catch}. Catch is a header only library which supports a Behavior Driven Development style (Given-When-Then).
 
 \section{Teamwork planning}
+    The work is roughly divided as follows:
+    \begin{description}
+        \item[Joe Roberts] Simulator and network builder
+        \item[Duncan Barber] Definition parser
+        \item[Daniel Potter] GUI
+    \end{description}
 
 \section{File format}
     \subsection{Overview and motivations}
@@ -79,7 +85,7 @@
         \end{table}
 
     \subsection{Possible semantic errors}
-        Due to the simplicity of the syntax, most of the possible errors which can occur are semantic errors. The errors which follow are divided roughly into two catagories, recoverable and unrecoverable. Unrecoverable here means that there is resulting ambiguity in the definition, or that the definition does not have meaning. Recoverable errors are still technically errors, though it is still possible to extract meaning from the definition and simulate it. All semantic errors present will be reported where possible. All semantic errors will be discovered during the Network construction, after the file is successfully parsed.
+        Due to the simplicity of the syntax, most of the possible errors which can occur are semantic errors. The errors which follow are divided roughly into two catagories, recoverable and unrecoverable. Unrecoverable here means that there is resulting ambiguity in the definition, or that the definition does not have meaning. Recoverable errors are still technically errors, though it is still possible to extract meaning from the definition and simulate it. All semantic errors present will be reported where possible. All semantic errors will be discovered during the Network construction, after the file is successfully parsed. The possible semantic errors are contained in Table \ref{tab:semantic-errors}.
 
         \begin{table}[h]
             \centering
@@ -105,6 +111,8 @@
                 17     & A config\_param is not included in a component which takes it            & Depends on the specific component.                   \\
                 18     & An unrecognised config\_param is included                                & Recoverable - ignore it                              \\ \bottomrule
             \end{tabular}
+            \caption{Possible semantic errors}
+            \label{tab:semantic-errors}
         \end{table}
 
         The handling of many of these errors is built into the rewritten simulator, such as unconnected inputs and invalid input/output/component names. Of the above the most difficult to detect will be an include loop, though this shouldn't be too difficult with a depth first search through the include tree.

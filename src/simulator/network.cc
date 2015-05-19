@@ -14,8 +14,8 @@ Network::Network(void) :
   _components.push_back( (BaseComponent*)_inputDummy );
   _components.push_back( (BaseComponent*)_outputDummy );
 
-  _componentNames["input"] = 0;
-  _componentNames["output"] = 1;
+  _componentNames["inputs"] = 0;
+  _componentNames["outputs"] = 1;
 }
 
 Network::~Network() {}

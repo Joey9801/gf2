@@ -66,7 +66,7 @@
     \verbatiminput{def.schema}
 
     \subsection{Possible syntax errors}
-	    The table below gives some examples of syntax errors which will have to be safely handled by the programme. All syntax errors will be unrecoverable, and hence the user will have to be informed of the error.
+	    The table below gives some examples of syntax errors which will have to be safely handled by the programme. All syntax errors will be unrecoverable, and hence the user will have to be informed of the error. The possible syntax errors are contained in Table \ref{tab:syntax-errors}.
 
 		\begin{table}[h]
             \centering
@@ -83,6 +83,8 @@
 				8      & Missing end of many-line comment due to end of file                      \\
 				9      & More than one full-stop in a value                                       \\ \bottomrule
             \end{tabular}
+			\caption{Possible syntax errors}
+            \label{tab:syntax-errors}
         \end{table}
 
     \subsection{Possible semantic errors}

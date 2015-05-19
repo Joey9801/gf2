@@ -8,7 +8,7 @@
 #include <wx/treectrl.h>
 #include <wx/sizer.h>
 
-#include "../simulator/network.h"
+#include "../structures/nodetree.h"
 
 class NetworkView: public wxPanel
 {
@@ -20,8 +20,9 @@ public:
 
   wxTreeCtrl *_treectrl;
 private:
-  Network *_network;
-  //wxDECLARE_EVENT_TABLE();
+  void displayNetwork();
+  
+  NodeTreeBase *_network;
 };
 
 #endif /*networkview.h*/

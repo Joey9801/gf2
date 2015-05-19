@@ -16,7 +16,18 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
   SetSizer(nvsizer);
 }
 
-void NetworkView::loadNetwork(Network *network)
+void NetworkView::loadNetwork(NodeTreeBase *network)
 {
   _network = network;
 }
+
+void NetworkView::displayNetwork()
+{
+  _treectrl->DeleteAllItems;
+  _treectrl->AddRoot(_network.nickname);
+
+  //add nodes for all components and subnetworks in network
+  for(int i = 0; i < _network.children.size(), i++)
+}
+
+

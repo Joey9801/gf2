@@ -3,9 +3,8 @@
 #include <vector>
 using namespace std;
 
-vector<string> digitalplot(const vector<bool> &data)
+vector<string> digitalplot(int id, string label, const vector<bool> &data)
 {
-  vector<string> plot(5, "");
   for(int i = 0; i < data.size()-1; i++) {
     if(data[i]==true and data[i+1]==true){ 
       plot[0].append("\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80");
@@ -38,7 +37,7 @@ int main()
 {
   bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
   vector<bool> data (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
-  vector<string> plot = digitalplot(data);
+  vector<string> plot = digitalplot(1, "Random Plot", data);
   for(int i = 0; i < plot.size(); i++) {
         cout << plot[i] << endl; 
   }

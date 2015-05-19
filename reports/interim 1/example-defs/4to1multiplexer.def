@@ -1,0 +1,69 @@
+{
+  description : "4 lines to 1 line multiplexer (2 bit control)",
+  inputs : {
+    linein0 : false
+    linein1 : false
+    linein2 : false
+    linein3 : false
+    control0 : false
+    control1 : false
+  }
+  outputs : {
+    lineout : orgate
+  }
+  components : {
+    notcontrol0 : {
+      type : not,
+      inputs : {
+        in : inputs.control1
+      }
+    }
+    notcontrol1 : {
+      type : not,
+      inputs : {
+        in : inputs.control2
+      }
+    }
+    and1 : {
+      type : and,
+      inputs : {
+        in1 : linein0,
+        in2 : notcontrol0,
+        in3 : notcontrol1,
+      }
+    }
+    and2 : {
+      type : and,
+      inputs : {
+        in1 : linein1,
+        in2 : inputs.control0,
+        in3 : notcontrol1,
+      }
+    }
+    and3 : {
+      type : and,
+      inputs : {
+        in1 : linein2,
+        in2 : notcontrol0,
+        in3 : inputs.control1,
+      }
+    }
+    and4 : {
+      type : and,
+      inputs : {
+        in1 : linein3,
+        in2 : inputs.control0,
+        in3 : inputs.control1,
+      }
+    }
+    orgate : {
+      type : or,
+      inputs : {
+        in1 : and1,
+        in2 : and2,
+        in3 : and3,
+        in4 : and4,
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  description : "A standard JK Flip Flop made from NAND gates",
+  inputs : {
+    J : false,
+    K : false,
+    clock : false
+  }
+  outputs : {
+    Q : nand3,
+    Qbar : nand4,
+  }
+  components : {
+    nand1 : {
+      type : NAND,
+      inputs : {
+        i1 : inputs.J,
+        i2 : inputs.clock,
+        i3 : nand3
+      }
+    }
+    nand2 : {
+      type : NAND,
+      inputs : {
+        i1 : inputs.K,
+        i2 : inputs.clock,
+        i3 : nand4
+      }
+    }
+    nand3 : {
+      type : NAND,
+      inputs : {
+        i1 : nand4,
+        i2 : nand1,
+      }
+    }
+    nand4 : {
+      type : NAND,
+      inputs : {
+        i1 : nand3,
+        i2 : nand2,
+      }
+    }
+  }
+}

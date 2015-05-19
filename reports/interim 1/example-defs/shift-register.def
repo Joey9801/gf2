@@ -1,0 +1,50 @@
+{
+    description : "A 4 bit shift register",
+
+    inputs : {
+        data_in : false,
+        clock : false,
+        clear : false
+    },
+    outputs : {
+        a : one.q, //If the serial data coming in is lsb first, 'a' is the msb.
+        b : two.q,
+        c : three.q,
+        d : four.q
+    },
+
+    components : {
+        one : {
+            type : dtype,
+            inputs : {
+                d : inputs.data_in,
+                clock : inputs.clock,
+                r : inputs.clear
+            }
+        },
+        two : {
+            type : dtype,
+            inputs : {
+                d : one.q,
+                clock : inputs.clock,
+                r : inputs.clear
+            }
+        },
+        three : {
+            type : dtype,
+            inputs : {
+                d : two.q,
+                clock : inputs.clock,
+                r : inputs.clear
+            }
+        },
+        four : {
+            type : dtype,
+            inputs : {
+                d : three.q,
+                clock : inputs.clock,
+                r : inputs.clear
+            }
+        }
+    }
+}

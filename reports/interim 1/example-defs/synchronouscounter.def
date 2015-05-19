@@ -1,0 +1,64 @@
+{
+  description : "A 4-bit synchronous counter, which avoids the ripple effect.",
+  includes : {
+    jkflipflop.def : JK
+  },
+  inputs : {
+    clock : false
+  },
+  outputs : {
+    q0 : jk1.Q,
+    q1 : jk2.Q,
+    q2 : jk3.Q,
+    q3 : jk4.Q
+  },
+  components : {
+    jk1 : {
+      type : includes.JK,
+      inputs : {
+        J : constants.true,
+        K : constants.true,
+        clock : inputs.clock
+      }
+    }
+    jk2 : {
+      type : includes.JK,
+      inputs : {
+        J : jk1.q,
+        K : jk1.q,
+        clock : inputs.clock
+      }
+    }
+    jk3 : {
+      type : includes.JK,
+      inputs : {
+        J : and1,
+        K : and1,
+        clock : inputs.clock
+      }
+    }
+    jk4 : {
+      type : includes.JK,
+      inputs : {
+        J : and2,
+        K : and2,
+        clock : inputs.clock
+      }
+    }
+    and1 : {
+      type : and,
+      inputs : {
+        in1 : jk1.q,
+        in2 : jk2.q
+      }
+    }
+    and2 : {
+      type : and,
+      inputs : {
+        J : and1,
+        K : jk3.q,
+        clock : inputs.clock
+      }
+    }
+  }
+}

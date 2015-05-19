@@ -126,7 +126,6 @@
         \begin{figure}[H]
             \centering
             \includegraphics[width=.7\textwidth]{images/jkflipflop_schematic}
-            \caption{J-K Flip-flop Schematic}
         \end{figure}
 
     \subsection{Synchronous counter}
@@ -134,7 +133,6 @@
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{images/synchronouscounter_schematic}
-            \caption{Synchronous Counter Schematic}
         \end{figure}
 
 

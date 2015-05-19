@@ -38,7 +38,7 @@
 \label{sec:general}
     We have chosen not to use the provided simulator source, in favour of our own. This provides several advantages, most prominent of which is that a network of components is now polymorphic with the base component, such that they can be nested within each other to an arbitrary depth. This is a key feature of the simulator and related file format, as repetetive blocks of logic can be written once and included many times.
 
-    We have also chosen to break up the file parsing into two distinct stages; one which interprets the file into an internal representation but extracts no meaning, and one which takes this internal representation and builds a network. This is a good idea since it keeps the logically separate tasks of parsing and construction apart. It also allows the builder to manage recursive calls to the parser to process included files correctly.
+    We have also chosen to break up the file parsing into two distinct stages; one which interprets the file into an interal representation but extracts no meaning, and one which takes this internal representation and builds a network. This is a good idea since it keeps the logically separate tasks of parsing and construction apart. It also allows the builder to manage recursive calls to the parser to process included files correctly.
 
     For unit testing, we are using a framework called Catch\footnote{https://github.com/philsquared/Catch}. Catch is a header only library which supports a Behavior Driven Development style (Given-When-Then).
 
@@ -59,7 +59,7 @@
     The schema takes the form of a pseudo-definition file. Square brackets indicate that a field is optional, and regular parentheses contain possibilities for a field.
     \verbatiminput{def.schema}
 
-    \subsection{Possible syntax errors}
+    \subsection{Possibly syntax errors}
 
     \subsection{Possible semantic errors}
         Due to the simplicity of the syntax, most of the possible errors which can occur are semantic errors. The errors which follow are divided roughly into two catagories, recoverable and unrecoverable. Unrecoverable here means that there is resulting ambiguity in the definition, or that the definition does not have meaning. Recoverable errors are still technically errors, though it is still possible to extract meaning from the definition and simulate it. All semantic errors present will be reported where possible. All semantic errors will be discovered during the Network construction, after the file is successfully parsed.
@@ -89,6 +89,23 @@
         \end{table}
 
         The handling of many of these errors is built into the rewritten simulator, such as unconnected inputs and invalid input/output/component names. Of the above the most difficult to detect will be an include loop, though this shouldn't be too difficult with a depth first search through the include tree.
+
+\section{Example definition files}
+    \subsection{JK flip flop}
+        \verbatiminput{example-defs/jkflipflop.def}
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=.7\textwidth]{images/jkflipflop_schematic}
+        \end{figure}
+
+    \subsection{Synchronous counter}
+        \verbatiminput{example-defs/synchronouscounter.def}
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{images/synchronouscounter_schematic}
+        \end{figure}
+
 
 \null
 \vfill

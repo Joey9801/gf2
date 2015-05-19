@@ -10,8 +10,6 @@
 #include <vector>
 #include <string>
 
-#define wxUSE_UNICODE 1
-
 using namespace std;
 
 class OutputPlot: public wxPanel

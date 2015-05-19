@@ -9,7 +9,7 @@ namespace Parser {
     return def;
   }
 
-  Definition * parseDict(std::ifstream& stream) {
+  Definition * parseDict(std::istream& stream) {
     Definition * def = new Definition(Dict);
 
     //std::pair<std::string, Definition*> pair;
@@ -20,7 +20,7 @@ namespace Parser {
     return def;
   }
 
-  std::pair<std::string, Definition*> parsePair(std::ifstream& stream) {
+  std::pair<std::string, Definition*> parsePair(std::istream& stream) {
     std::pair<std::string, Definition*> pair;
 
     skipWhitespace(stream);
@@ -35,7 +35,7 @@ namespace Parser {
     return pair;
   }
 
-  std::string parseValue(std::ifstream& stream) {
+  std::string parseValue(std::istream& stream) {
     //Reads a string in until one of the following characters are met:
     //   } : ,
     //If the first character is a quote, spaces are allowed.
@@ -48,7 +48,7 @@ namespace Parser {
     return s;
   }
 
-  void skipWhitespace(std::ifstream& stream) {
+  void skipWhitespace(std::istream& stream) {
     while( isspace(stream.get()) );
     stream.unget();
   }

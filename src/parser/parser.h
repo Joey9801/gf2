@@ -2,7 +2,7 @@
 #define PARSER_H_
 
 #include <string>
-#include <fstream>
+#include <istream>
 #include <cctype>
 
 #include "../structures/definition.h"
@@ -12,16 +12,16 @@ namespace Parser {
 
   //Reads a dict from the first character after the opening brace
   //until the closing brace
-  Definition * parseDict(std::ifstream& stream);
+  Definition * parseDict(std::istream& stream);
 
   //Reads a pair. Returns the stream with the trailing comma/brace intact
-  std::pair<std::string, Definition*> parsePair(std::ifstream& stream);
+  std::pair<std::string, Definition*> parsePair(std::istream& stream);
 
   //Reads an identifier
-  std::string parseValue(std::ifstream& stream);
+  std::string parseValue(std::istream& stream);
 
   //Does what it says on the tin
-  void skipWhitespace(std::ifstream& stream);
+  void skipWhitespace(std::istream& stream);
 }
 
 #endif

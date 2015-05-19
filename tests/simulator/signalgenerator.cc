@@ -1,7 +1,7 @@
 #include <catch.h>
 
-#include "../src/simulator/basecomponent.h"
-#include "../src/simulator/signalgenerator.h"
+#include "../../src/simulator/basecomponent.h"
+#include "../../src/simulator/signalgenerator.h"
 
 SCENARIO("SignalGenerator works as expected", "[signalgenerator]") {
   GIVEN("A newly created SignalGenerator") {

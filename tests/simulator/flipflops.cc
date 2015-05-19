@@ -2,7 +2,7 @@
 
 #include <catch.h>
 
-#include "../src/simulator/flipflops.h"
+#include "../../src/simulator/flipflops.h"
 
 TEST_CASE("D-type flip flop works as expected") {
   GIVEN("A D-Type flip flop") {

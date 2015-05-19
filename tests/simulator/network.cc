@@ -1,6 +1,6 @@
 #include <catch.h>
 
-#include "../src/simulator/network.h"
+#include "../../src/simulator/network.h"
 
 SCENARIO("Components can be added, accessed, and renamed in a Network", "[network]") {
   GIVEN("An empty network") {

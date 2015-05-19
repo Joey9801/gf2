@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "../src/simulator/boolgates.h"
+#include "../../src/simulator/boolgates.h"
 
 SCENARIO("Inputs to bool gates can be assigned numerical id's", "[boolgates]") {
   GIVEN("A boolgate derived from BaseBoolgate") {

@@ -1,7 +1,7 @@
 #include "signalgenerator.h"
 
 SignalGenerator::SignalGenerator() :
-  BaseComponent("Signal Generator", 0, 1)
+  BaseComponent("siggen", 0, 1)
 {
   _pinOutMap["out"] = 0;
   _data = std::vector<bool>(1, false);
@@ -44,4 +44,13 @@ void SignalGenerator::configure(std::string key, std::string value) {
       std::istringstream ( value ) >> _period;
   }
   return;
+}
+
+BaseComponent * SignalGenerator::clone(void) {
+  SignalGenerator * c = new SignalGenerator();
+
+  c->_period = _period;
+  c->_data = _data;
+
+  return (BaseComponent*)c;
 }

@@ -5,7 +5,8 @@ using namespace std;
 
 vector<string> digitalplot(int id, string label, const vector<bool> &data)
 {
-  for(int i = 0; i < data.size()-1; i++) {
+  vector<string> plot(5, "");
+  for(unsigned int i = 0; i < data.size()-1; i++) {
     if(data[i]==true and data[i+1]==true){ 
       plot[0].append("\xe2\x94\x80\xe2\x94\x80\xe2\x94\x80");
       plot[1].append("   ");
@@ -33,13 +34,14 @@ vector<string> digitalplot(int id, string label, const vector<bool> &data)
   return plot;
 }
 
+/*
 int main()
 {
   bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
   vector<bool> data (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
   vector<string> plot = digitalplot(1, "Random Plot", data);
-  for(int i = 0; i < plot.size(); i++) {
+  for(unsigned int i = 0; i < plot.size(); i++) {
         cout << plot[i] << endl; 
   }
 }
-
+*/

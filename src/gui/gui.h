@@ -26,11 +26,12 @@ class MyFrame: public wxFrame
 public:
   MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
-  // The Path to the network file we have open
-  wxString CurrentNetfilePath;
 private:
   NetworkView *_netview;
   ComponentView *_compview;
+  OutputPlot *_outputplot;
+
+  wxString CurrentNetfilePath; // The Path to the network file we have open
 
   void OnLoadNetwork(wxCommandEvent& event);
   void OnExit(wxCommandEvent& event);
@@ -40,7 +41,8 @@ private:
 
 enum
 {
-  ID_LoadNetwork = 1
+  ID_LoadNetwork = 1,
+  ID_StartSimulation
 };
 
 #endif /*gui.h*/

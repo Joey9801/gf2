@@ -30,9 +30,14 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   SetSizer(cvsizer);
 }
 
-void ComponentView::selectComponent(BaseComponent *component)
+void ComponentView::selectComponent(NodeTreeBase *component)
 {
   _component = component;
+}
+
+void showComponent()
+{
+  
 }
 
 void ComponentView::SetComponent(wxString name)

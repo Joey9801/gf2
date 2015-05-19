@@ -49,13 +49,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   splittermain->SetSizer(sizertop);
   sizertop->SetSizeHints(this);
 
-  OutputPlot *outputplot = new OutputPlot(splittermain, wxID_ANY);
+  _outputplot = new OutputPlot(splittermain, wxID_ANY);
 
   wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
   sizermain->Add(splittermain, 1,wxEXPAND,0);
   splittermain->SetSashGravity(0.5); //both panes in sw resize equally
   splittermain->SetMinimumPaneSize(20); // Smallest size of pane allowed
-  splittermain->SplitHorizontally(splittertop, outputplot);
+  splittermain->SplitHorizontally(splittertop, _outputplot);
   this->SetSizer(sizermain);
   sizermain->SetSizeHints(this);
 
@@ -66,6 +66,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+
+  bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
+  vector<bool> data (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
+  _outputplot->plotData("TESTPLOT", data);
 }
 
 void MyFrame::OnCompSelect(wxTreeEvent& event)

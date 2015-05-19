@@ -9,7 +9,7 @@
 #include <wx/treectrl.h>
 #include <wx/sizer.h>
 
-#include "../simulator/basecomponent.h"
+#include "../structures/nodetree.h"
 
 class ComponentView: public wxPanel
 {
@@ -17,13 +17,13 @@ public:
   ComponentView(wxWindow *parent, wxWindowID id=wxID_ANY);
   virtual ~ComponentView(){};
   
-  void selectComponent(BaseComponent *component);
+  void selectComponent(NodeTreeBase *component);
 
   void SetComponent(wxString name);
 
   wxListView *m_listview;
 private:
-  BaseComponent *_component;
+  NodeTreeBase *_component;
 };
 
 #endif /*componentview.h*/

@@ -16,11 +16,12 @@ public:
   NetworkView(wxWindow *parent, wxWindowID id=wxID_ANY);
   virtual ~NetworkView(){};
   
-  void loadNetwork(Network *network);
+  void loadNetwork(NodeTreeBase *network);
 
   wxTreeCtrl *_treectrl;
 private:
   void displayNetwork();
+  void recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node);
   
   NodeTreeBase *_network;
 };

@@ -1,15 +1,9 @@
 #include "networkview.h"
 
-//wxBEGIN_EVENT_TABLE(NetworkView, wxFrame)
-//wxEND_EVENT_TABLE()
-
 NetworkView::NetworkView(wxWindow *parent, wxWindowID id) 
   : wxPanel(parent, id)
 {
   _treectrl = new wxTreeCtrl(this, -1);
-  _treectrl->AddRoot(wxT("Network"));
-  _treectrl->AppendItem(_treectrl->GetRootItem(), wxT("Component 1"));
-  _treectrl->AppendItem(_treectrl->GetRootItem(), wxT("Component 2"));
 
   wxBoxSizer *nvsizer = new wxBoxSizer(wxVERTICAL);
   nvsizer->Add(_treectrl, 1,wxEXPAND,0);
@@ -19,15 +13,28 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
 void NetworkView::loadNetwork(NodeTreeBase *network)
 {
   _network = network;
+  displayNetwork();
 }
 
 void NetworkView::displayNetwork()
 {
-  _treectrl->DeleteAllItems;
-  _treectrl->AddRoot(_network.nickname);
-
-  //add nodes for all components and subnetworks in network
-  for(int i = 0; i < _network.children.size(), i++)
+  _treectrl->DeleteAllItems();
+  recursive_addNode(0, _network);
 }
 
-
+void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node)
+{
+  if (node->type == NodeType::Gate){
+    _treectrl->AppendItem(parentid, node->nickname);
+  }else{
+    wxTreeItemId nodeid;
+    if(node->type == NodeType::Base){
+      nodeid = _treectrl->AddRoot("Network");
+    }else{
+      nodeid = _treectrl->AppendItem(parentid, node->nickname);
+    }
+    for (unsigned int i = 0; i < node->children.size(); i++){
+      recursive_addNode(nodeid, node->children[i]);
+    }
+  }
+}

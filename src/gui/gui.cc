@@ -1,4 +1,5 @@
 #include "gui.h"
+#include "../structures/nodetree.h"
 
 bool MyApp::OnInit()
 {
@@ -67,9 +68,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
 
-  bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
-  vector<bool> data (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
-  _outputplot->plotData("TESTPLOT", data);
+  //bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
+  //vector<bool> data (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
+  //_outputplot->AddPlotTrace("TESTPLOT", data);
 }
 
 void MyFrame::OnCompSelect(wxTreeEvent& event)

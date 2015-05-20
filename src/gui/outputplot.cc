@@ -2,7 +2,7 @@
 #include <iostream>
 
 OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
-  :   wxPanel(parent, id)
+  :   wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL)
 {
   //make some fake command line args for glutinit
   char a  =  ' '; char *b = &a; char **tmp1 = &b;
@@ -13,6 +13,8 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   wxBoxSizer *nvsizer = new wxBoxSizer(wxVERTICAL);
   nvsizer->Add(_plotcanvas, 1,wxEXPAND,0);
   SetSizer(nvsizer);
+  SetScrollRate(10, 10);
+  SetAutoLayout(true);
 }
 
 int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
@@ -26,7 +28,6 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
 
   Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
   Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
-
   
   bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true};
   vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
@@ -51,6 +52,8 @@ void MyGLCanvas::Render()
   float rowheight = GetSize().y / _monitortraces.size();
   float plotheight = 0.8*rowheight, bitwidth = 30.0;
   float yzero  = 10.0, xzero = 100.0;
+  SetMinSize(wxSize(_monitortraces.begin()->second.size()*bitwidth + 110, -1));
+
   typedef map<wxString, vector<bool>>::iterator it_type;
   for(it_type it=_monitortraces.begin(); it!=_monitortraces.end(); it++) {
     glColor3f(0.0, 0.0, 1.0);

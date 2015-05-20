@@ -8,6 +8,7 @@
 
 #include <GL/glut.h>
 #include <wx/glcanvas.h>
+#include <wx/scrolwin.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -28,7 +29,7 @@ class MyGLCanvas: public wxGLCanvas
   map<wxString, vector<bool>> _monitortraces;
 };
 
-class OutputPlot: public wxPanel
+class OutputPlot: public wxScrolledWindow
 {
 public:
   OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);

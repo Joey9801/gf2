@@ -1,8 +1,16 @@
+#include <plog/Log.h>
+#include <plog/Appenders/ConsoleAppender.h>
+
 #include "gui.h"
 #include "../structures/nodetree.h"
 
 bool MyApp::OnInit()
 {
+  //Initialise the logger
+  static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
+  plog::init(plog::debug, &consoleAppender);
+
+  //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(50, 50), wxSize(800, 600) );
   frame->Show( true );
   return true;

@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#include <plog/Log.h>
+
 #include "../structures/nodetree.h"
 
 typedef std::map<std::string, unsigned int> pin_map;

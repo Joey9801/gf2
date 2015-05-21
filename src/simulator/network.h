@@ -5,6 +5,8 @@
 #include <vector>
 #include <sstream>
 
+#include <plog/Log.h>
+
 #include "basecomponent.h"
 #include "dummyio.h"
 #include "componentconstructors.h"
@@ -86,6 +88,7 @@ class RootNetwork : public Network
     RootNetwork();
     ~RootNetwork();
 
+    using Network::step;
     void step(void);
 
     unsigned int addInput(void);

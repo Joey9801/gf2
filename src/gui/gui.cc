@@ -99,8 +99,11 @@ void MyFrame::OnExit(wxCommandEvent& event) {
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event) {
-  wxMessageBox( "This is a logic simulator developed for project GF2 at CUED by\
-      Joe Roberts, Duncan Barber and Daniel Potter",
+  wxMessageBox(
+
+"This is a logic simulator developed for project GF2 at CUED by\n\
+           Joe Roberts, Duncan Barber and Daniel Potter",
+
       "About this program", wxOK | wxICON_INFORMATION );
 
   return;

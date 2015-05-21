@@ -4,15 +4,15 @@
 #include "gui.h"
 #include "../structures/nodetree.h"
 
-bool MyApp::OnInit()
-{
+bool MyApp::OnInit() {
   //Initialise the logger
   static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
   plog::init(plog::debug, &consoleAppender);
 
   //Create the main window
-  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(50, 50), wxSize(800, 600) );
+  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
   frame->Show( true );
+
   return true;
 }
 
@@ -22,13 +22,17 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Create menus and attach them to menu bar
   wxMenu *menuFile = new wxMenu;
   menuFile->Append(ID_LoadNetwork, "&Open Network File\tCtrl-O",
-  "Load a file defining the logic network");
+    "Load a file defining the logic network");
+
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
+
   wxMenu *menuHelp = new wxMenu;
   menuHelp->Append(wxID_ABOUT);
+
   wxMenu *menuSim = new wxMenu;
   menuSim->Append(ID_StartSimulation, "&Run Simulation", "Start the Simulation");
+
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
   menuBar->Append(menuHelp, "&Help");
@@ -52,7 +56,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   sizertop->Add(splittertop, 1,wxEXPAND,0);
 
   _netview = new NetworkView(splittertop, wxID_ANY);
-  _compview = new ComponentView(splittertop, wxID_ANY);  
+  _compview = new ComponentView(splittertop, wxID_ANY);
 
   splittertop->SplitVertically(_netview, _compview);
   splittermain->SetSizer(sizertop);
@@ -81,36 +85,40 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //_outputplot->AddPlotTrace("TESTPLOT", data);
 }
 
-void MyFrame::OnCompSelect(wxTreeEvent& event)
-{
+void MyFrame::OnCompSelect(wxTreeEvent& event) {
   wxString compname = _netview->_treectrl->GetItemText(event.GetItem());
   _compview->SetComponent(compname);
+
+  return;
 }
 
-void MyFrame::OnExit(wxCommandEvent& event)
-{
+void MyFrame::OnExit(wxCommandEvent& event) {
   Close( true );
+
+  return;
 }
 
-void MyFrame::OnAbout(wxCommandEvent& event)
-{
+void MyFrame::OnAbout(wxCommandEvent& event) {
   wxMessageBox( "This is a logic simulator developed for project GF2 at CUED by\
       Joe Roberts, Duncan Barber and Daniel Potter",
       "About this program", wxOK | wxICON_INFORMATION );
+
+  return;
 }
 
-void MyFrame::OnLoadNetwork(wxCommandEvent& event)
-{
+void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   wxFileDialog* OpenDialog = new wxFileDialog(
-      this, _("Choose a file to open"), wxEmptyString, wxEmptyString, 
+      this, _("Choose a file to open"), wxEmptyString, wxEmptyString,
       _("Network definition files (*.def)|*.def"),
       wxFD_OPEN, wxDefaultPosition);
 
   // Creates a "open file" dialog
-  if (OpenDialog->ShowModal() == wxID_OK){ // if the user click "Open" instead of "Cancel"
+  if (OpenDialog->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
   }
 
   // Clean up after ourselves
   OpenDialog->Destroy();
+
+  return;
 }

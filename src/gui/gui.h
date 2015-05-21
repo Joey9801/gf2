@@ -12,7 +12,10 @@
 #include "componentview.h"
 #include "outputplot.h"
 
-//#include "../simulator/network.h"
+enum {
+  ID_LoadNetwork = 1,
+  ID_StartSimulation
+};
 
 class MyApp: public wxApp
 {
@@ -23,26 +26,20 @@ class MyApp: public wxApp
 
 class MyFrame: public wxFrame
 {
-public:
-  MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+  public:
+    MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
-private:
-  NetworkView *_netview;
-  ComponentView *_compview;
-  OutputPlot *_outputplot;
+  private:
+    NetworkView *_netview;
+    ComponentView *_compview;
+    OutputPlot *_outputplot;
 
-  wxString CurrentNetfilePath; // The Path to the network file we have open
+    wxString CurrentNetfilePath; // The Path to the network file we have open
 
-  void OnLoadNetwork(wxCommandEvent& event);
-  void OnExit(wxCommandEvent& event);
-  void OnAbout(wxCommandEvent& event);
-  void OnCompSelect(wxTreeEvent& event);
-};
-
-enum
-{
-  ID_LoadNetwork = 1,
-  ID_StartSimulation
+    void OnLoadNetwork(wxCommandEvent& event);
+    void OnExit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    void OnCompSelect(wxTreeEvent& event);
 };
 
 #endif /*gui.h*/

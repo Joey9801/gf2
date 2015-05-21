@@ -13,17 +13,18 @@
 
 class ComponentView: public wxPanel
 {
-public:
-  ComponentView(wxWindow *parent, wxWindowID id=wxID_ANY);
-  virtual ~ComponentView(){};
-  
-  void selectComponent(NodeTreeBase *component);
+  public:
+    ComponentView(wxWindow *parent, wxWindowID id=wxID_ANY);
+    virtual ~ComponentView(){};
 
-  void SetComponent(wxString name);
+    void selectComponent(NodeTreeBase *component);
 
-  wxListView *m_listview;
-private:
-  NodeTreeBase *_component;
+    void SetComponent(wxString name);
+
+    wxListView *m_listview;
+
+  private:
+    NodeTreeBase *_component;
 };
 
 #endif /*componentview.h*/

@@ -6,7 +6,8 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
 {
   // Create list view
   m_listview = new wxListView(this, -1);
-  // Add first column       
+
+  // Add first column
   wxListItem col0;
   col0.SetId(0);
   col0.SetText( _("Property") );
@@ -28,20 +29,23 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
   cvsizer->Add(m_listview, 1,wxEXPAND,0);
   SetSizer(cvsizer);
+
+  return;
 }
 
-void ComponentView::selectComponent(NodeTreeBase *component)
-{
+void ComponentView::selectComponent(NodeTreeBase *component) {
   _component = component;
+
+  return;
 }
 
-void showComponent()
-{
-  
+void showComponent() {
+  return;
 }
 
-void ComponentView::SetComponent(wxString name)
-{
+void ComponentView::SetComponent(wxString name) {
   long itemIndex = m_listview->InsertItem(0, "New Event");
   m_listview->SetItem(itemIndex, 1, name);
+
+  return;
 }

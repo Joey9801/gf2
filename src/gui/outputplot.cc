@@ -1,5 +1,7 @@
 #include "outputplot.h"
 
+int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+
 OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   :   wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL)
 {
@@ -16,17 +18,15 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   SetAutoLayout(true);
 }
 
-void OutputPlot::AddPlotTrace(string label, vector<bool> &data)
-{
+void OutputPlot::AddPlotTrace(std::string label, std::vector<bool> &data) {
   _plotcanvas->_monitortraces[wxString(label)] = data;
   _plotcanvas->Render();
-}
 
-int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+  return;
+}
 
 MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
   wxGLCanvas(parent, id, wxglcanvas_attrib_list)
-  // Constructor - initialises private variables
 {
   context = new wxGLContext(this);
   init = false;
@@ -36,18 +36,17 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
   
   bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true, 
   true, false, true, false, true, true, true, true, false, false, true};
-  vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
+  std::vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
   bool dataArray2[] = {false, false, true, false, false, true, false, true, false, false, true,
   false, false, true, false, false, true, false, true, false, false, true};
-  vector<bool> data2 (dataArray2, dataArray2 + sizeof(dataArray2) / sizeof(bool));
+  std::vector<bool> data2 (dataArray2, dataArray2 + sizeof(dataArray2) / sizeof(bool));
   _monitortraces["Plot Name"] = data1;
   _monitortraces["Really long plot name that just goes on and on and on and on."] = data2;
 
   bitwidth = 30.0;
 }
 
-void MyGLCanvas::Render()
-{
+void MyGLCanvas::Render() {
   SetCurrent(*context);
   if (!init) {
     InitGL();
@@ -65,15 +64,17 @@ void MyGLCanvas::Render()
   //draw axis line
   glColor3f(0.0, 0.0, 0.0);//axis colour
     glBegin(GL_LINE_STRIP);
-    glVertex2f(xzero, yzero*0.5); 
+    glVertex2f(xzero, yzero*0.5);
     glVertex2f(GetSize().x-5.0, yzero*0.5);
   glEnd();
+
   //draw arrowhead
   glBegin(GL_TRIANGLES);
     glVertex2f(GetSize().x-15.0, yzero*0.2);
     glVertex2f(GetSize().x-15.0, yzero*0.8);
     glVertex2f(GetSize().x-5.0, yzero*0.5);
   glEnd();
+
   //draw tickmarks
   for(float x = xzero; x<GetSize().x-15.0; x+=bitwidth){
     glBegin(GL_LINE_STRIP);
@@ -83,8 +84,9 @@ void MyGLCanvas::Render()
   }
 
   //plot all the monitortraces
-  typedef map<wxString, vector<bool>>::iterator it_type;
-  for(it_type it=_monitortraces.begin(); it!=_monitortraces.end(); it++) {
+  for(std::map<wxString, std::vector<bool>>::iterator it=_monitortraces.begin();
+      it!=_monitortraces.end();
+      it++) {
     //write labels, wrap line if longer than 9 chars
     //if there is not enough vertical space, label is truncated
     glColor3f(0.0, 0.0, 1.0);//label colour
@@ -112,11 +114,12 @@ void MyGLCanvas::Render()
   // We've been drawing to the back buffer, flush the graphics pipeline and swap the back buffer to the front
   glFlush();
   SwapBuffers();
+
+  return;
 }
 
-void MyGLCanvas::InitGL()
-  // Function to initialise the GL context
-{
+// Function to initialise the GL context
+void MyGLCanvas::InitGL() {
   int w, h;
 
   GetClientSize(&w, &h);
@@ -129,17 +132,22 @@ void MyGLCanvas::InitGL()
   glOrtho(0, w, 0, h, -1, 1); 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  return;
 }
 
-void MyGLCanvas::OnPaint(wxPaintEvent& event)
-  // Event handler for when the canvas is exposed
-{
+// Event handler for when the canvas is exposed
+void MyGLCanvas::OnPaint(wxPaintEvent& event) {
   wxPaintDC dc(this); // required for correct refreshing under MS windows
   Render();
+
+  return;
 }
 
-void MyGLCanvas::OnSize(wxSizeEvent& event)
-  // Event handler for when the canvas is resized
-{
-  init = false;; // this will force the viewport and projection matrices to be reconfigured on the next paint
+// Event handler for when the canvas is resized
+void MyGLCanvas::OnSize(wxSizeEvent& event) {
+  // this will force the viewport and projection matrices to be reconfigured on the next paint
+  init = false;
+
+  return;
 }

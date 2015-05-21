@@ -17,6 +17,7 @@ BaseComponent::BaseComponent(
   :
     _name(name)
 {
+  LOG_VERBOSE << "Name: " << name << ", numI/O: " << numInputs << "/" << numOutputs;
   _inputs.resize(numInputs);
   _outputs.resize(numOutputs);
 }
@@ -28,8 +29,11 @@ BaseComponent::~BaseComponent(void)
 void BaseComponent::renameInput(std::string oldName, std::string newName) {
   if(_pinInMap.find(oldName) == _pinInMap.end()) {
     //TODO raise an error
+    throw 1;
     return;
   }
+
+  LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
 
   unsigned int index = _pinInMap[oldName];
   _pinInMap.erase(oldName);
@@ -47,6 +51,8 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
       oldName = it->first;
   }
 
+  LOG_VERBOSE << "inputId: " << inputId << ", newName: \"" << newName << "\"";
+
   if(!oldName.empty())
     _pinInMap.erase(oldName);
 
@@ -58,8 +64,11 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
 void BaseComponent::renameOutput(std::string oldName, std::string newName) {
   if(_pinOutMap.find(oldName) == _pinOutMap.end()) {
     //TODO raise an error
+    throw 1;
     return;
   }
+
+  LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
 
   unsigned int index = _pinOutMap[oldName];
   _pinOutMap.erase(oldName);
@@ -77,6 +86,8 @@ void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
       oldName = it->first;
   }
 
+  LOG_VERBOSE << "outputId: " << outputId << ", newName: \"" << newName << "\"";
+
   _pinOutMap.erase(oldName);
   _pinOutMap[newName] = outputId;
 
@@ -90,6 +101,7 @@ unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
 unsigned int BaseComponent::getOutputNode(std::string  name) {
   if(_pinOutMap.find(name) == _pinOutMap.end()){
     //TODO raise an error
+    throw 1;
     return 0;
   }
   unsigned int pinOut = _pinOutMap[name];
@@ -107,6 +119,7 @@ unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
 unsigned int BaseComponent::getInputNode(std::string  name) {
   if(_pinInMap.find(name) == _pinInMap.end()){
     //TODO raise an error
+    throw 1;
     return 0;
   }
   unsigned int pinIn = _pinInMap[name];
@@ -125,6 +138,7 @@ void BaseComponent::connectOutput(unsigned int outputId, unsigned int node) {
 void BaseComponent::connectOutput(std::string name, unsigned int node) {
   if(_pinOutMap.find(name) == _pinOutMap.end()) {
     //TODO raise an error
+    throw 1;
     return;
   }
   unsigned int index = _pinOutMap[name];
@@ -139,6 +153,7 @@ void BaseComponent::connectInput(unsigned int inputId, unsigned int node) {
 void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
+    throw 1;
     return;
   }
 

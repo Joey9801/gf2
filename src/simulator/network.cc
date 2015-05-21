@@ -3,6 +3,8 @@
 Network::Network(void) :
   BaseComponent("Network", 0, 0)
 {
+  LOG_DEBUG;
+
   //Make room for the const values
   _nodesA.resize(2);
   _nodesB.resize(2);
@@ -28,6 +30,8 @@ unsigned int Network::addComponent(std::string type) {
     return 0;
   }
 
+  LOG_DEBUG << "type: " << type;
+
   unsigned int componentId = _components.size();
   BaseComponent * c = componentConstructor[type]();
   for(unsigned int i=0; i<c->numOutputs(); i++)
@@ -45,6 +49,9 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   return componentId;
 }
 unsigned int Network::addComponent(BaseComponent * c) {
+
+  LOG_DEBUG;
+
   unsigned int componentId = _components.size();
   for(unsigned int i=0; i<c->numOutputs(); i++)
     c->connectOutput(i, _nodesA.size()+i);
@@ -81,6 +88,8 @@ void Network::renameComponent(std::string oldName, std::string newName) {
     return;
   }
 
+  LOG_VERBOSE << "oldName: " << oldName << ", newName: " << newName;
+
   unsigned int componentId = _componentNames[oldName];
   _componentNames.erase(oldName);
   _componentNames[newName] = componentId;
@@ -98,6 +107,8 @@ void Network::renameComponent(unsigned int componentId, std::string newName) {
   }
   if(!oldName.empty())
     _componentNames.erase(oldName);
+
+  LOG_VERBOSE << "componentId: " << componentId << ", newName: " << newName;
 
   _componentNames[newName] = componentId;
 }
@@ -117,6 +128,8 @@ unsigned int Network::findComponent(std::string componentName) {
 
 //Returns the inputId
 unsigned int Network::addInput(void) {
+  LOG_VERBOSE;
+
   unsigned int inputId = _inputs.size();
   _inputs.push_back(0);
   _nodesA.push_back(false);
@@ -128,6 +141,8 @@ unsigned int Network::addInput(void) {
   return inputId;
 }
 unsigned int Network::addInput(std::string name) {
+  LOG_VERBOSE;
+
   unsigned int id = addInput();
   renameInput(id, name);
   _inputDummy->renameOutput(id, name);
@@ -135,6 +150,8 @@ unsigned int Network::addInput(std::string name) {
 }
 
 unsigned int Network::addOutput(void) {
+  LOG_VERBOSE;
+
   unsigned int outputId = _outputs.size();
   _outputs.push_back(0);
   _outputDummy->addInput();
@@ -142,6 +159,8 @@ unsigned int Network::addOutput(void) {
   return outputId;
 }
 unsigned int Network::addOutput(std::string name) {
+  LOG_VERBOSE;
+
   unsigned int id = addOutput();
   renameOutput(id, name);
   _outputDummy->renameInput(id, name);
@@ -149,6 +168,8 @@ unsigned int Network::addOutput(std::string name) {
 }
 
 void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
+
+  LOG_VERBOSE;
 
   _inputDummy->loadInputs(a, _nodesA, _inputs);
 

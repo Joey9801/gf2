@@ -5,6 +5,8 @@
 #include <vector>
 #include <sstream>
 
+#include <plog/Log.h>
+
 #include "basecomponent.h"
 #include "dummyio.h"
 #include "componentconstructors.h"

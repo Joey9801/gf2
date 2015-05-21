@@ -17,6 +17,7 @@ BaseComponent::BaseComponent(
   :
     _name(name)
 {
+  LOG_VERBOSE << "Name: " << name << ", numI/O: " << numInputs << "/" << numOutputs;
   _inputs.resize(numInputs);
   _outputs.resize(numOutputs);
 }
@@ -31,6 +32,8 @@ void BaseComponent::renameInput(std::string oldName, std::string newName) {
     throw 1;
     return;
   }
+
+  LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
 
   unsigned int index = _pinInMap[oldName];
   _pinInMap.erase(oldName);
@@ -48,6 +51,8 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
       oldName = it->first;
   }
 
+  LOG_VERBOSE << "inputId: " << inputId << ", newName: \"" << newName << "\"";
+
   if(!oldName.empty())
     _pinInMap.erase(oldName);
 
@@ -62,6 +67,8 @@ void BaseComponent::renameOutput(std::string oldName, std::string newName) {
     throw 1;
     return;
   }
+
+  LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
 
   unsigned int index = _pinOutMap[oldName];
   _pinOutMap.erase(oldName);
@@ -78,6 +85,8 @@ void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
     if( it->second == outputId )
       oldName = it->first;
   }
+
+  LOG_VERBOSE << "outputId: " << outputId << ", newName: \"" << newName << "\"";
 
   _pinOutMap.erase(oldName);
   _pinOutMap[newName] = outputId;

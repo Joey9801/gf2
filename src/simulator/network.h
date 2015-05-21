@@ -86,6 +86,7 @@ class RootNetwork : public Network
     RootNetwork();
     ~RootNetwork();
 
+    using Network::step;
     void step(void);
 
     unsigned int addInput(void);

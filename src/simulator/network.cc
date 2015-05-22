@@ -69,6 +69,7 @@ unsigned int Network::addComponent(BaseComponent * c, std::string name) {
 }
 
 void Network::configureComponent(std::string name, std::string key, std::string value) {
+  LOG_DEBUG;
   unsigned int componentId = findComponent(name);
   BaseComponent * c = _components[componentId];
   c->configure(key, value);

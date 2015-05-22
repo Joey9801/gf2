@@ -21,8 +21,8 @@ public:
 
   void SetComponent(wxString name);
 
-  wxListView *m_listview;
 private:
+  wxListView *_listview;
   NodeTreeBase *_component;
 };
 

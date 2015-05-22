@@ -13,13 +13,11 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 class MyGLCanvas: public wxGLCanvas
 {
 public:
   MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
-  map<wxString, vector<bool>> _monitortraces;
+  std::map<wxString, std::vector<bool>> _monitortraces;
   void Render(); // function to draw canvas contents
 private:
   wxGLContext *context;              // OpenGL rendering context
@@ -27,6 +25,7 @@ private:
   void InitGL();                     // function to initialise OpenGL context
   void OnSize(wxSizeEvent& event);   // event handler for when canvas is resized
   void OnPaint(wxPaintEvent& event); // event handler for when canvas is exposed
+  void OnMousewheel(wxMouseEvent& event); // event handler for when mousewheel zooming
 
   float rowheight, bitwidth;
 };
@@ -37,7 +36,7 @@ public:
   OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
   virtual ~OutputPlot(){};
   
-  void AddPlotTrace(string label, vector<bool> &data);
+  void AddPlotTrace(std::string label, std::vector<bool> &data);
 private:
   MyGLCanvas *_plotcanvas;
 };

@@ -5,43 +5,39 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   : wxPanel(parent, id)
 {
   // Create list view
-  m_listview = new wxListView(this, -1);
+  _listview = new wxListView(this, -1);
   // Add first column       
   wxListItem col0;
   col0.SetId(0);
   col0.SetText( _("Property") );
   col0.SetWidth(100);
-  m_listview->InsertColumn(0, col0);
+  _listview->InsertColumn(0, col0);
 
   // Add second column
   wxListItem col1;
   col1.SetId(1);
   col1.SetText( _("Value") );
   col1.SetWidth(100);
-  m_listview->InsertColumn(1, col1);
+  _listview->InsertColumn(1, col1);
 
-  long itemIndex = m_listview->InsertItem(0, "Type:"); //want this for col. 1
-  m_listview->SetItem(itemIndex, 1, "NAND Gate"); //want this for col. 2
-  itemIndex = m_listview->InsertItem(0, "Type2:"); //want this for col. 1
-  m_listview->SetItem(itemIndex, 1, wxVERSION_STRING); //want this for col. 2
+  long itemIndex = _listview->InsertItem(0, "Type:"); //want this for col. 1
+  _listview->SetItem(itemIndex, 1, "NAND Gate"); //want this for col. 2
+  itemIndex = _listview->InsertItem(0, "Type2:"); //want this for col. 1
+  _listview->SetItem(itemIndex, 1, wxVERSION_STRING); //want this for col. 2
 
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
-  cvsizer->Add(m_listview, 1,wxEXPAND,0);
+  cvsizer->Add(_listview, 1,wxEXPAND,0);
   SetSizer(cvsizer);
 }
 
 void ComponentView::selectComponent(NodeTreeBase *component)
 {
   _component = component;
-}
-
-void showComponent()
-{
-  
+  _listview->DeleteAllItems();
 }
 
 void ComponentView::SetComponent(wxString name)
 {
-  long itemIndex = m_listview->InsertItem(0, "New Event");
-  m_listview->SetItem(itemIndex, 1, name);
+  long itemIndex = _listview->InsertItem(0, "New Event");
+  _listview->SetItem(itemIndex, 1, name);
 }

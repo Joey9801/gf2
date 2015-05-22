@@ -8,11 +8,14 @@
 #include <wx/splitter.h>
 #include <wx/sizer.h>
 
+#include<vector>
+#include<string>
+
 #include "networkview.h"
 #include "componentview.h"
 #include "outputplot.h"
 
-//#include "../simulator/network.h"
+#include "../structures/nodetree.h"
 
 class MyApp: public wxApp
 {
@@ -31,6 +34,7 @@ private:
   ComponentView *_compview;
   OutputPlot *_outputplot;
 
+  NodeTreeBase *_nodetree;
   wxString CurrentNetfilePath; // The Path to the network file we have open
 
   void OnLoadNetwork(wxCommandEvent& event);

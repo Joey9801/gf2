@@ -14,9 +14,11 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   SetSizer(nvsizer);
   SetScrollRate(10, 10);
   SetAutoLayout(true);
+
+  
 }
 
-void OutputPlot::AddPlotTrace(string label, vector<bool> &data)
+void OutputPlot::AddPlotTrace(std::string label, std::vector<bool> &data)
 {
   _plotcanvas->_monitortraces[wxString(label)] = data;
   _plotcanvas->Render();
@@ -33,13 +35,14 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
 
   Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
   Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
+  Bind(wxEVT_MOUSEWHEEL, &MyGLCanvas::OnMousewheel, this);
   
   bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true, 
   true, false, true, false, true, true, true, true, false, false, true};
-  vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
+  std::vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
   bool dataArray2[] = {false, false, true, false, false, true, false, true, false, false, true,
   false, false, true, false, false, true, false, true, false, false, true};
-  vector<bool> data2 (dataArray2, dataArray2 + sizeof(dataArray2) / sizeof(bool));
+  std::vector<bool> data2 (dataArray2, dataArray2 + sizeof(dataArray2) / sizeof(bool));
   _monitortraces["Plot Name"] = data1;
   _monitortraces["Really long plot name that just goes on and on and on and on."] = data2;
 
@@ -83,7 +86,7 @@ void MyGLCanvas::Render()
   }
 
   //plot all the monitortraces
-  typedef map<wxString, vector<bool>>::iterator it_type;
+  typedef std::map<wxString, std::vector<bool>>::iterator it_type;
   for(it_type it=_monitortraces.begin(); it!=_monitortraces.end(); it++) {
     //write labels, wrap line if longer than 9 chars
     //if there is not enough vertical space, label is truncated
@@ -142,4 +145,18 @@ void MyGLCanvas::OnSize(wxSizeEvent& event)
   // Event handler for when the canvas is resized
 {
   init = false;; // this will force the viewport and projection matrices to be reconfigured on the next paint
+}
+
+void MyGLCanvas::OnMousewheel(wxMouseEvent& event)
+{
+  if (event.GetWheelRotation()>0.0){
+    bitwidth += 5;
+  }else if (event.GetWheelRotation()<0.0){
+    bitwidth -= 5.0;
+  }
+  if (bitwidth<5.0){
+    bitwidth = 5.0;
+  }
+  init = false;
+  Render();
 }

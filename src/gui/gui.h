@@ -39,7 +39,6 @@ class MyFrame: public wxFrame
     Network * _network;
 
     NodeTreeBase *_nodetree;
-    wxString CurrentNetfilePath; // The Path to the network file we have open
 
     NetworkView *_netview;
     ComponentView *_compview;

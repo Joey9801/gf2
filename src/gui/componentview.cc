@@ -37,9 +37,3 @@ void ComponentView::selectComponent(NodeTreeBase *component) {
   _component = component;
   _listview->DeleteAllItems();
 }
-
-void ComponentView::SetComponent(wxString name)
-{
-  long itemIndex = _listview->InsertItem(0, "New Event");
-  _listview->SetItem(itemIndex, 1, name);
-}

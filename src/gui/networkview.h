@@ -6,6 +6,7 @@
   #include <wx/wx.h>
 #endif
 #include <wx/treectrl.h>
+#include <wx/treebase.h>
 #include <wx/sizer.h>
 
 #include <plog/Log.h>
@@ -28,4 +29,12 @@ class NetworkView: public wxPanel
     NodeTreeBase *_network;
 };
 
+/*
+class TreeCtrlReference : public wxTreeItemData
+{
+  public:
+    TreeCtrlReference(NodeTreeBase *node);
+    NodeTreeBase *noderef;
+}
+*/
 #endif /*networkview.h*/

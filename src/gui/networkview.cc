@@ -32,3 +32,10 @@ void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node) {
       it++)
     recursive_addNode(nodeId, (*it));
 }
+
+/*
+TreeCtrlReference::TreeCtrlReference(NodeTreeBase *node)
+{
+  noderef = node;
+}
+*/

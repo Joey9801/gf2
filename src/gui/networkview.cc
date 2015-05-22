@@ -25,17 +25,10 @@ void NetworkView::loadNetwork(NodeTreeBase *root) {
 
 void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node) {
 
-  wxTreeItemId nodeId = _treectrl->AppendItem(parentid, node->nickname);
+  wxTreeItemId nodeId = _treectrl->AppendItem(parentid, node->nickname,-1, -1, node);
 
   for(std::vector<NodeTreeBase*>::iterator it = node->children.begin();
       it != node->children.end();
       it++)
     recursive_addNode(nodeId, (*it));
 }
-
-/*
-TreeCtrlReference::TreeCtrlReference(NodeTreeBase *node)
-{
-  noderef = node;
-}
-*/

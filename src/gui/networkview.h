@@ -29,12 +29,4 @@ class NetworkView: public wxPanel
     NodeTreeBase *_network;
 };
 
-/*
-class TreeCtrlReference : public wxTreeItemData
-{
-  public:
-    TreeCtrlReference(NodeTreeBase *node);
-    NodeTreeBase *noderef;
-}
-*/
 #endif /*networkview.h*/

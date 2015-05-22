@@ -7,6 +7,7 @@ bool MyApp::OnInit() {
 
   //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
+  frame->SetMinSize( wxSize(800, 600) );
   frame->Show( true );
 
   return true;
@@ -77,6 +78,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+
+  _monitor = new Monitor();
+  _outputplot->setMonitor(_monitor);
 
 }
 

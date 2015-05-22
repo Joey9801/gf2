@@ -1,7 +1,8 @@
 #include "network.h"
 
 Network::Network(void) :
-  BaseComponent("Network", 0, 0)
+  BaseComponent("Network", 0, 0),
+  _time(0)
 {
   LOG_DEBUG;
 
@@ -187,12 +188,15 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   _nodesA[0] = false;
   _nodesA[1] = true;
 
+
   _outputDummy->loadOutputs(_nodesA, b, _outputs);
 
   for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
       it != _monitorPoints.end();
       it++)
-    _monitor->setValue( it->first, _nodesA[it->second]);
+    _monitor->setValue( it->first, _time, _nodesA[it->second]);
+
+  _time++;
 
   return;
 }
@@ -208,22 +212,29 @@ void Network::setMonitor(Monitor * m) {
 }
 
 unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
+  return addMonitorPoint(signature, 0);
+}
+
+unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
   if(not _monitor) {
     // TODO raise an error - monitor not set
-  }
-  if(signature.size() < 2) {
-    // TODO raise an error - not enough information in the signature
-    return 0;
+    throw 1;
   }
 
-  unsigned int componentId = findComponent(signature.back());
+  unsigned int remaining = signature.size() - depth;
+  if(remaining < 2) {
+    // TODO raise an error - not enough information in the signature
+    throw 1;
+  }
+
+  unsigned int componentId = findComponent(signature[remaining-1]);
   BaseComponent * c = _components[componentId];
   unsigned int pointId = 0;
 
-  if(signature.size() == 2) {
+  if(remaining == 2) {
     // This is the network containing the node to monitor
     unsigned int node = c->getOutputNode(signature.front());
-    pointId = _monitor->addMonitorPoint();
+    pointId = _monitor->addPoint(signature);
 
     _monitorPoints[pointId] = node;
   }
@@ -232,25 +243,12 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
     Network * net = dynamic_cast<Network*>(c);
     if(not net) {
       //TODO raise an error, the component in the signature wasn't a network
-      return 0;
+      throw 1;
     }
-    signature.pop_back();
-    pointId = net->addMonitorPoint(signature);
+    pointId = net->addMonitorPoint(signature, depth+1);
   }
 
   return pointId;
-}
-
-void Network::removeMonitorPoint(unsigned int pointId) {
-  if(_monitorPoints.find(pointId) == _monitorPoints.end()) {
-    //TODO raise an error
-    return;
-  }
-  _monitorPoints.erase(pointId);
-  // We can't currently remove the logged data in the monitor
-  // since it's stored as a simple vector, so removing it
-  // would change the indicies of other points
-  return;
 }
 
 NodeTreeBase * Network::getNodeTree(void) {
@@ -332,10 +330,12 @@ void RootNetwork::step(void) {
   _nodesA[0] = false;
   _nodesA[1] = true;
 
+  _time++;
+
   for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
       it != _monitorPoints.end();
       it++)
-    _monitor->setValue( it->first, _nodesA[it->second]);
+    _monitor->setValue( it->first, _time, _nodesA[it->second]);
 }
 
 

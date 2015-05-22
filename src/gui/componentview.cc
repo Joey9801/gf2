@@ -36,4 +36,10 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
 void ComponentView::selectComponent(NodeTreeBase *component) {
   _component = component;
   _listview->DeleteAllItems();
+
+  for(std::vector<int>::size_type i = _component->outputNames.size() - 1; 
+          i != (std::vector<int>::size_type) -1; i--) {
+    long itemIndex = _listview->InsertItem(0, wxString("Input: ") << i+1);
+    _listview->SetItem(itemIndex, 1, wxString(_component->outputNames[i]));
+  }
 }

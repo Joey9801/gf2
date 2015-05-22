@@ -38,8 +38,6 @@ class MyFrame: public wxFrame
   private:
     Network * _network;
 
-    NodeTreeBase *_nodetree;
-
     NetworkView *_netview;
     ComponentView *_compview;
     OutputPlot *_outputplot;

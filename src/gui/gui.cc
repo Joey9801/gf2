@@ -7,6 +7,7 @@ bool MyApp::OnInit() {
 
   //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
+  frame->SetMinSize( wxSize(800, 600) );
   frame->Show( true );
 
   return true;

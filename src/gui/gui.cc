@@ -73,6 +73,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnRunSimulation, this, ID_StartSimulation);
+
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
 
@@ -147,6 +149,20 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 
   // Clean up after ourselves
   OpenDialog->Destroy();
+
+  return;
+}
+
+void MyFrame::OnRunSimulation(wxCommandEvent& event) {
+  //Create a nodelist, since we're not yet using the RootNetwork object
+  unsigned int numNodes = _network->numInputs() + _network->numOutputs();
+  std::vector<bool> nodes(numNodes, false);
+
+  //Run for a fixed 50 cycles for the moment
+  for(unsigned int i=0; i<50; i++)
+    _network->step(nodes, nodes);
+
+  _outputplot->refresh();
 
   return;
 }

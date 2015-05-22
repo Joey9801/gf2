@@ -66,7 +66,7 @@ void MyGLCanvas::Render()
   glClear(GL_COLOR_BUFFER_BIT);
 
   rowheight = 50;
-  SetMinSize(wxSize(-1, -1));
+  SetMinSize(wxSize(_monitor->maxLength*bitwidth, -1));
 
   drawAxis();
 
@@ -74,7 +74,7 @@ void MyGLCanvas::Render()
   for(std::map<wxString, unsigned int>::iterator it=_monitortraces.begin();
       it!=_monitortraces.end();
       it++) {
-    std::vector<bool> data = _monitor->getLog(it->second);
+    std::vector<std::pair<unsigned int, bool> > data = _monitor->getLog(it->second);
     drawPlot(i, it->first, data);
     i++;
   }
@@ -110,7 +110,7 @@ void MyGLCanvas::drawAxis(void) {
 void MyGLCanvas::drawPlot(
     unsigned int num,
     const wxString& label,
-    const std::vector<bool>& data)
+    const std::vector<std::pair<unsigned int, bool> >& data)
 {
   float base = yzero + (num * rowheight);
 
@@ -130,10 +130,10 @@ void MyGLCanvas::drawPlot(
   glBegin(GL_LINE_STRIP);
   for (unsigned int i = 0; i<data.size(); i++) {
 
-    float y = data[i] ? (rowheight*0.8) : 0;
+    float y = data[i].second ? (rowheight*0.8) : 0;
 
-    glVertex2f(xzero + i*bitwidth, base + y);
-    glVertex2f(xzero + (i+1)*bitwidth, base + y);
+    glVertex2f(xzero + data[i].first * bitwidth, base + y);
+    glVertex2f(xzero + (data[i].first+1) * bitwidth, base + y);
   }
   glEnd();
   return;

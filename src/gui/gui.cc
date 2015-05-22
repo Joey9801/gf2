@@ -78,6 +78,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
 
+  _monitor = new Monitor();
+  _outputplot->setMonitor(_monitor);
+
 }
 
 void MyFrame::OnCompSelect(wxTreeEvent& event)

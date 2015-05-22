@@ -120,6 +120,15 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     CurrentNetfilePath = OpenDialog->GetPath();
   }
 
+  //Create a dummy network to test on
+  _network = new RootNetwork();
+  _network->addComponent("nand", "gate1");
+  _network->addComponent("nand", "gate2");
+  _network->addComponent("nand", "gate3");
+  _network->addComponent( _network->clone(), "nested net");
+
+  _netview->loadNetwork(_network->getNodeTree());
+
   // Clean up after ourselves
   OpenDialog->Destroy();
 

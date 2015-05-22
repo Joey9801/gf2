@@ -128,7 +128,7 @@ unsigned int Network::findComponent(std::string componentName) {
 
 //Returns the inputId
 unsigned int Network::addInput(void) {
-  LOG_VERBOSE;
+  LOG_DEBUG;
 
   unsigned int inputId = _inputs.size();
   _inputs.push_back(0);
@@ -141,7 +141,7 @@ unsigned int Network::addInput(void) {
   return inputId;
 }
 unsigned int Network::addInput(std::string name) {
-  LOG_VERBOSE;
+  LOG_DEBUG;
 
   unsigned int id = addInput();
   renameInput(id, name);
@@ -150,7 +150,7 @@ unsigned int Network::addInput(std::string name) {
 }
 
 unsigned int Network::addOutput(void) {
-  LOG_VERBOSE;
+  LOG_DEBUG;
 
   unsigned int outputId = _outputs.size();
   _outputs.push_back(0);
@@ -159,7 +159,7 @@ unsigned int Network::addOutput(void) {
   return outputId;
 }
 unsigned int Network::addOutput(std::string name) {
-  LOG_VERBOSE;
+  LOG_DEBUG;
 
   unsigned int id = addOutput();
   renameOutput(id, name);

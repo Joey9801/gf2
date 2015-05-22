@@ -8,6 +8,8 @@
 #include <wx/treectrl.h>
 #include <wx/sizer.h>
 
+#include <plog/Log.h>
+
 #include "../structures/nodetree.h"
 
 class NetworkView: public wxPanel

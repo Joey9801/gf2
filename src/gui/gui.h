@@ -12,6 +12,8 @@
 #include "componentview.h"
 #include "outputplot.h"
 
+#include "../simulator/network.h"
+
 enum {
   ID_LoadNetwork = 1,
   ID_StartSimulation
@@ -30,6 +32,8 @@ class MyFrame: public wxFrame
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
   private:
+    Network * _network;
+
     NetworkView *_netview;
     ComponentView *_compview;
     OutputPlot *_outputplot;

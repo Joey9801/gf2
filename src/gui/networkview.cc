@@ -10,37 +10,25 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
   SetSizer(nvsizer);
 }
 
-void NetworkView::loadNetwork(NodeTreeBase *network) {
-  _network = network;
-  displayNetwork();
-  
-  return;
-}
-
-void NetworkView::displayNetwork() {
+void NetworkView::loadNetwork(NodeTreeBase *root) {
   _treectrl->DeleteAllItems();
-  recursive_addNode(0, _network);
+
+  wxTreeItemId nodeId = _treectrl->AddRoot("Root network");
+
+  for(std::vector<NodeTreeBase*>::iterator it = root->children.begin();
+      it != root->children.end();
+      it++)
+    recursive_addNode(nodeId, (*it));
 
   return;
 }
 
 void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node) {
-  if (node->type == NodeType::Gate) {
-    _treectrl->AppendItem(parentid, node->nickname);
 
-    return;
-  }
+  wxTreeItemId nodeId = _treectrl->AppendItem(parentid, node->nickname);
 
-  wxTreeItemId nodeid;
-
-  if(node->type == NodeType::Base) {
-    nodeid = _treectrl->AddRoot("Network");
-  }
-  else {
-    nodeid = _treectrl->AppendItem(parentid, node->nickname);
-  }
-
-  for (unsigned int i = 0; i < node->children.size(); i++) {
-    recursive_addNode(nodeid, node->children[i]);
-  }
+  for(std::vector<NodeTreeBase*>::iterator it = node->children.begin();
+      it != node->children.end();
+      it++)
+    recursive_addNode(nodeId, (*it));
 }

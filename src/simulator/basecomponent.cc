@@ -38,7 +38,7 @@ void BaseComponent::renameInput(std::string oldName, std::string newName) {
   unsigned int index = _pinInMap[oldName];
   _pinInMap.erase(oldName);
   _pinInMap[newName] = index;
-  
+
   return;
 }
 
@@ -73,7 +73,7 @@ void BaseComponent::renameOutput(std::string oldName, std::string newName) {
   unsigned int index = _pinOutMap[oldName];
   _pinOutMap.erase(oldName);
   _pinOutMap[newName] = index;
-  
+
   return;
 }
 
@@ -166,6 +166,7 @@ std::string BaseComponent::getName(void) {
 }
 
 NodeTreeBase * BaseComponent::getNodeTree(void) {
+  LOG_VERBOSE << "_name = " << _name;
   NodeTreeBase * n = new NodeTreeGate();
 
   n->name = _name;
@@ -177,7 +178,7 @@ NodeTreeBase * BaseComponent::getNodeTree(void) {
   for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
     n->inputNames[(*it).second] = (*it).first;
 
-  n->outputNames.resize(_pinInMap.size());
+  n->outputNames.resize(_pinOutMap.size());
   for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
     n->outputNames[(*it).second] = (*it).first;
 

@@ -3,10 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <wx/treebase.h>
 
 enum class NodeType { Base, Network, Gate };
 
-struct NodeTreeBase {
+struct NodeTreeBase : public wxTreeItemData {
   NodeTreeBase() {type = NodeType::Base;}
   NodeTreeBase(NodeType node_type) {type = node_type;}
 

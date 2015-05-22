@@ -6,6 +6,8 @@
 #include <map>
 #include <utility>
 
+#include <plog/Log.h>
+
 #include "parser.h"
 #include "../structures/definition.h"
 #include "../simulator/network.h"

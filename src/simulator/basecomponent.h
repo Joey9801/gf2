@@ -40,7 +40,7 @@ class BaseComponent {
 
     virtual void configure(std::string key, std::string value) {}
 
-    NodeTreeBase * getNodeTree(void);
+    virtual NodeTreeBase * getNodeTree(void);
 
     BaseComponent * clone(void);
 

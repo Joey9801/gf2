@@ -10,15 +10,21 @@ namespace Builder {
   }
 
   Network * buildNetwork(Definition * def) {
+    LOG_DEBUG << "Building network";
+
     Network * net = new Network();
 
     std::map<std::string, Network*> includes;
+    LOG_DEBUG << "Recursing into includes";
     makeIncludes(def, includes);
 
+    LOG_DEBUG << "Adding Network IO";
     addIO(net, def);
 
+    LOG_DEBUG << "Adding components";
     addComponents(net, def);
 
+    LOG_DEBUG << "Connecting components";
     connectComponents(net, def);
 
     return net;

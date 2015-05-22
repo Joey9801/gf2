@@ -12,8 +12,8 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 TESTSOURCES := $(shell find $(TESTDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/main/%,$(SOURCES:.$(SRCEXT)=.o))
 TESTOBJECTS := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/tests/%,$(TESTSOURCES:.$(SRCEXT)=.o))
-CFLAGS := -std=c++0x -O -Wall -Werror -pedantic
-LIB := -Llib
+CFLAGS := -std=c++0x -O -Wall -Werror -pedantic `wx-config --cxxflags`
+LIB := -Llib -lglut -lGL -lGLU `wx-config  --libs --gl_libs`
 INC := -I include
 
 all: main tests

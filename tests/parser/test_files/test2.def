@@ -1,0 +1,26 @@
+{
+    inputs: {
+        foo : false,
+        bar : false
+    },
+    outputs : {
+        abc : gate1.out,
+        def : gate2.out
+    },
+    components : {
+        gate1 : {
+            type : and,
+            inputs : {
+                i1 : inputs.foo,
+                i2 : inputs.bar
+            }
+        },
+        gate2 : {
+            type : nand,
+            inputs : {
+                i1 : inputs.foo,
+                i2 : inputs.bar
+            }
+        }
+    }
+}

@@ -13,12 +13,15 @@
 #include <string>
 #include <map>
 
+#include "../simulator/monitor.h"
+
 class MyGLCanvas: public wxGLCanvas
 {
   public:
     MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
-    std::map<wxString, std::vector<bool>> _monitortraces;
+    std::map<wxString, unsigned int> _monitortraces;
     void Render(); // function to draw canvas contents
+    void setMonitor(Monitor * m);
 
   private:
     wxGLContext *context;              // OpenGL rendering context
@@ -33,6 +36,8 @@ class MyGLCanvas: public wxGLCanvas
 
     float xzero, yzero;
     float rowheight, bitwidth;
+
+    Monitor * _monitor;
 };
 
 class OutputPlot: public wxScrolledWindow
@@ -41,9 +46,14 @@ class OutputPlot: public wxScrolledWindow
     OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
     virtual ~OutputPlot(){};
 
-    void AddPlotTrace(std::string label, std::vector<bool> &data);
+    void AddPlotTrace(std::string label, unsigned int pointId);
+    void setMonitor(Monitor * m);
+
+    void refresh(void);
+
   private:
     MyGLCanvas *_plotcanvas;
+    Monitor * _monitor;
 };
 
 #endif /*outputplot.h*/

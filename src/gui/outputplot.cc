@@ -17,13 +17,27 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   SetScrollRate(10, 10);
   SetAutoLayout(true);
 
-  
 }
 
-void OutputPlot::AddPlotTrace(std::string label, std::vector<bool> &data)
-{
-  _plotcanvas->_monitortraces[wxString(label)] = data;
+void OutputPlot::AddPlotTrace(std::string label, unsigned int pointId) {
+  _plotcanvas->_monitortraces[wxString(label)] = pointId;
   _plotcanvas->Render();
+}
+
+void OutputPlot::setMonitor(Monitor * m) {
+  _monitor = m;
+  _plotcanvas -> setMonitor(m);
+  return;
+}
+
+void OutputPlot::refresh(void) {
+  _plotcanvas->Render();
+  return;
+}
+
+void MyGLCanvas::setMonitor(Monitor * m) {
+  _monitor = m;
+  return;
 }
 
 MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
@@ -36,15 +50,6 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
   Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
   Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
   Bind(wxEVT_MOUSEWHEEL, &MyGLCanvas::OnMousewheel, this);
-  
-  bool dataArray[] = {true, false, true, false, true, true, true, true, false, false, true, 
-  true, false, true, false, true, true, true, true, false, false, true};
-  std::vector<bool> data1 (dataArray, dataArray + sizeof(dataArray) / sizeof(bool));
-  bool dataArray2[] = {false, false, true, false, false, true, false, true, false, false, true,
-  false, false, true, false, false, true, false, true, false, false, true};
-  std::vector<bool> data2 (dataArray2, dataArray2 + sizeof(dataArray2) / sizeof(bool));
-  _monitortraces["Plot Name"] = data1;
-  _monitortraces["Really long plot name that just goes on and on and on and on."] = data2;
 
   bitwidth = 30.0;
   xzero = 100.0;
@@ -60,15 +65,17 @@ void MyGLCanvas::Render()
   }
   glClear(GL_COLOR_BUFFER_BIT);
 
-  rowheight = (GetSize().y-yzero) / _monitortraces.size();
-  SetMinSize(wxSize(_monitortraces.begin()->second.size()*bitwidth + 110, -1));
+  rowheight = 50;
+  SetMinSize(wxSize(-1, -1));
 
   drawAxis();
 
-  typedef std::map<wxString, std::vector<bool>>::iterator it_type;
   unsigned int i = 0;
-  for(it_type it=_monitortraces.begin(); it!=_monitortraces.end(); it++) {
-    drawPlot(i, it->first, it->second);
+  for(std::map<wxString, unsigned int>::iterator it=_monitortraces.begin();
+      it!=_monitortraces.end();
+      it++) {
+    std::vector<bool> data = _monitor->getLog(it->second);
+    drawPlot(i, it->first, data);
     i++;
   }
 
@@ -81,7 +88,7 @@ void MyGLCanvas::drawAxis(void) {
   //draw axis line
   glColor3f(0.0, 0.0, 0.0);//axis colour
     glBegin(GL_LINE_STRIP);
-    glVertex2f(xzero, yzero*0.5); 
+    glVertex2f(xzero, yzero*0.5);
     glVertex2f(GetSize().x-5.0, yzero*0.5);
   glEnd();
   //draw arrowhead
@@ -93,8 +100,8 @@ void MyGLCanvas::drawAxis(void) {
   //draw tickmarks
   for(float x = xzero; x<GetSize().x-15.0; x+=bitwidth){
     glBegin(GL_LINE_STRIP);
-      glVertex2f(x, yzero*0.7); 
-      glVertex2f(x, yzero*0.3); 
+      glVertex2f(x, yzero*0.7);
+      glVertex2f(x, yzero*0.3);
     glEnd();
   }
   return;
@@ -144,7 +151,7 @@ void MyGLCanvas::InitGL()
   glViewport(0, 0, (GLint) w, (GLint) h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glOrtho(0, w, 0, h, -1, 1); 
+  glOrtho(0, w, 0, h, -1, 1);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }

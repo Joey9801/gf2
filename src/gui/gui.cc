@@ -1,6 +1,3 @@
-#include <plog/Log.h>
-#include <plog/Appenders/ConsoleAppender.h>
-
 #include "gui.h"
 
 bool MyApp::OnInit() {
@@ -126,16 +123,13 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   // Creates a "open file" dialog
   if (OpenDialog->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
+
+    _network = Builder::build( CurrentNetfilePath.ToStdString() );
+
+    _netview->loadNetwork(_network->getNodeTree());
+
   }
 
-  //Create a dummy network to test on
-  _network = new RootNetwork();
-  _network->addComponent("nand", "gate1");
-  _network->addComponent("nand", "gate2");
-  _network->addComponent("nand", "gate3");
-  _network->addComponent( _network->clone(), "nested net");
-
-  _netview->loadNetwork(_network->getNodeTree());
 
   // Clean up after ourselves
   OpenDialog->Destroy();

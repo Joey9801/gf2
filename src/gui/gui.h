@@ -1,6 +1,9 @@
 #ifndef gui_h
 #define gui_h
 
+#include<vector>
+#include<string>
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
@@ -8,8 +11,8 @@
 #include <wx/splitter.h>
 #include <wx/sizer.h>
 
-#include<vector>
-#include<string>
+#include <plog/Log.h>
+#include <plog/Appenders/ConsoleAppender.h>
 
 #include "networkview.h"
 #include "componentview.h"
@@ -17,6 +20,7 @@
 
 #include "../structures/nodetree.h"
 #include "../simulator/network.h"
+#include "../parser/builder.h"
 
 enum {
   ID_LoadNetwork = 1,

@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#include <plog/Log.h>
+
 #include "../structures/nodetree.h"
 
 typedef std::map<std::string, unsigned int> pin_map;
@@ -38,7 +40,7 @@ class BaseComponent {
 
     virtual void configure(std::string key, std::string value) {}
 
-    NodeTreeBase * getNodeTree(void);
+    virtual NodeTreeBase * getNodeTree(void);
 
     BaseComponent * clone(void);
 

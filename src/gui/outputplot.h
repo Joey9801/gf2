@@ -15,30 +15,30 @@
 
 class MyGLCanvas: public wxGLCanvas
 {
-public:
-  MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
-  std::map<wxString, std::vector<bool>> _monitortraces;
-  void Render(); // function to draw canvas contents
-private:
-  wxGLContext *context;              // OpenGL rendering context
-  bool init;                         // has the OpenGL context been initialised?
-  void InitGL();                     // function to initialise OpenGL context
-  void OnSize(wxSizeEvent& event);   // event handler for when canvas is resized
-  void OnPaint(wxPaintEvent& event); // event handler for when canvas is exposed
-  void OnMousewheel(wxMouseEvent& event); // event handler for when mousewheel zooming
+  public:
+    MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
+    std::map<wxString, std::vector<bool>> _monitortraces;
+    void Render(); // function to draw canvas contents
 
-  float rowheight, bitwidth;
+  private:
+    wxGLContext *context;              // OpenGL rendering context
+    bool init;                         // has the OpenGL context been initialised?
+    void InitGL();                     // function to initialise OpenGL context
+    void OnSize(wxSizeEvent& event);   // event handler for when canvas is resized
+    void OnPaint(wxPaintEvent& event); // event handler for when canvas is exposed
+
+    float rowheight, bitwidth;
 };
 
 class OutputPlot: public wxScrolledWindow
 {
-public:
-  OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
-  virtual ~OutputPlot(){};
-  
-  void AddPlotTrace(std::string label, std::vector<bool> &data);
-private:
-  MyGLCanvas *_plotcanvas;
+  public:
+    OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
+    virtual ~OutputPlot(){};
+    void AddPlotTrace(std::string label, std::vector<bool> &data);
+
+  private:
+    MyGLCanvas *_plotcanvas;
 };
 
 #endif /*outputplot.h*/

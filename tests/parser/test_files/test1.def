@@ -1,0 +1,9 @@
+{
+  foo : "foo bar",
+  key : {
+    subkey : sub_value,
+    subkey2 : "spaced sub value",
+    lorem : ipsum
+  },
+  pig : latin
+}

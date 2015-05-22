@@ -1,6 +1,6 @@
 #include <catch.h>
 
-#include "../src/simulator/network.h"
+#include "../../src/simulator/network.h"
 
 SCENARIO("Components can be added, accessed, and renamed in a Network", "[network]") {
   GIVEN("An empty network") {
@@ -86,9 +86,9 @@ SCENARIO("Gates can be connected to the network IO", "[network]") {
       }
     }
     WHEN("The IO is connected by name") {
-      net.connect("input", "in-foo", "test-gate", "i1");
-      net.connect("input", "in-bar", "test-gate", "i2");
-      net.connect("test-gate", "out", "output", "out-asdf");
+      net.connect("inputs", "in-foo", "test-gate", "i1");
+      net.connect("inputs", "in-bar", "test-gate", "i2");
+      net.connect("test-gate", "out", "outputs", "out-asdf");
 
       THEN("The network responds as expected") {
         bool A, B;

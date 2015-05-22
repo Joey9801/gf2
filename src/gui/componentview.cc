@@ -6,6 +6,7 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
 {
   // Create list view
   _listview = new wxListView(this, -1);
+
   // Add first column       
   wxListItem col0;
   col0.SetId(0);
@@ -28,10 +29,11 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
   cvsizer->Add(_listview, 1,wxEXPAND,0);
   SetSizer(cvsizer);
+
+  return;
 }
 
-void ComponentView::selectComponent(NodeTreeBase *component)
-{
+void ComponentView::selectComponent(NodeTreeBase *component) {
   _component = component;
   _listview->DeleteAllItems();
 }

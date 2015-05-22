@@ -20,6 +20,7 @@
 
 #include "../structures/nodetree.h"
 #include "../simulator/network.h"
+#include "../simulator/monitor.h"
 #include "../parser/builder.h"
 
 enum {
@@ -41,6 +42,7 @@ class MyFrame: public wxFrame
 
   private:
     Network * _network;
+    Monitor * _monitor;
 
     NetworkView *_netview;
     ComponentView *_compview;

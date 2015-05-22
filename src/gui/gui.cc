@@ -115,12 +115,35 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   if (OpenDialog->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
 
-    _network = Builder::build( CurrentNetfilePath.ToStdString() );
+    Network * net;
+    try {
+      net = Builder::build( CurrentNetfilePath.ToStdString() );
+    }
+    catch(...) {
+      LOG_ERROR << "Failed to build the network";
+      return;
+    }
+
+    delete _network;
+    delete _monitor;
+    _monitor = new Monitor();
+    _network = net;
+    _network->setMonitor(_monitor);
+    _outputplot->setMonitor(_monitor);
+
+    //Add a component with a monitor point to test the plot
+    _network->addComponent("siggen", "signal");
+    _network->configureComponent("signal", "data", "0011010101");
+    std::vector<std::string> signature;
+    signature.push_back("out");
+    signature.push_back("signal");
+    unsigned int pointId = _network->addMonitorPoint(signature);
+
+    _outputplot->AddPlotTrace("signal", pointId);
 
     _netview->loadNetwork(_network->getNodeTree());
 
   }
-
 
   // Clean up after ourselves
   OpenDialog->Destroy();

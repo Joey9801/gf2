@@ -80,22 +80,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
 void MyFrame::OnCompSelect(wxTreeEvent& event)
 {
-  std::vector<wxString> componentpath;
-  wxTreeItemId node = event.GetItem();
-  do{
-    componentpath.push_back(_netview->_treectrl->GetItemText(node));
-    node = _netview->_treectrl->GetParent();
-  } while ( node != _netview->_treectrl->GetRootItem());
-  NodeTreeBase *_selectednode;
-  for (unsigned int i = componentpath.size()-1; i >=0 ; i--){
-    for (unsigned int j = 0; j < _nodetree->children.size(); j++){
-      if (wxString(_nodetree->children[j]->nickname) == componentpath[i]){
-        _selectednode = _nodetree->children[j];
-        break;
-      }
-    }
+  wxTreeItemData *selectednode = _netview->_treectrl->GetItemData(event.GetItem());
+  NodeTreeBase *node=dynamic_cast<NodeTreeBase*>(selectednode);
+  if (node == NULL){
+    LOG_WARNING << "Invalid conversion of wxTreeItemData to NodeTreeBase";
+    return;
   }
-  _compview->selectComponent(_nodetree);
+  _compview->selectComponent(node);
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)

@@ -10,16 +10,57 @@ namespace Builder {
   }
 
   Network * buildNetwork(Definition * def) {
+    LOG_DEBUG << "Building network";
+
     Network * net = new Network();
 
     std::map<std::string, Network*> includes;
-    makeIncludes(def, includes);
+    LOG_DEBUG << "Recursing into includes";
 
-    addIO(net, def);
+    try {
+      makeIncludes(def, includes);
+    }
+    catch(...) {
+      LOG_ERROR << "Exception raised while making includes";
+      throw;
+    }
+    LOG_DEBUG << "Finished making includes";
 
-    addComponents(net, def);
+    LOG_DEBUG << "Adding Network IO";
+    try {
+      addIO(net, def);
+    }
+    catch(...) {
+      LOG_ERROR << "Exception raised while adding network IO";
+      throw;
+    }
 
+    LOG_DEBUG << "Adding components";
+    try {
+    addComponents(net, def, includes);
+    }
+    catch(...) {
+      LOG_ERROR << "Exception raised while adding components";
+      throw;
+    }
+
+    LOG_DEBUG << "Configuring components";
+    try {
+      configureComponents(net, def);
+    }
+    catch(...) {
+      LOG_ERROR << "Exception raised while configuring components";
+      throw;
+    }
+
+    LOG_DEBUG << "Connecting components";
+    try {
     connectComponents(net, def);
+    }
+    catch(...) {
+      LOG_ERROR << "Exception raised while making connections";
+      throw;
+    }
 
     return net;
   }
@@ -33,7 +74,7 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["includes"]->pairs.begin();
           it != def->pairs["includes"]->pairs.end();
           it++) {
-        includes[it->first] = build(it->second->value);
+        includes[it->second->value] = build(it->first);
       }
     }
 
@@ -71,7 +112,7 @@ namespace Builder {
     return;
   }
 
-  void addComponents(Network * net, Definition * def) {
+  void addComponents(Network * net, Definition * def, std::map<std::string, Network*>& includes) {
     //Add each component to the network
     //for_each(component_nickname in def)
     //  net->addComponent
@@ -86,10 +127,34 @@ namespace Builder {
       std::string name = it->first;
       std::string type = it->second->pairs["type"]->value;
 
-      net->addComponent(type, name);
+      if(type.find_first_of('.') != std::string::npos) {
+        std::pair<std::string, std::string> value = Helpers::separateDotted(type);
+        if( value.first == "includes" )
+          net->addComponent(includes[value.second]->clone(), name);
+      }
+      else {
+        net->addComponent(type, name);
+      }
     }
 
     return;
+  }
+
+  void configureComponents(Network * net, Definition * def) {
+    for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
+        it1 != def->pairs["components"]->pairs.end();
+        it1++) {
+      //Iterating over each component
+      if( it1->second->pairs.find("config") != it1->second->pairs.end() ) {
+        //If the component has a config
+        for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["config"]->pairs.begin();
+            it2 != it1->second->pairs["config"]->pairs.end();
+            it2++) {
+          net->configureComponent( it1->first, it2->first, it2->second->value );
+        }
+      }
+    }
+
   }
 
   void connectComponents(Network * net, Definition * def) {

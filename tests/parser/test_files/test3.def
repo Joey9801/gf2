@@ -1,0 +1,21 @@
+{
+    inputs: {
+        foo : false,
+        bar : false
+    },
+    components : {
+        gate1 : {
+            type : and,
+            inputs : {
+                i1 : inputs.foo,
+                i2 : inputs.bar
+            }
+        },
+        signal2 : {
+            type : siggen,
+            config : {
+                data : 01011001
+            }
+        }
+    }
+}

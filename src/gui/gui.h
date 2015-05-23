@@ -1,6 +1,9 @@
 #ifndef gui_h
 #define gui_h
 
+#include<vector>
+#include<string>
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
@@ -8,8 +11,8 @@
 #include <wx/splitter.h>
 #include <wx/sizer.h>
 
-#include<vector>
-#include<string>
+#include <plog/Log.h>
+#include <plog/Appenders/ConsoleAppender.h>
 
 #include "networkview.h"
 #include "componentview.h"
@@ -17,6 +20,8 @@
 
 #include "../structures/nodetree.h"
 #include "../simulator/network.h"
+#include "../simulator/monitor.h"
+#include "../parser/builder.h"
 
 enum {
   ID_LoadNetwork = 1,
@@ -37,6 +42,7 @@ class MyFrame: public wxFrame
 
   private:
     Network * _network;
+    Monitor * _monitor;
 
     NetworkView *_netview;
     ComponentView *_compview;
@@ -48,6 +54,7 @@ class MyFrame: public wxFrame
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnCompSelect(wxTreeEvent& event);
+    void OnRunSimulation(wxCommandEvent& event);
 };
 
 #endif /*gui.h*/

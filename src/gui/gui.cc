@@ -1,6 +1,3 @@
-#include <plog/Log.h>
-#include <plog/Appenders/ConsoleAppender.h>
-
 #include "gui.h"
 
 bool MyApp::OnInit() {
@@ -10,6 +7,7 @@ bool MyApp::OnInit() {
 
   //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
+  frame->SetMinSize( wxSize(800, 600) );
   frame->Show( true );
 
   return true;
@@ -76,8 +74,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnRunSimulation, this, ID_StartSimulation);
+
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+
+  _monitor = new Monitor();
+  _outputplot->setMonitor(_monitor);
 
 }
 
@@ -117,19 +120,51 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   // Creates a "open file" dialog
   if (OpenDialog->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
+
+    Network * net;
+    try {
+      net = Builder::build( CurrentNetfilePath.ToStdString() );
+    }
+    catch(...) {
+      LOG_ERROR << "Failed to build the network";
+      return;
+    }
+
+    delete _network;
+    delete _monitor;
+    _monitor = new Monitor();
+    _network = net;
+    _network->setMonitor(_monitor);
+    _outputplot->setMonitor(_monitor);
+
+    //Manually add a monitor point for now
+    std::vector<std::string> signature;
+    signature.push_back("out");
+    signature.push_back("signal");
+    unsigned int pointId = _network->addMonitorPoint(signature);
+
+    _outputplot->AddPlotTrace("signal", pointId);
+
+    _netview->loadNetwork(_network->getNodeTree());
+
   }
-
-  //Create a dummy network to test on
-  _network = new RootNetwork();
-  _network->addComponent("nand", "gate1");
-  _network->addComponent("nand", "gate2");
-  _network->addComponent("nand", "gate3");
-  _network->addComponent( _network->clone(), "nested net");
-
-  _netview->loadNetwork(_network->getNodeTree());
 
   // Clean up after ourselves
   OpenDialog->Destroy();
+
+  return;
+}
+
+void MyFrame::OnRunSimulation(wxCommandEvent& event) {
+  //Create a nodelist, since we're not yet using the RootNetwork object
+  unsigned int numNodes = _network->numInputs() + _network->numOutputs();
+  std::vector<bool> nodes(numNodes, false);
+
+  //Run for a fixed 50 cycles for the moment
+  for(unsigned int i=0; i<50; i++)
+    _network->step(nodes, nodes);
+
+  _outputplot->refresh();
 
   return;
 }

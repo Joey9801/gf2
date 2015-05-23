@@ -6,6 +6,8 @@
 #include <map>
 #include <utility>
 
+#include <plog/Log.h>
+
 #include "parser.h"
 #include "../structures/definition.h"
 #include "../simulator/network.h"
@@ -17,7 +19,8 @@ namespace Builder {
 
   void makeIncludes(Definition * def, std::map<std::string, Network*>& includes);
   void addIO(Network * net, Definition * def);
-  void addComponents(Network * net, Definition * def);
+  void addComponents(Network * net, Definition * def, std::map<std::string, Network*>& includes);
+  void configureComponents(Network * net, Definition * def);
   void connectComponents(Network * net, Definition * def);
 
   namespace Helpers {

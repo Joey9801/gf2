@@ -59,7 +59,7 @@ class Network : public BaseComponent
 
     void setMonitor(Monitor * m);
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
-    void removeMonitorPoint(unsigned int pointId);
+    unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
     NodeTreeBase * getNodeTree(void);
 
@@ -78,6 +78,8 @@ class Network : public BaseComponent
     Monitor * _monitor;
 
     std::map<unsigned int, unsigned int> _monitorPoints;
+
+    unsigned int _time;
 };
 
 // Special type of network which can operate independantly from anything else

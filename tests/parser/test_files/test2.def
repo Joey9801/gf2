@@ -1,0 +1,30 @@
+{
+    includes : {
+        tests/parser/test_files/test3.def : foo
+    },
+    inputs: {
+        foo : false,
+        bar : false
+    },
+    outputs : {
+        abc : gate1.out
+    },
+    components : {
+        gate1 : {
+            type : and,
+            inputs : {
+                i1 : inputs.foo,
+                i2 : inputs.bar
+            }
+        },
+        included-net : {
+            type : includes.foo
+        },
+        signal : {
+            type : siggen,
+            config : {
+                data : 01011001
+            }
+        }
+    }
+}

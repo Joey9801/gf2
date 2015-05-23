@@ -18,13 +18,13 @@ class ComponentView: public wxPanel
     ComponentView(wxWindow *parent, wxWindowID id=wxID_ANY);
     virtual ~ComponentView(){};
 
-    void selectComponent(NodeTreeBase *component);
+    void selectComponent(NodeTree * component);
 
   private:
     wxStaticText *_overview;
     wxListView *_listview;
     wxButton *_ToggleMonitorButton;
-    NodeTreeBase *_component;
+    NodeTree *_component;
 
     bool IsMonitored(long item) const;
     void OnItemSelect(wxListEvent &event);

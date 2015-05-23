@@ -165,9 +165,9 @@ std::string BaseComponent::getName(void) {
   return _name;
 }
 
-NodeTreeBase * BaseComponent::getNodeTree(void) {
+NodeTree * BaseComponent::getNodeTree(void) {
   LOG_VERBOSE << "_name = " << _name;
-  NodeTreeBase * n = new NodeTreeGate();
+  NodeTree * n = new NodeTree(NodeType::Gate);
 
   n->name = _name;
 

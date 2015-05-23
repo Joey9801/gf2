@@ -87,7 +87,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 void MyFrame::OnCompSelect(wxTreeEvent& event)
 {
   wxTreeItemData *selectednode = _netview->_treectrl->GetItemData(event.GetItem());
-  NodeTreeBase *node=dynamic_cast<NodeTreeBase*>(selectednode);
+  NodeTree *node=dynamic_cast<NodeTree*>(selectednode);
   if (node == NULL){
     LOG_WARNING << "Invalid conversion of wxTreeItemData to NodeTreeBase";
     return;

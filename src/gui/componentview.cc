@@ -55,7 +55,7 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   return;
 }
 
-void ComponentView::selectComponent(NodeTreeBase *component) {
+void ComponentView::selectComponent(NodeTree *component) {
   _component = component;
   _listview->DeleteAllItems();
 

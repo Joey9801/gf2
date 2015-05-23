@@ -254,14 +254,16 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsig
   return pointId;
 }
 
-NodeTreeBase * Network::getNodeTree(void) {
-  NodeTreeBase * n = new NodeTreeNetwork();
+NodeTree * Network::getNodeTree(void) {
+  NodeTree * n = new NodeTree(NodeType::Network);
 
   n->name = _name;
 
   //Start at 2 to  avoid including the DummyIO objects
-  for(unsigned int i=2; i<_components.size(); i++)
+  for(unsigned int i=2; i<_components.size(); i++) {
     n->children.push_back( _components[i]->getNodeTree() );
+    n->children.back()->parent = n;
+  }
 
   for(pin_map::iterator it = _componentNames.begin();
       it != _componentNames.end();

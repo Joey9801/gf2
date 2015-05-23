@@ -13,7 +13,7 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
 void NetworkView::loadNetwork(NodeTreeBase *root) {
   _treectrl->DeleteAllItems();
 
-  wxTreeItemId nodeId = _treectrl->AddRoot("Root network");
+  wxTreeItemId nodeId = _treectrl->AddRoot("Root network", -1, -1, root);
 
   for(std::vector<NodeTreeBase*>::iterator it = root->children.begin();
       it != root->children.end();

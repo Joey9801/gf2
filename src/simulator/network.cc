@@ -218,12 +218,14 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
 unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
   if(not _monitor) {
     // TODO raise an error - monitor not set
+    LOG_ERROR << "Cannot set monitor point without Monitor object";
     throw 1;
   }
 
   unsigned int remaining = signature.size() - depth;
   if(remaining < 2) {
     // TODO raise an error - not enough information in the signature
+    LOG_ERROR << "Not enough information in signature to add monitor point";
     throw 1;
   }
 
@@ -243,6 +245,7 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsig
     Network * net = dynamic_cast<Network*>(c);
     if(not net) {
       //TODO raise an error, the component in the signature wasn't a network
+      LOG_ERROR << "The monitor point signature was not found in the network";
       throw 1;
     }
     pointId = net->addMonitorPoint(signature, depth+1);

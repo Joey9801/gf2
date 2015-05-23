@@ -129,6 +129,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
       LOG_ERROR << "Failed to build the network";
       return;
     }
+    LOG_DEBUG << "Network built successfully";
 
     delete _network;
     delete _monitor;

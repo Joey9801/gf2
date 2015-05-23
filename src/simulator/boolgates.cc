@@ -3,19 +3,36 @@
 BaseBoolgate::BaseBoolgate(std::string name) :
     BaseComponent(name, 0, 1)
 {
-  std::stringstream stream;
-  for(int i=0; i<16; i++) {
-    stream.str(std::string());
-    stream << "i" << (i+1);
-    _pinInMap[stream.str()] = i;
-  }
   _pinOutMap["out"] = 0;
+}
+
+void BaseBoolgate::connectInput(std::string inputName, unsigned int node) {
+  std::istringstream ss(inputName);
+  char dump;
+  ss >> dump;
+
+  unsigned int inputId;
+  ss >> inputId;
+
+  // Names are 1 based in the spec, but our vectors are 0 based
+  inputId -= 1;
+
+  connectInput(inputId, node);
+
+  return;
 }
 
 void BaseBoolgate::connectInput(unsigned int inputId, unsigned int node) {
   // Allows for an arbitrary number of inputs
   // Unused inputs connected to index#0, the zero constant in networks
   if(inputId >= _inputs.size()){
+    std::stringstream ss;
+    for(unsigned int i=_inputs.size(); i <= inputId; i++) {
+      ss.str(std::string());
+      ss << "i" << (i+1);
+      _pinInMap[ss.str()] = i;
+    }
+
     _inputs.resize(inputId+1, 0);
   }
 

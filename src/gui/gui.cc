@@ -81,6 +81,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   _monitor = new Monitor();
   _outputplot->setMonitor(_monitor);
+  _compview->setMonitor(_monitor);
 
 }
 
@@ -143,8 +144,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     signature.push_back("out");
     signature.push_back("signal");
     unsigned int pointId = _network->addMonitorPoint(signature);
-
-    _outputplot->AddPlotTrace("signal", pointId);
+    _monitor->renamePoint(pointId, "nickname");
 
     _netview->loadNetwork(_network->getNodeTree());
 

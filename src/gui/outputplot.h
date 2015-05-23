@@ -22,7 +22,6 @@ class MyGLCanvas: public wxGLCanvas
 {
   public:
     MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
-    std::map<wxString, unsigned int> _monitortraces;
     void Render(); // function to draw canvas contents
     void setMonitor(Monitor * m);
 

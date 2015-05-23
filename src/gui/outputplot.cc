@@ -19,11 +19,6 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
 
 }
 
-void OutputPlot::AddPlotTrace(std::string label, unsigned int pointId) {
-  _plotcanvas->_monitortraces[wxString(label)] = pointId;
-  _plotcanvas->Render();
-}
-
 void OutputPlot::setMonitor(Monitor * m) {
   _monitor = m;
   _plotcanvas -> setMonitor(m);
@@ -70,14 +65,9 @@ void MyGLCanvas::Render()
 
   drawAxis();
 
-  unsigned int i = 0;
-  for(std::map<wxString, unsigned int>::iterator it=_monitortraces.begin();
-      it!=_monitortraces.end();
-      it++) {
-    std::vector<std::pair<unsigned int, bool> > data = _monitor->getLog(it->second);
-    drawPlot(i, it->first, data);
-    i++;
-  }
+  std::vector<unsigned int> ids = _monitor->getPoints();
+  for(unsigned int i=0; i<ids.size(); i++)
+    drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]));
 
   // We've been drawing to the back buffer, flush the graphics pipeline and swap the back buffer to the front
   glFlush();

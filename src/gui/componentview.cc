@@ -74,6 +74,11 @@ void ComponentView::selectComponent(NodeTree *component) {
   }
 }
 
+void ComponentView::setMonitor(Monitor * m) {
+  _monitor = m;
+  return;
+}
+
 bool ComponentView::IsMonitored(long item) const
 {
   if(_listview->GetItemText(item, 2) ==  "Yes"){

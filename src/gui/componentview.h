@@ -11,6 +11,7 @@
 #include <wx/renderer.h>
 
 #include "../structures/nodetree.h"
+#include "../simulator/monitor.h"
 
 class ComponentView: public wxPanel
 {
@@ -20,7 +21,11 @@ class ComponentView: public wxPanel
 
     void selectComponent(NodeTree * component);
 
+    void setMonitor(Monitor * m);
+
   private:
+    Monitor * _monitor;
+
     wxStaticText *_overview;
     wxListView *_listview;
     wxButton *_ToggleMonitorButton;

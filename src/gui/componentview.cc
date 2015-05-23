@@ -30,14 +30,14 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   wxListItem col2;
   col2.SetId(2);
   col2.SetText( _("Monitored") );
-  col2.SetWidth(100);
+  col2.SetWidth(80);
   _listview->InsertColumn(2, col2);
 
   // Add fourth column
   wxListItem col3;
   col3.SetId(3);
   col3.SetText( _("Connected to") );
-  col3.SetWidth(100);
+  col3.SetWidth(120);
   _listview->InsertColumn(3, col3);
 
   //Add the control buttons

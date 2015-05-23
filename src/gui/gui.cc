@@ -28,7 +28,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   menuHelp->Append(wxID_ABOUT);
 
   wxMenu *menuSim = new wxMenu;
-  menuSim->Append(ID_StartSimulation, "&Run Simulation", "Start the Simulation");
+  menuSim->Append(ID_StartSimulation, "&Run Simulation\tCtrl-R", "Start the Simulation");
+  menuSim->Enable(ID_StartSimulation, false);
 
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
@@ -147,6 +148,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 
     _netview->loadNetwork(_network->getNodeTree());
 
+    GetMenuBar()->Enable(GetMenuBar()->FindMenuItem("Simulation", "Run Simulation"), true);
   }
 
   // Clean up after ourselves

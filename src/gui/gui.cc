@@ -137,9 +137,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _network->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
 
-    //Add a component with a monitor point to test the plot
-    _network->addComponent("siggen", "signal");
-    _network->configureComponent("signal", "data", "0011010101");
+    //Manually add a monitor point for now
     std::vector<std::string> signature;
     signature.push_back("out");
     signature.push_back("signal");

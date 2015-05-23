@@ -1,13 +1,7 @@
 {
-    includes : {
-        tests/parser/test_files/test3.def : foo
-    },
     inputs: {
         foo : false,
         bar : false
-    },
-    outputs : {
-        abc : gate1.out
     },
     components : {
         gate1 : {
@@ -17,10 +11,7 @@
                 i2 : inputs.bar
             }
         },
-        included-net : {
-            type : includes.foo
-        },
-        signal : {
+        signal2 : {
             type : siggen,
             config : {
                 data : 01011001

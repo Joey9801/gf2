@@ -119,7 +119,7 @@ namespace Builder {
 
     if( def->pairs.find("components") == def->pairs.end() ) {
       //TODO raise an error
-      return;
+      throw 1;
     }
     for(std::map<std::string, Definition*>::iterator it = def->pairs["components"]->pairs.begin();
         it != def->pairs["components"]->pairs.end();

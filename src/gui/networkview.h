@@ -19,14 +19,14 @@ class NetworkView: public wxPanel
     NetworkView(wxWindow *parent, wxWindowID id=wxID_ANY);
     virtual ~NetworkView(){};
 
-    void loadNetwork(NodeTreeBase *network);
+    void loadNetwork(NodeTree *network);
 
     wxTreeCtrl *_treectrl;
   private:
     void displayNetwork();
-    void recursive_addNode(wxTreeItemId parentid, NodeTreeBase *node);
+    void recursive_addNode(wxTreeItemId parentid, NodeTree *node);
 
-    NodeTreeBase *_network;
+    NodeTree *_network;
 };
 
 #endif /*networkview.h*/

@@ -82,13 +82,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   _monitor = new Monitor();
   _outputplot->setMonitor(_monitor);
+  _compview->setMonitor(_monitor);
 
 }
 
 void MyFrame::OnCompSelect(wxTreeEvent& event)
 {
   wxTreeItemData *selectednode = _netview->_treectrl->GetItemData(event.GetItem());
-  NodeTreeBase *node=dynamic_cast<NodeTreeBase*>(selectednode);
+  NodeTree *node=dynamic_cast<NodeTree*>(selectednode);
   if (node == NULL){
     LOG_WARNING << "Invalid conversion of wxTreeItemData to NodeTreeBase";
     return;
@@ -130,21 +131,16 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
       LOG_ERROR << "Failed to build the network";
       return;
     }
+    LOG_DEBUG << "Network built successfully";
 
     delete _network;
     delete _monitor;
     _monitor = new Monitor();
     _network = net;
     _network->setMonitor(_monitor);
+    _compview->setNetwork(_network);
+    _compview->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
-
-    //Manually add a monitor point for now
-    std::vector<std::string> signature;
-    signature.push_back("out");
-    signature.push_back("signal");
-    unsigned int pointId = _network->addMonitorPoint(signature);
-
-    _outputplot->AddPlotTrace("signal", pointId);
 
     _netview->loadNetwork(_network->getNodeTree());
 

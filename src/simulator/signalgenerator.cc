@@ -49,8 +49,11 @@ void SignalGenerator::configure(std::string key, std::string value) {
 BaseComponent * SignalGenerator::clone(void) {
   SignalGenerator * c = new SignalGenerator();
 
+  c->_inputs = _inputs;
+  c->_outputs = _outputs;
   c->_period = _period;
   c->_data = _data;
+  c->_it = c->_data.begin();
 
   return (BaseComponent*)c;
 }

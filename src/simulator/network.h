@@ -34,6 +34,8 @@ class Network : public BaseComponent
     void renameComponent(unsigned int id, std::string newName);
     unsigned int findComponent(unsigned int componentId);
     unsigned int findComponent(std::string componentName);
+    unsigned int constNode(unsigned int constVal);
+    unsigned int constNode(std::string constVal);
 
     unsigned int addInput(void);
     unsigned int addInput(std::string);
@@ -50,8 +52,15 @@ class Network : public BaseComponent
         unsigned int idOut = findComponent(componentOut);
         unsigned int idIn = findComponent(componentIn);
 
-        unsigned int node = _components[idOut]->getOutputNode(pinOut);
-        _components[idIn]->connectInput(pinIn, node);
+        if( idOut == (compl 0) ) {
+          //Magic number for const
+          unsigned int node = constNode(pinOut);
+          _components[idIn]->connectInput(pinIn, node);
+        }
+        else {
+          unsigned int node = _components[idOut]->getOutputNode(pinOut);
+          _components[idIn]->connectInput(pinIn, node);
+        }
         return;
       }
 
@@ -61,7 +70,7 @@ class Network : public BaseComponent
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
-    NodeTreeBase * getNodeTree(void);
+    NodeTree * getNodeTree(void);
 
     BaseComponent * clone(void);
 

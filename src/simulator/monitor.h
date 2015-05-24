@@ -32,6 +32,12 @@ class Monitor {
     const std::vector<std::pair<unsigned int, bool> >& getLog(std::string nickname);
     const std::vector<std::pair<unsigned int, bool> >& getLog(std::vector<std::string> signature);
 
+    unsigned int numPoints(void);
+    std::vector<unsigned int> getPoints(void);
+    std::string getNickname(unsigned int pointId);
+    std::vector<std::string> getSignature(unsigned int pointId);
+
+    unsigned int findPoint(unsigned int pointId);
     unsigned int findPoint(std::string nickname);
     unsigned int findPoint(std::vector<std::string> signature);
     unsigned int maxLength;

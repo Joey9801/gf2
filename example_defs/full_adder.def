@@ -1,0 +1,48 @@
+{
+    inputs : {
+        a : false,
+        b : false,
+        c_in : false
+    },
+    outputs : {
+        s : xor2,
+        c_out : or1
+    },
+    components : {
+        xor1 : {
+            type : xor,
+            inputs : {
+                i1 : inputs.a,
+                i2 : inputs.b
+            }
+        },
+        xor2 : {
+            type : xor,
+            inputs : {
+                i1 : xor1,
+                i2 : inputs.c_in
+            }
+        },
+        and1 : {
+            type : and,
+            inputs : {
+                i1 : xor1,
+                i2 : inputs.c_in
+            }
+        },
+        and2 : {
+            type : and,
+            inputs : {
+                i1 : inputs.a,
+                i2 : inputs.b
+            }
+        },
+        or1 : {
+            type : or,
+            inputs : {
+                i1 : and1,
+                i2 : and2
+            }
+        }
+    }
+}

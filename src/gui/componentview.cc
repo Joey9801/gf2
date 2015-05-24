@@ -12,7 +12,7 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   // Create list view
   _listview = new wxListView(this, -1);
 
-  // Add first column       
+  // Add first column
   wxListItem col0;
   col0.SetId(0);
   col0.SetText( _("I/O") );
@@ -55,23 +55,33 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   return;
 }
 
-void ComponentView::selectComponent(NodeTreeBase *component) {
+void ComponentView::selectComponent(NodeTree *component) {
   _component = component;
   _listview->DeleteAllItems();
 
 
   _overview->SetLabel("Component name: " + _component->nickname + "\nComponent type: " + _component->name);
   long itemIndex;
-  for(std::vector<int>::size_type i = _component->outputNames.size() - 1; 
+  for(std::vector<int>::size_type i = _component->outputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
     itemIndex = _listview->InsertItem(0, wxString("Output"));
     _listview->SetItem(itemIndex, 1, wxString(_component->outputNames[i]));
   }
-  for(std::vector<int>::size_type i = _component->inputNames.size() - 1; 
+  for(std::vector<int>::size_type i = _component->inputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
     itemIndex = _listview->InsertItem(0, wxString("Input"));
     _listview->SetItem(itemIndex, 1, wxString(_component->inputNames[i]));
   }
+
+}
+
+void ComponentView::setMonitor(Monitor * m) {
+  _monitor = m;
+  return;
+}
+void ComponentView::setNetwork(Network * n) {
+  _network = n;
+  return;
 }
 
 bool ComponentView::IsMonitored(long item) const
@@ -92,6 +102,21 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
 {
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
-    _listview->SetItem(item, 2, (IsMonitored(item) ? wxString("") : wxString("Yes")));
+    if(_listview->GetItemText(item, 0) == "Output") {
+      if(not IsMonitored(item)) {
+        std::string outputName = _listview->GetItemText(item, 1).ToStdString();
+        std::vector<std::string> signature = _component->getOutputSignature(outputName);
+
+        std::stringstream ss("");
+        for(unsigned int i=signature.size()-1; i>0; i--)
+          ss << signature[i] << ".";
+        ss << signature[0];
+
+        unsigned int pointId = _network->addMonitorPoint(signature);
+        _monitor->renamePoint(pointId, ss.str());
+
+        _listview->SetItem(item, 2, wxString("Yes"));
+      }
+    }
   }
 }

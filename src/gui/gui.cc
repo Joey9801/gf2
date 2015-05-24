@@ -137,14 +137,9 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _monitor = new Monitor();
     _network = net;
     _network->setMonitor(_monitor);
+    _compview->setNetwork(_network);
+    _compview->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
-
-    //Manually add a monitor point for now
-    std::vector<std::string> signature;
-    signature.push_back("out");
-    signature.push_back("signal");
-    unsigned int pointId = _network->addMonitorPoint(signature);
-    _monitor->renamePoint(pointId, "nickname");
 
     _netview->loadNetwork(_network->getNodeTree());
 

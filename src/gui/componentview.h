@@ -1,6 +1,8 @@
 #ifndef componentview_h
 #define componentview_h
 
+#include <sstream>
+
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
@@ -12,6 +14,7 @@
 
 #include "../structures/nodetree.h"
 #include "../simulator/monitor.h"
+#include "../simulator/network.h"
 
 class ComponentView: public wxPanel
 {
@@ -22,9 +25,11 @@ class ComponentView: public wxPanel
     void selectComponent(NodeTree * component);
 
     void setMonitor(Monitor * m);
+    void setNetwork(Network * n);
 
   private:
     Monitor * _monitor;
+    Network * _network;
 
     wxStaticText *_overview;
     wxListView *_listview;

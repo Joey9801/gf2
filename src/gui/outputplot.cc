@@ -47,7 +47,7 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
   Bind(wxEVT_MOUSEWHEEL, &MyGLCanvas::OnMousewheel, this);
 
   bitwidth = 30.0;
-  xzero = 100.0;
+  xzero = 200.0;
   yzero  = 20.0;
 }
 
@@ -104,12 +104,12 @@ void MyGLCanvas::drawPlot(
 {
   float base = yzero + (num * rowheight);
 
-  //write labels, wrap line if longer than 9 chars
+  //write labels, wrap line if longer than 18 chars
   //if there is not enough vertical space, label is truncated
   glColor3f(0.0, 0.0, 1.0);
-  for (unsigned int i = 0.0; label.Len()>9*i and rowheight*0.6>i*17.0; i++) {
+  for (unsigned int i = 0.0; label.Len()>18*i and rowheight*0.6>i*17.0; i++) {
     glRasterPos2f(10, base + rowheight*0.6-17.0*i);//label pos
-    wxString plotlabel = label.Mid(i*9, 9);//truncate label to fit
+    wxString plotlabel = label.Mid(i*18, 18);//truncate label to fit
     //write label
     for (unsigned int j = 0; j < plotlabel.Len(); j++)
       glutBitmapCharacter(GLUT_BITMAP_9_BY_15, plotlabel[j]);

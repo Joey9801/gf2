@@ -1,0 +1,59 @@
+{
+    inputs : {
+        clock : false
+    },
+    outputs : {
+        a : jk1.q,
+        b : jk2.q,
+        c : jk3.q,
+        d : jk4.q
+    },
+    components : {
+        and1 : {
+            type : and,
+            inputs : {
+                i1 : jk1.q,
+                i2 : jk2.q
+            }
+        },
+        and2 : {
+            type : and,
+            inputs : {
+                i1 : and1.out,
+                i2 : jk3.q
+            }
+        },
+        jk1 : {
+            type : jk,
+            inputs : {
+                clock : inputs.clock,
+                j : const.true,
+                k : const.true
+            }
+        },
+        jk2 : {
+            type : jk,
+            inputs : {
+                clock : inputs.clock,
+                j : jk1.q,
+                k : jk1.q
+            }
+        },
+        jk3 : {
+            type : jk,
+            inputs : {
+                clock : inputs.clock,
+                j : and1.out,
+                k : and1.out
+            }
+        },
+        jk4 : {
+            type : jk,
+            inputs : {
+                clock : inputs.clock,
+                j : and2.out,
+                k : and2.out
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    includes : {
+        example_defs/4bit-counter.def : counter,
+        example_defs/full_adder.def : adder
+    },
+    components : {
+        clock : {
+            type : siggen,
+            config : {
+                data : 01,
+                period : 5
+            }
+        },
+        counter : {
+            type : includes.counter,
+            inputs : {
+                clock : clock.out
+            }
+        },
+        adder : {
+            type : includes.adder,
+            inputs : {
+                a : counter.a,
+                b : counter.b,
+                c_in : counter.c
+            }
+        }
+    }
+}

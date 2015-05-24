@@ -3,10 +3,12 @@
         clock : false
     },
     outputs : {
-        a : jk1.q,
-        b : jk2.q,
-        c : jk3.q,
-        d : jk4.q
+        count[4] : {
+            0 : jk1.q,
+            1 : jk2.q,
+            2 : jk3.q,
+            3 : jk4.q
+        }
     },
     components : {
         and1 : {

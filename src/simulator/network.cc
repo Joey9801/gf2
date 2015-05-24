@@ -137,7 +137,7 @@ unsigned int Network::constNode(std::string constVal) {
 
 //Returns the inputId
 unsigned int Network::addInput(void) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int inputId = _inputs.size();
   _inputs.push_back(0);
@@ -150,7 +150,7 @@ unsigned int Network::addInput(void) {
   return inputId;
 }
 unsigned int Network::addInput(std::string name) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int id = addInput();
   renameInput(id, name);
@@ -159,7 +159,7 @@ unsigned int Network::addInput(std::string name) {
 }
 
 unsigned int Network::addOutput(void) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int outputId = _outputs.size();
   _outputs.push_back(0);
@@ -168,12 +168,69 @@ unsigned int Network::addOutput(void) {
   return outputId;
 }
 unsigned int Network::addOutput(std::string name) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int id = addOutput();
   renameOutput(id, name);
   _outputDummy->renameInput(id, name);
   return id;
+}
+
+unsigned int Network::addVectorInput(std::string signature) {
+  // Creates a vector input from a string in the form "name[num]"
+  // Returns the inputId of the first one
+  if((signature.find_first_of('[') == std::string::npos)
+  or (signature.find_first_of(']') == std::string::npos)) {
+    LOG_ERROR << "Tried to create a vector input with invalid signature: " << signature;
+    throw 1;
+  }
+
+  std::string name = signature.substr(0, signature.find_first_of('['));
+
+  unsigned int size;
+  std::stringstream ss;
+  ss.str(signature.substr(signature.find_first_of('[')+1, signature.find_first_of(']')));
+  ss >> size;
+
+  _inputVectors[name] = size;
+  _inputDummy->_inputVectors[name] = size;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    addInput(ss.str());
+  }
+  ss.str("");
+  ss << name << "[0]";
+  return _pinInMap[ss.str()];
+}
+unsigned int Network::addVectorOutput(std::string signature) {
+  // Creates a vector output from a string in the form "name[num]"
+  // Returns the outputId of the first one
+  if((signature.find_first_of('[') == std::string::npos)
+  or (signature.find_first_of(']') == std::string::npos)) {
+    LOG_ERROR << "Tried to create a vector output with invalid signature: " << signature;
+    throw 1;
+  }
+
+  std::string name = signature.substr(0, signature.find_first_of('['));
+
+  unsigned int size;
+  std::stringstream ss;
+  ss.str(signature.substr(signature.find_first_of('[')+1, signature.find_first_of(']')));
+  ss >> size;
+
+  _outputVectors[name] = size;
+  _outputDummy->_outputVectors[name] = size;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    addOutput(ss.str());
+  }
+  ss.str("");
+  ss << name << "[0]";
+  return _pinOutMap[ss.str()];
 }
 
 void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
@@ -314,6 +371,8 @@ BaseComponent * Network::clone(void) {
 
   n->_inputs = _inputs;
   n->_outputs = _outputs;
+  n->_inputVectors = _inputVectors;
+  n->_outputVectors = _outputVectors;
 
   n->_pinInMap = _pinInMap;
   n->_pinOutMap = _pinOutMap;

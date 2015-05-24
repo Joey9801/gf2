@@ -90,7 +90,11 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
           it != def->pairs["inputs"]->pairs.end();
           it++) {
-        net->addInput( it->first );
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos))
+          net->addVectorInput( it->first );
+        else
+          net->addInput( it->first );
       }
     }
     else {
@@ -102,7 +106,11 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        net->addOutput( it->first );
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos))
+          net->addVectorOutput( it->first );
+        else
+          net->addOutput( it->first );
       }
     }
     else {
@@ -168,8 +176,24 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
-        net->connect(dest.first, dest.second, "outputs", it->first);
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos)) {
+          // Iterate through the vector initialisation
+          std::stringstream ss;
+          std::string name = it->first.substr(0, it->first.find_first_of('['));
+          for(std::map<std::string, Definition*>::iterator it2 = it->second->pairs.begin();
+              it2 != it->second->pairs.end();
+              it2++) {
+            ss.str("");
+            ss << name << "[" << it2->first << "]";
+            std::pair<std::string, std::string> dest = Helpers::separateDotted( it2->second->value );
+            net->connect(dest.first, dest.second, "outputs", ss.str());
+          }
+        }
+        else {
+          std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
+          net->connect(dest.first, dest.second, "outputs", it->first);
+        }
       }
     }
 
@@ -185,8 +209,19 @@ namespace Builder {
               it2++) {
             //Iterating over each input in a component
             std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
-            LOG_DEBUG << "\"" << source.first << "\", \"" << source.second << "\"";
-              net->connect( source.first, source.second, it1->first, it2->first );
+            std::string pinOut = source.second;
+            std::string pinIn = it2->first;
+
+
+            //If the IO name is a vector, strip the "[]" from the end
+            if( it2->first.length() > 2 )
+              if( it2->first.substr( it2->first.length()-2) == "[]" )
+                pinIn = it2->first.substr(0, it2->first.size()-2);
+            if( source.second.length() > 2 )
+              if( source.second.substr( source.second.length()-2) == "[]" )
+                pinOut = source.second.substr(0, source.second.size()-2);
+
+            net->connect( source.first, pinOut, it1->first, pinIn );
           }
         }
       }

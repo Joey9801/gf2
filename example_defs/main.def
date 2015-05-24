@@ -20,9 +20,9 @@
         adder : {
             type : includes.adder,
             inputs : {
-                a : counter.a,
-                b : counter.b,
-                c_in : counter.c
+                a : counter.count[0],
+                b : counter.count[1],
+                c_in : counter.count[2]
             }
         }
     }

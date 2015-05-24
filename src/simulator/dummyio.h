@@ -3,11 +3,15 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "basecomponent.h"
 
+class Network;
+
 class DummyIO : public BaseComponent
 {
+  friend class Network;
   public:
     DummyIO();
     ~DummyIO();

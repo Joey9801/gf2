@@ -5,10 +5,12 @@
 #include <string>
 #include <wx/treebase.h>
 
+#include <plog/Log.h>
+
 enum class NodeType { Network, Gate };
 
 struct NodeTree : public wxTreeItemData {
-  NodeTree(NodeType node_type) {type = node_type;}
+  NodeTree(NodeType node_type);
 
   NodeType type;
 
@@ -27,6 +29,9 @@ struct NodeTree : public wxTreeItemData {
 
   NodeTree * parent;
   std::vector<NodeTree*> children;
+
+  std::vector<std::string> getOutputSignature(unsigned int outputId);
+  std::vector<std::string> getOutputSignature(std::string outputName);
 };
 
 #endif

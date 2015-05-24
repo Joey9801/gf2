@@ -119,11 +119,20 @@ unsigned int Network::findComponent(unsigned int componentId) {
 unsigned int Network::findComponent(std::string componentName) {
   if(_componentNames.find(componentName) == _componentNames.end()) {
     //TODO raise some sort of error
+    if(componentName == "const")
+      return compl 0;
+
     throw 1;
-    return ~0;
   }
   unsigned int componentId = _componentNames[componentName];
   return componentId;
+}
+
+unsigned int Network::constNode(unsigned int constVal) {
+  return (constVal==1) ? 1 : 0;
+}
+unsigned int Network::constNode(std::string constVal) {
+  return (constVal=="true") ? 1 : 0;
 }
 
 //Returns the inputId
@@ -185,7 +194,6 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
 
   _nodesA[0] = false;
   _nodesA[1] = true;
-
 
   _outputDummy->loadOutputs(_nodesA, b, _outputs);
 
@@ -347,6 +355,7 @@ void RootNetwork::step(void) {
       it != _monitorPoints.end();
       it++)
     _monitor->setValue( it->first, _time, _nodesA[it->second]);
+
 }
 
 

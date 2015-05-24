@@ -7,6 +7,7 @@ constructor_map componentConstructor = {
   {"nor",     &createComponent<NorGate>},
   {"xor",     &createComponent<XorGate>},
   {"dtype",   &createComponent<DType>},
+  {"jk",      &createComponent<JK>},
   {"siggen",  &createComponent<SignalGenerator>},
   {"dummyio", &createComponent<DummyIO>}
 };

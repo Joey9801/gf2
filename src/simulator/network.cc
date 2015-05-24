@@ -28,10 +28,7 @@ unsigned int Network::addComponent(std::string type) {
   if(componentConstructor.find(type) == componentConstructor.end()) {
     //TODO report an error
     throw 1;
-    return 0;
   }
-
-  LOG_DEBUG << "type: " << type;
 
   unsigned int componentId = _components.size();
   BaseComponent * c = componentConstructor[type]();
@@ -39,6 +36,7 @@ unsigned int Network::addComponent(std::string type) {
     c->connectOutput(i, _nodesA.size()+i);
 
   _components.push_back(c);
+
   _nodesA.resize(_nodesA.size() + c->numOutputs(), false);
   _nodesB.resize(_nodesA.size());
 
@@ -208,6 +206,13 @@ unsigned int Network::countComponents(void) {
 
 void Network::setMonitor(Monitor * m) {
   _monitor = m;
+  for(std::vector<BaseComponent*>::iterator it = _components.begin();
+      it != _components.end();
+      it++) {
+    Network * net = dynamic_cast<Network*>(*it);
+    if(net)
+      net->setMonitor(m);
+  }
   return;
 }
 
@@ -281,7 +286,7 @@ NodeTree * Network::getNodeTree(void) {
   for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
     n->inputNames[(*it).second] = (*it).first;
 
-  n->outputNames.resize(_pinInMap.size());
+  n->outputNames.resize(_pinOutMap.size());
   for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
     n->outputNames[(*it).second] = (*it).first;
 
@@ -291,14 +296,8 @@ NodeTree * Network::getNodeTree(void) {
 BaseComponent * Network::clone(void) {
   Network * n = new Network();
 
-  n->_components.clear();
-  for(std::vector<BaseComponent*>::iterator it = _components.begin();
-      it != _components.end();
-      it++)
-    n->_components.push_back( (*it)->clone() );
-
-  n->_inputDummy = (DummyIO*)n->_components[0];
-  n->_outputDummy = (DummyIO*)n->_components[1];
+  for(unsigned int i=2; i<_components.size(); i++)
+    n->_components.push_back( _components[i]->clone() );
 
   n->_componentNames = _componentNames;
 
@@ -307,6 +306,13 @@ BaseComponent * Network::clone(void) {
 
   n->_inputs = _inputs;
   n->_outputs = _outputs;
+
+  n->_pinInMap = _pinInMap;
+  n->_pinOutMap = _pinOutMap;
+  n->_inputDummy = (DummyIO*)_inputDummy->clone();
+  n->_outputDummy = (DummyIO*)_outputDummy->clone();
+  n->_components[0] = (BaseComponent*)n->_inputDummy;
+  n->_components[1] = (BaseComponent*)n->_outputDummy;
 
   // Give it the monitor object, but don't copy over the monitor points
   n->_monitor = _monitor;

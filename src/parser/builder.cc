@@ -185,7 +185,7 @@ namespace Builder {
               it2++) {
             //Iterating over each input in a component
             std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
-            net->connect( source.first, source.second, it1->first, it2->first );
+              net->connect( source.first, source.second, it1->first, it2->first );
           }
         }
       }

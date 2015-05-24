@@ -42,7 +42,7 @@ class BaseComponent {
 
     virtual NodeTree * getNodeTree(void);
 
-    BaseComponent * clone(void);
+    virtual BaseComponent * clone(void);
 
   protected:
     std::string _name;

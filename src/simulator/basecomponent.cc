@@ -99,10 +99,11 @@ unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
 }
 
 unsigned int BaseComponent::getOutputNode(std::string  name) {
-  if(_pinOutMap.find(name) == _pinOutMap.end()){
-    //TODO raise an error
+  if( (name == std::string("")) and (_outputs.size() == 1) ) {
+    return _outputs[0];
+  }
+  else if(_pinOutMap.find(name) == _pinOutMap.end()){
     throw 1;
-    return 0;
   }
   unsigned int pinOut = _pinOutMap[name];
   return getOutputNode(pinOut);

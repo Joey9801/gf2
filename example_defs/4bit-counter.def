@@ -19,7 +19,7 @@
         and2 : {
             type : and,
             inputs : {
-                i1 : and1.out,
+                i1 : and1,
                 i2 : jk3.q
             }
         },
@@ -43,16 +43,16 @@
             type : jk,
             inputs : {
                 clock : inputs.clock,
-                j : and1.out,
-                k : and1.out
+                j : and1,
+                k : and1
             }
         },
         jk4 : {
             type : jk,
             inputs : {
                 clock : inputs.clock,
-                j : and2.out,
-                k : and2.out
+                j : and2,
+                k : and2
             }
         }
     }

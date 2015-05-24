@@ -14,7 +14,7 @@
         counter : {
             type : includes.counter,
             inputs : {
-                clock : clock.out
+                clock : clock
             }
         },
         adder : {

@@ -185,6 +185,7 @@ namespace Builder {
               it2++) {
             //Iterating over each input in a component
             std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
+            LOG_DEBUG << "\"" << source.first << "\", \"" << source.second << "\"";
               net->connect( source.first, source.second, it1->first, it2->first );
           }
         }
@@ -197,8 +198,15 @@ namespace Builder {
   namespace Helpers {
     std::pair<std::string, std::string> separateDotted(std::string in) {
       std::pair<std::string, std::string> out;
-      out.first = in.substr(0, in.find_first_of('.'));
-      out.second = in.substr(in.find_first_of('.')+1);
+      if(in.find_first_of('.') == std::string::npos) {
+        out.first = in;
+        out.second = std::string("");
+      }
+      else {
+        out.first = in.substr(0, in.find_first_of('.'));
+        out.second = in.substr(in.find_first_of('.')+1);
+      }
+
       return out;
     }
   }

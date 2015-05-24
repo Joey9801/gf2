@@ -5,8 +5,8 @@
         c_in : false
     },
     outputs : {
-        s : xor2.out,
-        c_out : or1.out
+        s : xor2,
+        c_out : or1
     },
     components : {
         xor1 : {
@@ -19,14 +19,14 @@
         xor2 : {
             type : xor,
             inputs : {
-                i1 : xor1.out,
+                i1 : xor1,
                 i2 : inputs.c_in
             }
         },
         and1 : {
             type : and,
             inputs : {
-                i1 : xor1.out,
+                i1 : xor1,
                 i2 : inputs.c_in
             }
         },
@@ -40,8 +40,8 @@
         or1 : {
             type : or,
             inputs : {
-                i1 : and1.out,
-                i2 : and2.out
+                i1 : and1,
+                i2 : and2
             }
         }
     }

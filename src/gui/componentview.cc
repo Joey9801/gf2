@@ -62,15 +62,49 @@ void ComponentView::selectComponent(NodeTree *component) {
 
   _overview->SetLabel("Component name: " + _component->nickname + "\nComponent type: " + _component->name);
   long itemIndex;
-  for(std::vector<int>::size_type i = _component->outputNames.size() - 1;
+
+  //add all the outputs to the listview
+  for(std::vector<std::string>::size_type i = _component->outputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
+    //Add output name
     itemIndex = _listview->InsertItem(0, wxString("Output"));
     _listview->SetItem(itemIndex, 1, wxString(_component->outputNames[i]));
+
+    //Find out which inputs the outputs are connected to
+    if(_component->parent != NULL){ //don't need this for root network, which was no parent
+      wxString inputnamestr = "";
+      //loop through all the components at this level of the network
+      for(std::vector<NodeTree*>::iterator it = _component->parent->children.begin(); 
+          it != _component->parent->children.end(); ++it) {
+        //loop through all the inputs of the component
+        for(std::vector<unsigned int>::size_type j = (*it)->inputNodes.size() - 1;
+            j != (std::vector<unsigned int>::size_type) -1; j--) {
+          if((*it)->inputNodes[j] == _component->outputNodes[i]){
+            if(inputnamestr != "") inputnamestr += ", ";
+            inputnamestr += (*it)->nickname + "." + (*it)->inputNames[j];
+            _listview->SetItem(itemIndex, 3, inputnamestr);
+          }
+        }
+      }
+    }
   }
-  for(std::vector<int>::size_type i = _component->inputNames.size() - 1;
+  for(std::vector<std::string>::size_type i = _component->inputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
     itemIndex = _listview->InsertItem(0, wxString("Input"));
     _listview->SetItem(itemIndex, 1, wxString(_component->inputNames[i]));
+
+    if(_component->parent != NULL){ //don't need this for root network, which was no parent
+      for(std::vector<NodeTree*>::iterator it = _component->parent->children.begin(); 
+          it != _component->parent->children.end(); ++it) {
+        for(std::vector<unsigned int>::size_type j = (*it)->outputNodes.size() - 1;
+            j != (std::vector<unsigned int>::size_type) -1; j--) {
+          if((*it)->inputNodes[j] == _component->inputNodes[i]){
+            wxString outputnamestr = (*it)->nickname + "." + (*it)->outputNames[j];
+            _listview->SetItem(itemIndex, 3, outputnamestr);
+          }
+        }
+      }
+    }
   }
 
 }

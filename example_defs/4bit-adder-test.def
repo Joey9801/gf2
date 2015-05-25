@@ -1,0 +1,35 @@
+{
+    includes : {
+        example_defs/4bit-synch-counter.def : counter,
+        example_defs/4bit-carry-adder.def : adder
+    },
+    components : {
+        clock : {
+            type : siggen,
+            config : {
+                data : 01,
+                period : 10
+            }
+        },
+        counter1 : {
+            type : includes.counter,
+            inputs : {
+                clock : clock
+            }
+        },
+        counter2 : {
+            type : includes.counter,
+            inputs : {
+                clock : counter1.count[3]
+            }
+        },
+        adder : {
+            type : includes.adder,
+            inputs : {
+                a[] : counter1.count[],
+                b[] : counter2.count[],
+                carry : const.false
+            }
+        }
+    }
+}

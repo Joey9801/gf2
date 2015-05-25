@@ -4,7 +4,14 @@ namespace Builder {
   Network * build(std::string filepath) {
     Definition * def = Parser::parseDefinition(filepath);
 
-    Network * net = buildNetwork(def);
+    Network * net;
+    try {
+      net = buildNetwork(def);
+    }
+    catch(...) {
+      LOG_ERROR << filepath;
+      throw;
+    }
 
     return net;
   }
@@ -74,6 +81,7 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["includes"]->pairs.begin();
           it != def->pairs["includes"]->pairs.end();
           it++) {
+        LOG_DEBUG << "Making: " << it->first;
         includes[it->second->value] = build(it->first);
       }
     }
@@ -171,6 +179,7 @@ namespace Builder {
     //  for_each(input in component_inputs)
     //    connect the input to the thing
 
+    LOG_VERBOSE << "Connecting outputs";
     if( def->pairs.find("outputs") != def->pairs.end() ) {
       //Connect any outputs
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
@@ -180,6 +189,7 @@ namespace Builder {
             and (it->first.find_first_of(']') != std::string::npos)) {
           // Iterate through the vector initialisation
           std::stringstream ss;
+          LOG_DEBUG << "it->first: " << it->first;
           std::string name = it->first.substr(0, it->first.find_first_of('['));
           for(std::map<std::string, Definition*>::iterator it2 = it->second->pairs.begin();
               it2 != it->second->pairs.end();
@@ -197,6 +207,7 @@ namespace Builder {
       }
     }
 
+    LOG_VERBOSE << "Connecting components";
     if( def->pairs.find("components") != def->pairs.end() ) {
       for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
           it1 != def->pairs["components"]->pairs.end();
@@ -221,10 +232,22 @@ namespace Builder {
               if( source.second.substr( source.second.length()-2) == "[]" )
                 pinOut = source.second.substr(0, source.second.size()-2);
 
-            net->connect( source.first, pinOut, it1->first, pinIn );
+            try {
+              net->connect( source.first, pinOut, it1->first, pinIn );
+            }
+            catch(...) {
+              LOG_ERROR << "net->connect(" << source.first << ", " << pinOut << ", "
+                << it1->first << ", " << pinIn << ")";
+              throw;
+            }
           }
         }
       }
+      LOG_DEBUG << "Finished making " << net->numConnections << " connections";
+    }
+    else {
+      //This should already have been checked, but throw anyway just in case
+      throw 1;
     }
 
     return;

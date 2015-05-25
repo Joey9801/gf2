@@ -73,6 +73,8 @@ class Network : public BaseComponent
           unsigned int node = _components[idOut]->getOutputNode(pinOut);
           _components[idIn]->connectInput(pinIn, node);
         }
+
+        numConnections++;
         return;
       }
 
@@ -85,6 +87,8 @@ class Network : public BaseComponent
     NodeTree * getNodeTree(void);
 
     BaseComponent * clone(void);
+
+    unsigned int numConnections;
 
   protected:
     std::map<std::string, unsigned int> _componentNames;

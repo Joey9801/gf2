@@ -103,6 +103,7 @@ unsigned int BaseComponent::getOutputNode(std::string  name) {
     return _outputs[0];
   }
   else if(_pinOutMap.find(name) == _pinOutMap.end()){
+    LOG_ERROR << "\"" << name << "\" not an output of " << _name;
     throw 1;
   }
   unsigned int pinOut = _pinOutMap[name];
@@ -145,8 +146,8 @@ unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
 unsigned int BaseComponent::getInputNode(std::string  name) {
   if(_pinInMap.find(name) == _pinInMap.end()){
     //TODO raise an error
+    LOG_ERROR << "\"" << name << "\" not an input of " << _name;
     throw 1;
-    return 0;
   }
   unsigned int pinIn = _pinInMap[name];
   return getInputNode(pinIn);
@@ -205,7 +206,6 @@ void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
     throw 1;
-    return;
   }
 
   unsigned int index = _pinInMap[name];

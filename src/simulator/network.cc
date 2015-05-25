@@ -2,10 +2,9 @@
 
 Network::Network(void) :
   BaseComponent("Network", 0, 0),
+  numConnections(0),
   _time(0)
 {
-  LOG_DEBUG;
-
   //Make room for the const values
   _nodesA.resize(2);
   _nodesB.resize(2);
@@ -48,9 +47,6 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   return componentId;
 }
 unsigned int Network::addComponent(BaseComponent * c) {
-
-  LOG_DEBUG;
-
   unsigned int componentId = _components.size();
   for(unsigned int i=0; i<c->numOutputs(); i++)
     c->connectOutput(i, _nodesA.size()+i);
@@ -68,7 +64,6 @@ unsigned int Network::addComponent(BaseComponent * c, std::string name) {
 }
 
 void Network::configureComponent(std::string name, std::string key, std::string value) {
-  LOG_DEBUG;
   unsigned int componentId = findComponent(name);
   BaseComponent * c = _components[componentId];
   c->configure(key, value);
@@ -85,7 +80,6 @@ void Network::renameComponent(std::string oldName, std::string newName) {
   if(_componentNames.find(oldName) == _componentNames.end()) {
     //TODO raise some sort of error
     throw 1;
-    return;
   }
 
   LOG_VERBOSE << "oldName: " << oldName << ", newName: " << newName;
@@ -122,6 +116,7 @@ unsigned int Network::findComponent(std::string componentName) {
     if(componentName == "const")
       return compl 0;
 
+    LOG_ERROR << "\"" << componentName << "\" is not a componentName in the current network";
     throw 1;
   }
   unsigned int componentId = _componentNames[componentName];

@@ -76,6 +76,7 @@ void ComponentView::selectComponent(NodeTree *component) {
     //Add output name
     itemIndex = _listview->InsertItem(0, wxString("Output"));
     _listview->SetItem(itemIndex, 1, wxString(_component->outputNames[i]));
+    if(IsMonitored(itemIndex)) _listview->SetItem(itemIndex, 2, wxString("Yes"));
 
     //Find out which inputs the outputs are connected to
     if(_component->parent != NULL){ //don't need this for root network, which was no parent
@@ -134,11 +135,16 @@ void ComponentView::setNetwork(Network * n) {
 
 bool ComponentView::IsMonitored(long item) const
 {
-  if(_listview->GetItemText(item, 2) ==  "Yes"){
-    return true;
-  }else{
+  std::string outputName = _listview->GetItemText(item, 1).ToStdString();
+  std::vector<std::string> signature = _component->getOutputSignature(outputName);
+
+  try{
+    _monitor->findPoint(signature);
+  } catch(...){
+    LOG_DEBUG;
     return false;
   }
+  return true;
 }
 
 void ComponentView::OnItemSelect(wxListEvent &event)
@@ -182,11 +188,8 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
           ss << signature[i] << ".";
         ss << signature[0];
 
-        LOG_DEBUG;
         unsigned int pointId = _network->addMonitorPoint(signature);
-        LOG_DEBUG;
         _monitor->renamePoint(pointId, ss.str());
-        LOG_DEBUG;
 
         _listview->SetItem(item, 2, wxString("Yes"));
       }

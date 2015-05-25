@@ -1,8 +1,8 @@
 #include "lexeme.h"
 
 /// Constructor for the Lexeme class
-Lexeme::Lexeme( LexemeType type, std::string charString,
-                unsigned int startLineNo, unsigned int startCharNo)
+Lexeme::Lexeme( const LexemeType type, const std::string charString,
+                const unsigned int startLineNo, const unsigned int startCharNo)
     : type(type),
       charString(charString),
       startLineNo(startLineNo),

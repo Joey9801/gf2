@@ -33,8 +33,8 @@ enum class LexemeType : char {
     which this sequence began. */
 class Lexeme {
  public:
-  Lexeme(LexemeType type, std::string charString, unsigned int startLineNo,
-    unsigned int startCharNo);
+  Lexeme( const LexemeType type, const std::string charString,
+          const unsigned int startLineNo, const unsigned int startCharNo);
 
   std::string getString();
 

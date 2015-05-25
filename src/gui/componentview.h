@@ -34,6 +34,7 @@ class ComponentView: public wxPanel
     wxStaticText *_overview;
     wxListView *_listview;
     wxButton *_ToggleMonitorButton;
+    wxButton *_ToggleInputButton;
     NodeTree *_component;
 
     bool IsMonitored(long item) const;

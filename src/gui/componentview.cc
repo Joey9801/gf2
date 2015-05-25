@@ -43,11 +43,18 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   //Add the control buttons
   _ToggleMonitorButton = new wxButton(this, -1, "Toggle Monitor Point");
   _ToggleMonitorButton->Disable();
+  _ToggleInputButton = new wxButton(this, -1, "Toggle Input State");
+  _ToggleInputButton->Disable();
 
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
   cvsizer->Add(_overview, 0,wxFIXED_MINSIZE | wxALL , 10);
   cvsizer->Add(_listview, 1,wxEXPAND,0);
-  cvsizer->Add(_ToggleMonitorButton, 0, wxFIXED_MINSIZE | wxTOP, 5);
+
+  wxBoxSizer *buttonsizer = new wxBoxSizer(wxHORIZONTAL);
+  buttonsizer->Add(_ToggleMonitorButton);
+  buttonsizer->Add(_ToggleInputButton);
+
+  cvsizer->Add(buttonsizer, 0, wxFIXED_MINSIZE | wxTOP, 5);
   SetSizer(cvsizer);
 
   _listview->Bind(wxEVT_LIST_ITEM_SELECTED, &ComponentView::OnItemSelect, this);
@@ -88,12 +95,13 @@ void ComponentView::selectComponent(NodeTree *component) {
       }
     }
   }
+  //add all the inputs to the listview similarly
   for(std::vector<std::string>::size_type i = _component->inputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
     itemIndex = _listview->InsertItem(0, wxString("Input"));
     _listview->SetItem(itemIndex, 1, wxString(_component->inputNames[i]));
 
-    if(_component->parent != NULL){ //don't need this for root network, which was no parent
+    if(_component->parent != NULL){ //don't need this for root network, which has no parent
       for(std::vector<NodeTree*>::iterator it = _component->parent->children.begin(); 
           it != _component->parent->children.end(); ++it) {
         for(std::vector<unsigned int>::size_type j = (*it)->outputNodes.size() - 1;
@@ -106,7 +114,13 @@ void ComponentView::selectComponent(NodeTree *component) {
       }
     }
   }
-
+  //deselect all items
+  long item = -1;
+  while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
+    _listview->SetItemState(item, 0, wxLIST_MASK_STATE);
+  }
+  _ToggleMonitorButton->Disable();
+  _ToggleInputButton->Disable();
 }
 
 void ComponentView::setMonitor(Monitor * m) {
@@ -129,7 +143,29 @@ bool ComponentView::IsMonitored(long item) const
 
 void ComponentView::OnItemSelect(wxListEvent &event)
 {
-  _ToggleMonitorButton->Enable();
+  bool onlyoutputsselected = true;
+  long item = -1;
+  while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
+    if(_listview->GetItemText(item, 0) == "Input") {
+      onlyoutputsselected = false;
+      break;
+    }
+  }
+  if (onlyoutputsselected) _ToggleMonitorButton->Enable();
+  else _ToggleMonitorButton->Disable();
+  
+  if(_component->parent == NULL){
+    bool onlyinputsselected = true;
+    long item = -1;
+    while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
+      if(_listview->GetItemText(item, 0) == "Output") {
+        onlyinputsselected = false;
+        break;
+      }
+    }
+    if (onlyinputsselected) _ToggleInputButton->Enable();
+    else _ToggleInputButton->Disable();
+  }else _ToggleInputButton->Disable();
 }
 
 void ComponentView::OnToggleMonitor(wxCommandEvent &event)
@@ -146,8 +182,11 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
           ss << signature[i] << ".";
         ss << signature[0];
 
+        LOG_DEBUG;
         unsigned int pointId = _network->addMonitorPoint(signature);
+        LOG_DEBUG;
         _monitor->renamePoint(pointId, ss.str());
+        LOG_DEBUG;
 
         _listview->SetItem(item, 2, wxString("Yes"));
       }

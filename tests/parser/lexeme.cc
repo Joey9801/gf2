@@ -26,17 +26,25 @@ SCENARIO("Create some lexemes and check their values") {
     REQUIRE(lexeme.getStartCharNo() == 456);
   }
   WHEN("Create a whitespace lexeme") {
-    Lexeme lexeme(LexemeType::WHITESPACE, "         ", std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max());
+    Lexeme lexeme(LexemeType::WHITESPACE, "         ",
+                  std::numeric_limits<unsigned int>::max(),
+                  std::numeric_limits<unsigned int>::max());
     REQUIRE(lexeme.getType() == LexemeType::WHITESPACE);
     REQUIRE(lexeme.getString() == "         ");
-    REQUIRE(lexeme.getStartLineNo() == std::numeric_limits<unsigned int>::max());
-    REQUIRE(lexeme.getStartCharNo() == std::numeric_limits<unsigned int>::max());
+    REQUIRE(lexeme.getStartLineNo() ==
+      std::numeric_limits<unsigned int>::max());
+    REQUIRE(lexeme.getStartCharNo() ==
+      std::numeric_limits<unsigned int>::max());
   }
   WHEN ("Create a comment lexeme") {
-    Lexeme lexeme(LexemeType::COMMENT, "/* This is a comment */", std::numeric_limits<unsigned int>::min(), std::numeric_limits<unsigned int>::min());
+    Lexeme lexeme(LexemeType::COMMENT, "/* This is a comment */",
+      std::numeric_limits<unsigned int>::min(),
+      std::numeric_limits<unsigned int>::min());
     REQUIRE(lexeme.getType() == LexemeType::COMMENT);
     REQUIRE(lexeme.getString() == "/* This is a comment */");
-    REQUIRE(lexeme.getStartLineNo() == std::numeric_limits<unsigned int>::min());
-    REQUIRE(lexeme.getStartCharNo() == std::numeric_limits<unsigned int>::min());
+    REQUIRE(lexeme.getStartLineNo() ==
+      std::numeric_limits<unsigned int>::min());
+    REQUIRE(lexeme.getStartCharNo() ==
+      std::numeric_limits<unsigned int>::min());
   }
 }

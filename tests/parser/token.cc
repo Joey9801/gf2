@@ -40,17 +40,25 @@ SCENARIO("Create some tokens and check their values") {
     REQUIRE(token.getStartCharNo() == 888);
   }
   WHEN("Create a dictionary separator token") {
-    Token token(TokenType::DICTSEPARATOR, ",", std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max());
+    Token token(TokenType::DICTSEPARATOR, ",",
+                std::numeric_limits<unsigned int>::max(),
+                std::numeric_limits<unsigned int>::max());
     REQUIRE(token.getType() == TokenType::DICTSEPARATOR);
     REQUIRE(token.getValue() == ",");
-    REQUIRE(token.getStartLineNo() == std::numeric_limits<unsigned int>::max());
-    REQUIRE(token.getStartCharNo() == std::numeric_limits<unsigned int>::max());
+    REQUIRE(token.getStartLineNo() ==
+      std::numeric_limits<unsigned int>::max());
+    REQUIRE(token.getStartCharNo() ==
+      std::numeric_limits<unsigned int>::max());
   }
   WHEN("Create a pair separator token") {
-    Token token(TokenType::PAIRSEPARATOR, ":", std::numeric_limits<unsigned int>::min(), std::numeric_limits<unsigned int>::min());
+    Token token(TokenType::PAIRSEPARATOR, ":",
+                std::numeric_limits<unsigned int>::min(),
+                std::numeric_limits<unsigned int>::min());
     REQUIRE(token.getType() == TokenType::PAIRSEPARATOR);
     REQUIRE(token.getValue() == ":");
-    REQUIRE(token.getStartLineNo() == std::numeric_limits<unsigned int>::min());
-    REQUIRE(token.getStartCharNo() == std::numeric_limits<unsigned int>::min());
+    REQUIRE(token.getStartLineNo() ==
+      std::numeric_limits<unsigned int>::min());
+    REQUIRE(token.getStartCharNo() ==
+      std::numeric_limits<unsigned int>::min());
   }
 }

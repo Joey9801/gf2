@@ -10,6 +10,7 @@
 #endif
 #include <wx/splitter.h>
 #include <wx/sizer.h>
+#include <wx/numdlg.h>
 
 #include <plog/Log.h>
 #include <plog/Appenders/ConsoleAppender.h>

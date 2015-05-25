@@ -158,8 +158,10 @@ void MyFrame::OnRunSimulation(wxCommandEvent& event) {
   unsigned int numNodes = _network->numInputs() + _network->numOutputs();
   std::vector<bool> nodes(numNodes, false);
 
+  long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
+      "Steps", "Setup Simulation", 10, 1, 1000);
   //Run for a fixed 50 cycles for the moment
-  for(unsigned int i=0; i<50; i++)
+  for(unsigned int i=0; i<numberofsteps; i++)
     _network->step(nodes, nodes);
 
   _outputplot->refresh();

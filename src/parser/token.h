@@ -22,8 +22,10 @@ enum class TokenType : char {
                               the dict delimiting character */
   DICTSEPARATOR,        /*!<  A dict separator token - should be just the
                               dict separator character */
-  PAIRSEPARATOR         /*!<  A pair separator token - should be just the
+  PAIRSEPARATOR,        /*!<  A pair separator token - should be just the
                               pair separator character */
+  UNDEFSINGULARITY      /*!<  A undefined singularity token - should be just
+                              the uncategorisable character */
 };
 
 /// Contains information about a token

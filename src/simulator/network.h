@@ -11,16 +11,19 @@
 #include "dummyio.h"
 #include "componentconstructors.h"
 #include "monitor.h"
+#include "../structures/definition.h"
 
+class RootNetwork;
 extern constructor_map componentConstructor;
 
 class Network : public BaseComponent
 {
+  friend class RootNetwork;
   public:
     Network();
     ~Network();
 
-    void step(std::vector<bool>& a, std::vector<bool>& b);
+    virtual void step(std::vector<bool>& a, std::vector<bool>& b);
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
@@ -89,7 +92,9 @@ class Network : public BaseComponent
 
     void configure(std::string key, std::string value);
 
-    NodeTree * getNodeTree(void);
+    virtual NodeTree * getNodeTree(void);
+    const Definition * getDefinition(void);
+    void setDefinition(Definition * def);
 
     BaseComponent * clone(void);
 
@@ -107,6 +112,8 @@ class Network : public BaseComponent
 
     Monitor * _monitor;
 
+    Definition * _definition;
+
     std::map<unsigned int, unsigned int> _monitorPoints;
 
     unsigned int _time;
@@ -115,26 +122,5 @@ class Network : public BaseComponent
 
 };
 
-// Special type of network which can operate independantly from anything else
-// Should only be used as the Root of the whole network
-class RootNetwork : public Network
-{
-  public:
-    RootNetwork();
-    ~RootNetwork();
-
-    using Network::step;
-    void step(void);
-
-    unsigned int addInput(void);
-    unsigned int addInput(std::string);
-    unsigned int addOutput(void);
-    unsigned int addOutput(std::string);
-
-    void setInput(unsigned int inputId, bool value);
-    void setInput(std::string inputName, bool value);
-    bool getOutput(unsigned int outputId);
-    bool getOutput(std::string outputName);
-};
 
 #endif

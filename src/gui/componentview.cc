@@ -120,11 +120,13 @@ void ComponentView::selectComponent(NodeTree *component) {
           }
         }
       }
-    } else {//If we're on Root network
-      if(_component->inputNodes[i] == 0){
-        _listview->SetItem(itemIndex, 3, "Low (switchable)");
-      }else if(_component->inputNodes[i] == 1){
-        _listview->SetItem(itemIndex, 3, "High (switchable)");
+    } 
+    else {//If we're on Root network
+      if(_network->getInput(_component->inputNames[i])){
+        _listview->SetItem(itemIndex, 3, "High");
+      }
+      else{
+        _listview->SetItem(itemIndex, 3, "Low");
       }
     }
   }
@@ -142,7 +144,7 @@ void ComponentView::setMonitor(Monitor * m) {
   _monitor = m;
   return;
 }
-void ComponentView::setNetwork(Network * n) {
+void ComponentView::setNetwork(RootNetwork * n) {
   _network = n;
   return;
 }
@@ -217,10 +219,10 @@ void ComponentView::OnToggleInput(wxCommandEvent &event)
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
     std::string inputName = _listview->GetItemText(item, 1).ToStdString();
-    if(_listview->GetItemText(item, 3) == "High (switchable)"){
-      _listview->SetItem(item, 3, wxString("Low (switchable)"));
-    }else if(_listview->GetItemText(item, 3) == "Low (switchable)"){
-      _listview->SetItem(item, 3, wxString("High (switchable)"));
-    }
+    bool next = not _network->getInput(inputName);
+
+    _network->setInput(inputName, next);
+    _listview->SetItem(item, 3, wxString(next ? "High" : "Low"));
+
   }
 }

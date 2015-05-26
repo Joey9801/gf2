@@ -413,6 +413,15 @@ NodeTree * Network::getNodeTree(void) {
   return n;
 }
 
+const Definition * Network::getDefinition(void) {
+  return _definition;
+}
+
+void Network::setDefinition(Definition * def) {
+  _definition = def;
+  return;
+}
+
 BaseComponent * Network::clone(void) {
   Network * n = new Network();
 
@@ -440,88 +449,4 @@ BaseComponent * Network::clone(void) {
   n->_monitor = _monitor;
 
   return (BaseComponent*)n;
-}
-
-RootNetwork::RootNetwork(void)
-  : Network()
-{
-}
-
-RootNetwork::~RootNetwork() {}
-
-void RootNetwork::step(void) {
-  _nodesA[0] = false;
-  _nodesA[1] = true;
-
-  for(std::vector<BaseComponent*>::iterator c = _components.begin();
-        c != _components.end();
-        c++)
-    (*c)->step(_nodesA, _nodesB);
-
-  _nodesA.swap(_nodesB);
-
-  _nodesA[0] = false;
-  _nodesA[1] = true;
-
-  _time++;
-
-  for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
-      it != _monitorPoints.end();
-      it++)
-    _monitor->setValue( it->first, _time, _nodesA[it->second]);
-
-}
-
-
-unsigned int RootNetwork::addInput(void) {
-  unsigned int inputId = _inputs.size();
-  _inputs.push_back(_nodesA.size());
-  _nodesA.push_back(false);
-  _nodesB.push_back(false);
-  return inputId;
-}
-unsigned int RootNetwork::addInput(std::string name) {
-  unsigned int inputId = addInput();
-  renameInput(inputId, name);
-  return inputId;
-}
-unsigned int RootNetwork::addOutput(void) {
-  unsigned int outputId = _outputs.size();
-  _outputs.push_back(0);
-  return outputId;
-}
-unsigned int RootNetwork::addOutput(std::string name) {
-  unsigned int outputId = addOutput();
-  renameOutput(outputId, name);
-  return outputId;
-}
-
-void RootNetwork::setInput(unsigned int inputId, bool value) {
-  unsigned int node = _inputs[inputId];
-  _nodesA[node] = value;
-  return;
-}
-void RootNetwork::setInput(std::string inputName, bool value) {
-  if(_pinInMap.find(inputName) == _pinInMap.end()) {
-    // TODO raise an error
-    throw 1;
-    return;
-  }
-  unsigned int inputId = _pinInMap[inputName];
-  setInput(inputId, value);
-  return;
-}
-
-bool RootNetwork::getOutput(unsigned int outputId) {
-  unsigned int node = _outputs[outputId];
-  return _nodesA[node];
-}
-bool RootNetwork::getOutput(std::string outputName) {
-  if(_pinOutMap.find(outputName) == _pinOutMap.end() ) {
-    // TODO raise an error
-    throw 1;
-    return false;
-  }
-  unsigned int outputId = _pinOutMap[outputName];
-  return getOutput(outputId);
 }

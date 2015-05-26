@@ -87,6 +87,8 @@ class Network : public BaseComponent
     void removeMonitorPoint(std::vector<std::string>& signature);
     void removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
+    void configure(std::string key, std::string value);
+
     NodeTree * getNodeTree(void);
 
     BaseComponent * clone(void);
@@ -108,6 +110,8 @@ class Network : public BaseComponent
     std::map<unsigned int, unsigned int> _monitorPoints;
 
     unsigned int _time;
+    unsigned int _rate;
+    bool _async;
 
 };
 

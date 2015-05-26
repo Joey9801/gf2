@@ -3,7 +3,9 @@
 Network::Network(void) :
   BaseComponent("Network", 0, 0),
   numConnections(0),
-  _time(0)
+  _time(0),
+  _rate(1),
+  _async(false)
 {
   //Make room for the const values
   _nodesA.resize(2);
@@ -237,12 +239,22 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   _nodesA[0] = false;
   _nodesA[1] = true;
 
-  for(std::vector<BaseComponent*>::iterator c = _components.begin();
-        c != _components.end();
-        c++)
-    (*c)->step(_nodesA, _nodesB);
+  for(unsigned int i=0; i<_rate; i++) {
+    if(_async) {
+      for(std::vector<BaseComponent*>::iterator c = _components.begin();
+          c != _components.end();
+          c++)
+        (*c)->step(_nodesA, _nodesA);
+    }
+    else {
+      for(std::vector<BaseComponent*>::iterator c = _components.begin();
+          c != _components.end();
+          c++)
+        (*c)->step(_nodesA, _nodesB);
 
-  _nodesA.swap(_nodesB);
+      _nodesA.swap(_nodesB);
+    }
+  }
 
   _nodesA[0] = false;
   _nodesA[1] = true;
@@ -357,6 +369,16 @@ void Network::removeMonitorPoint(std::vector<std::string>& signature, unsigned i
     }
     net->removeMonitorPoint(signature, depth+1);
   }
+
+  return;
+}
+
+void Network::configure(std::string key, std::string value) {
+  if(key=="rate") {
+    std::istringstream( value ) >> _rate;
+  }
+  else if(key=="simulation")
+    _async = (value=="async");
 
   return;
 }

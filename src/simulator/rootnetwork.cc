@@ -37,14 +37,12 @@ RootNetwork::~RootNetwork() {}
 
 void RootNetwork::step(void) {
   LOG_VERBOSE;
-  LOG_DEBUG;
   _nodesA[0] = false;
   _nodesA[1] = true;
 
   for(unsigned int i=0; i<_inputs.size(); i++)
     _nodesA[_inputs[i]] = _inputVals[i];
 
-  LOG_DEBUG;
   for(unsigned int i=0; i<_rate; i++) {
     if(_async) {
       for(std::vector<BaseComponent*>::iterator c = _components.begin();
@@ -62,7 +60,6 @@ void RootNetwork::step(void) {
     }
   }
 
-  LOG_DEBUG;
   _nodesA[0] = false;
   _nodesA[1] = true;
 
@@ -70,7 +67,6 @@ void RootNetwork::step(void) {
       it != _monitorPoints.end();
       it++) {
     _monitor->setValue( it->first, _time, _nodesA[it->second]);
-    LOG_DEBUG << "(time, value) = (" << _time << ", " << _nodesA[it->second] << ")";
   }
 
   _time++;
@@ -79,7 +75,7 @@ void RootNetwork::step(void) {
 
 void RootNetwork::setInput(unsigned int inputId, bool value) {
   _inputVals[inputId] = value;
-  LOG_DEBUG << "input " << inputId << " set to " << value;
+  LOG_VERBOSE << "input " << inputId << " set to " << value;
   return;
 }
 void RootNetwork::setInput(std::string inputName, bool value) {
@@ -117,40 +113,33 @@ bool RootNetwork::getOutput(std::string outputName) {
 }
 
 NodeTree * RootNetwork::getNodeTree(void) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
   NodeTree * n = new NodeTree(NodeType::Network);
 
   n->name = _name;
   n->nickname = "Root network";
-
-  LOG_DEBUG;
 
   for(unsigned int i=0; i<_components.size(); i++) {
     n->children.push_back( _components[i]->getNodeTree() );
     n->children.back()->parent = n;
   }
 
-  LOG_DEBUG;
   for(pin_map::iterator it = _componentNames.begin();
       it != _componentNames.end();
       it ++) {
     n->children[(*it).second]->nickname = (*it).first;
   }
-  LOG_DEBUG;
 
   n->inputNodes = _inputs;
   n->outputNodes = _outputs;
-  LOG_DEBUG;
 
   n->inputNames.resize(_pinInMap.size());
   for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
     n->inputNames[(*it).second] = (*it).first;
-  LOG_DEBUG;
 
   n->outputNames.resize(_pinOutMap.size());
   for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
     n->outputNames[(*it).second] = (*it).first;
-  LOG_DEBUG;
 
   return n;
 }

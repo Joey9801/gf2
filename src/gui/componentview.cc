@@ -130,7 +130,6 @@ void ComponentView::selectComponent(NodeTree *component) {
       }
     }
   }
-  LOG_DEBUG;
   //deselect all items
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
@@ -157,7 +156,6 @@ bool ComponentView::IsMonitored(long item) const
   try{
     _monitor->findPoint(signature);
   } catch(...){
-    LOG_DEBUG;
     return false;
   }
   return true;
@@ -204,7 +202,6 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
           ss << signature[i] << ".";
         ss << signature[0];
 
-        LOG_DEBUG << ss.str();
         unsigned int pointId = _network->addMonitorPoint(signature);
         _monitor->renamePoint(pointId, ss.str());
 

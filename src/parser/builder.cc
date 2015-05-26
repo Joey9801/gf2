@@ -25,13 +25,13 @@ namespace Builder {
   }
 
   Network * buildNetwork(Definition * def) {
-    LOG_DEBUG << "Building network";
+    LOG_VERBOSE << "Building network";
 
     Network * net = new Network();
     net->setDefinition(def);
 
     std::map<std::string, Network*> includes;
-    LOG_DEBUG << "Recursing into includes";
+    LOG_VERBOSE << "Recursing into includes";
 
     try {
       makeIncludes(def, includes);
@@ -40,9 +40,9 @@ namespace Builder {
       LOG_ERROR << "Exception raised while making includes";
       throw;
     }
-    LOG_DEBUG << "Finished making includes";
+    LOG_VERBOSE << "Finished making includes";
 
-    LOG_DEBUG << "Adding Network IO";
+    LOG_VERBOSE << "Adding Network IO";
     try {
       addIO(net, def);
     }
@@ -51,7 +51,7 @@ namespace Builder {
       throw;
     }
 
-    LOG_DEBUG << "Adding components";
+    LOG_VERBOSE << "Adding components";
     try {
     addComponents(net, def, includes);
     }
@@ -60,7 +60,7 @@ namespace Builder {
       throw;
     }
 
-    LOG_DEBUG << "Configuring components";
+    LOG_VERBOSE << "Configuring components";
     try {
       configureComponents(net, def);
     }
@@ -69,7 +69,7 @@ namespace Builder {
       throw;
     }
 
-    LOG_DEBUG << "Connecting components";
+    LOG_VERBOSE << "Connecting components";
     try {
     connectComponents(net, def);
     }

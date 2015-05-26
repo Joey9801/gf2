@@ -102,12 +102,16 @@ void ComponentView::selectComponent(NodeTree *component) {
     itemIndex = _listview->InsertItem(0, wxString("Input"));
     _listview->SetItem(itemIndex, 1, wxString(_component->inputNames[i]));
 
-    if(_component->parent != NULL){ //don't need this for root network, which has no parent
+    if(_component->inputNodes[i] == 0){
+      _listview->SetItem(itemIndex, 3, "Low (constant)");
+    }else if(_component->inputNodes[i] == 1){
+      _listview->SetItem(itemIndex, 3, "High (constant)");
+    }else if(_component->parent != NULL){ //don't need this for root network, which has no parent
       for(std::vector<NodeTree*>::iterator it = _component->parent->children.begin(); 
           it != _component->parent->children.end(); ++it) {
         for(std::vector<unsigned int>::size_type j = (*it)->outputNodes.size() - 1;
             j != (std::vector<unsigned int>::size_type) -1; j--) {
-          if((*it)->inputNodes[j] == _component->inputNodes[i]){
+          if((*it)->outputNodes[j] == _component->inputNodes[i]){
             wxString outputnamestr = (*it)->nickname + "." + (*it)->outputNames[j];
             _listview->SetItem(itemIndex, 3, outputnamestr);
           }
@@ -115,6 +119,7 @@ void ComponentView::selectComponent(NodeTree *component) {
       }
     }
   }
+  LOG_DEBUG;
   //deselect all items
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
@@ -188,6 +193,7 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
           ss << signature[i] << ".";
         ss << signature[0];
 
+        LOG_DEBUG << ss.str();
         unsigned int pointId = _network->addMonitorPoint(signature);
         _monitor->renamePoint(pointId, ss.str());
 

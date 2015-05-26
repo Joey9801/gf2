@@ -37,10 +37,17 @@ class Network : public BaseComponent
     unsigned int constNode(unsigned int constVal);
     unsigned int constNode(std::string constVal);
 
+    bool isInputVector(unsigned int inputId);
+    bool isInputVector(std::string inputName);
+    bool isOutputVector(unsigned int outputId);
+    bool isOutputVector(std::string outputName);
+
     unsigned int addInput(void);
     unsigned int addInput(std::string);
+    unsigned int addVectorInput(std::string);
     unsigned int addOutput(void);
     unsigned int addOutput(std::string);
+    unsigned int addVectorOutput(std::string);
 
     // Connecting two components
     // Annoying that templates must be defined in the header, but whatever
@@ -52,15 +59,22 @@ class Network : public BaseComponent
         unsigned int idOut = findComponent(componentOut);
         unsigned int idIn = findComponent(componentIn);
 
-        if( (int)idOut == (compl 0) ) {
+        if( idOut == (compl 0u) ) {
           //Magic number for const
           unsigned int node = constNode(pinOut);
           _components[idIn]->connectInput(pinIn, node);
+        }
+        else if(_components[idOut]->isOutputVector(pinOut)
+            and _components[idIn]->isInputVector(pinIn) ) {
+          std::vector<unsigned int> nodes = _components[idOut]->getOutputVectorNodes(pinOut);
+          _components[idIn]->connectVectorInput(pinIn, nodes);
         }
         else {
           unsigned int node = _components[idOut]->getOutputNode(pinOut);
           _components[idIn]->connectInput(pinIn, node);
         }
+
+        numConnections++;
         return;
       }
 
@@ -70,9 +84,14 @@ class Network : public BaseComponent
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
+    void removeMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
+
     NodeTree * getNodeTree(void);
 
     BaseComponent * clone(void);
+
+    unsigned int numConnections;
 
   protected:
     std::map<std::string, unsigned int> _componentNames;
@@ -89,6 +108,7 @@ class Network : public BaseComponent
     std::map<unsigned int, unsigned int> _monitorPoints;
 
     unsigned int _time;
+
 };
 
 // Special type of network which can operate independantly from anything else

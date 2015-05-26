@@ -4,7 +4,14 @@ namespace Builder {
   Network * build(std::string filepath) {
     Definition * def = Parser::parseDefinition(filepath);
 
-    Network * net = buildNetwork(def);
+    Network * net;
+    try {
+      net = buildNetwork(def);
+    }
+    catch(...) {
+      LOG_ERROR << filepath;
+      throw;
+    }
 
     return net;
   }
@@ -74,6 +81,7 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["includes"]->pairs.begin();
           it != def->pairs["includes"]->pairs.end();
           it++) {
+        LOG_DEBUG << "Making: " << it->first;
         includes[it->second->value] = build(it->first);
       }
     }
@@ -90,7 +98,11 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
           it != def->pairs["inputs"]->pairs.end();
           it++) {
-        net->addInput( it->first );
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos))
+          net->addVectorInput( it->first );
+        else
+          net->addInput( it->first );
       }
     }
     else {
@@ -102,7 +114,11 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        net->addOutput( it->first );
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos))
+          net->addVectorOutput( it->first );
+        else
+          net->addOutput( it->first );
       }
     }
     else {
@@ -163,16 +179,35 @@ namespace Builder {
     //  for_each(input in component_inputs)
     //    connect the input to the thing
 
+    LOG_VERBOSE << "Connecting outputs";
     if( def->pairs.find("outputs") != def->pairs.end() ) {
       //Connect any outputs
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
-        net->connect(dest.first, dest.second, "outputs", it->first);
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos)) {
+          // Iterate through the vector initialisation
+          std::stringstream ss;
+          LOG_DEBUG << "it->first: " << it->first;
+          std::string name = it->first.substr(0, it->first.find_first_of('['));
+          for(std::map<std::string, Definition*>::iterator it2 = it->second->pairs.begin();
+              it2 != it->second->pairs.end();
+              it2++) {
+            ss.str("");
+            ss << name << "[" << it2->first << "]";
+            std::pair<std::string, std::string> dest = Helpers::separateDotted( it2->second->value );
+            net->connect(dest.first, dest.second, "outputs", ss.str());
+          }
+        }
+        else {
+          std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
+          net->connect(dest.first, dest.second, "outputs", it->first);
+        }
       }
     }
 
+    LOG_VERBOSE << "Connecting components";
     if( def->pairs.find("components") != def->pairs.end() ) {
       for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
           it1 != def->pairs["components"]->pairs.end();
@@ -185,11 +220,34 @@ namespace Builder {
               it2++) {
             //Iterating over each input in a component
             std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
-            LOG_DEBUG << "\"" << source.first << "\", \"" << source.second << "\"";
-              net->connect( source.first, source.second, it1->first, it2->first );
+            std::string pinOut = source.second;
+            std::string pinIn = it2->first;
+
+
+            //If the IO name is a vector, strip the "[]" from the end
+            if( it2->first.length() > 2 )
+              if( it2->first.substr( it2->first.length()-2) == "[]" )
+                pinIn = it2->first.substr(0, it2->first.size()-2);
+            if( source.second.length() > 2 )
+              if( source.second.substr( source.second.length()-2) == "[]" )
+                pinOut = source.second.substr(0, source.second.size()-2);
+
+            try {
+              net->connect( source.first, pinOut, it1->first, pinIn );
+            }
+            catch(...) {
+              LOG_ERROR << "net->connect(" << source.first << ", " << pinOut << ", "
+                << it1->first << ", " << pinIn << ")";
+              throw;
+            }
           }
         }
       }
+      LOG_DEBUG << "Finished making " << net->numConnections << " connections";
+    }
+    else {
+      //This should already have been checked, but throw anyway just in case
+      throw 1;
     }
 
     return;

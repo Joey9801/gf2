@@ -143,6 +143,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _outputplot->setMonitor(_monitor);
 
     _netview->loadNetwork(_network->getNodeTree());
+    _compview->selectComponent(_network->getNodeTree());
 
     GetMenuBar()->Enable(GetMenuBar()->FindMenuItem("Simulation", "Run Simulation"), true);
   }

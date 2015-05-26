@@ -9,5 +9,6 @@ constructor_map componentConstructor = {
   {"dtype",   &createComponent<DType>},
   {"jk",      &createComponent<JK>},
   {"siggen",  &createComponent<SignalGenerator>},
+  {"clock",   &createComponent<Clock>},
   {"dummyio", &createComponent<DummyIO>}
 };

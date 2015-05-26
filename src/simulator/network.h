@@ -59,7 +59,7 @@ class Network : public BaseComponent
         unsigned int idOut = findComponent(componentOut);
         unsigned int idIn = findComponent(componentIn);
 
-        if( idOut == (compl 0) ) {
+        if( idOut == (compl 0u) ) {
           //Magic number for const
           unsigned int node = constNode(pinOut);
           _components[idIn]->connectInput(pinIn, node);

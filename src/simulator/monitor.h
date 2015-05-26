@@ -5,6 +5,7 @@
 #include <map>
 #include <utility>
 #include <algorithm>
+#include <string>
 
 struct MonitorPoint {
   unsigned int appendData(unsigned int time, bool value);

@@ -10,6 +10,7 @@
 
 #include "parser.h"
 #include "../structures/definition.h"
+#include "../simulator/monitor.h"
 #include "../simulator/network.h"
 #include "../simulator/rootnetwork.h"
 
@@ -25,6 +26,7 @@ namespace Builder {
   void addComponents(Network * net, Definition * def, std::map<std::string, Network*>& includes);
   void configureComponents(Network * net, Definition * def);
   void connectComponents(Network * net, Definition * def);
+  void createMonitorPoints(RootNetwork * rnet);
 
   namespace Helpers {
     std::pair<std::string, std::string> separateDotted(std::string in);

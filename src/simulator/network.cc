@@ -287,6 +287,9 @@ void Network::setMonitor(Monitor * m) {
   }
   return;
 }
+Monitor * Network::getMonitor(void) {
+  return _monitor;
+}
 
 unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
   return addMonitorPoint(signature, 0);
@@ -413,7 +416,7 @@ NodeTree * Network::getNodeTree(void) {
   return n;
 }
 
-const Definition * Network::getDefinition(void) {
+Definition * Network::getDefinition(void) {
   return _definition;
 }
 

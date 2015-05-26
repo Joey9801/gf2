@@ -135,8 +135,8 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 
     delete _network;
     delete _monitor;
-    _monitor = new Monitor();
     _network = net;
+    _monitor = net->getMonitor();
     _network->setMonitor(_monitor);
     _compview->setNetwork(_network);
     _compview->setMonitor(_monitor);

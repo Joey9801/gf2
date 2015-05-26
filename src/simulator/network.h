@@ -84,6 +84,7 @@ class Network : public BaseComponent
     unsigned int countComponents(void);
 
     void setMonitor(Monitor * m);
+    Monitor * getMonitor(void);
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
@@ -93,7 +94,7 @@ class Network : public BaseComponent
     void configure(std::string key, std::string value);
 
     virtual NodeTree * getNodeTree(void);
-    const Definition * getDefinition(void);
+    Definition * getDefinition(void);
     void setDefinition(Definition * def);
 
     BaseComponent * clone(void);

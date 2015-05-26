@@ -6,6 +6,8 @@ namespace Builder {
 
     RootNetwork * rnet;
     rnet = new RootNetwork(net);
+    rnet->setMonitor(new Monitor());
+    createMonitorPoints(rnet);
 
     return rnet;
   }
@@ -269,6 +271,26 @@ namespace Builder {
       throw 1;
     }
 
+    return;
+  }
+
+  void createMonitorPoints(RootNetwork * rnet) {
+    Definition * def = rnet->getDefinition();
+
+    if(def->pairs.find("monitor") != def->pairs.end()) {
+      std::vector<std::string> signature;
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["monitor"]->pairs.begin();
+          it != def->pairs["monitor"]->pairs.end();
+          it++) {
+        std::pair<std::string, std::string> dest = Helpers::separateDotted(it->second->value);
+        signature.clear();
+        signature.push_back(dest.second);
+        signature.push_back(dest.first);
+
+        unsigned int pointId = rnet->addMonitorPoint(signature);
+        rnet->getMonitor()->renamePoint(pointId, it->first);
+      }
+    }
     return;
   }
 

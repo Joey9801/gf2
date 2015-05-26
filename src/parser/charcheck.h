@@ -28,4 +28,6 @@ bool isDictSeparator(char ch);
 
 bool isPairSeparator(char ch);
 
+bool isValidCharacter(char ch);
+
 #endif // CHARCHECK_H_

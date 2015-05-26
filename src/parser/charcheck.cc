@@ -56,3 +56,13 @@ bool isDictSeparator(char ch) {
 bool isPairSeparator(char ch) {
   return ch == ':';
 }
+
+/// Check whether the given character is any valid character in the language
+bool isValidCharacter(char ch) {
+  return  isStringChar(ch)        ||
+          isCommentChar(ch)       ||
+          isOpeningDictDelim(ch)  ||
+          isClosingDictDelim(ch)  ||
+          isDictSeparator(ch)     ||
+          isPairSeparator(ch);
+}

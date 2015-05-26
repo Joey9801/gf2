@@ -8,6 +8,8 @@
 #include <string>
 
 struct MonitorPoint {
+  MonitorPoint();
+
   void appendData(unsigned int time, bool value);
 
   std::string nickname;

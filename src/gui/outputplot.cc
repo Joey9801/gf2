@@ -123,7 +123,6 @@ void MyGLCanvas::drawPlot(
     float y = data[i].second ? (rowheight*0.8) : 0;
 
     glVertex2f(xzero + data[i].first * bitwidth, base + y);
-    glVertex2f(xzero + (data[i].first+1) * bitwidth, base + y);
   }
   glEnd();
   return;

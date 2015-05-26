@@ -171,6 +171,16 @@ namespace Builder {
       }
     }
 
+    //Configure the current network
+    if( def->pairs.find("config") != def->pairs.end() ) {
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["config"]->pairs.begin();
+          it != def->pairs["config"]->pairs.end();
+          it++) {
+        net->configure(it->first, it->second->value);
+      }
+    }
+
+
   }
 
   void connectComponents(Network * net, Definition * def) {

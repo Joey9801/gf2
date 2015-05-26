@@ -366,8 +366,7 @@ NodeTree * Network::getNodeTree(void) {
 
   n->name = _name;
 
-  //Start at 2 to  avoid including the DummyIO objects
-  for(unsigned int i=2; i<_components.size(); i++) {
+  for(unsigned int i=0; i<_components.size(); i++) {
     n->children.push_back( _components[i]->getNodeTree() );
     n->children.back()->parent = n;
   }
@@ -375,10 +374,7 @@ NodeTree * Network::getNodeTree(void) {
   for(pin_map::iterator it = _componentNames.begin();
       it != _componentNames.end();
       it ++) {
-    //Sim, avoid including the DummyIO objects
-    //Ordering of the map is not as added, so if statement needed in every loop
-    if( it->second > 1 )
-      n->children[(*it).second-2]->nickname = (*it).first;
+    n->children[(*it).second]->nickname = (*it).first;
   }
 
   n->inputNodes = _inputs;

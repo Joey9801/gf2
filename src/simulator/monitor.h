@@ -20,6 +20,21 @@ class Monitor {
     Monitor();
     ~Monitor();
 
+    template <typename T>
+      void removePoint(T ident) {
+        unsigned int pointId = findPoint(ident);
+        delete _points[pointId];
+        _points.erase(pointId);
+
+        return;
+      }
+
+    template <typename T>
+      const std::vector<std::pair<unsigned int, bool> >& getLog(T ident) {
+        unsigned int pointId = findPoint(ident);
+        return _points[pointId]->log;
+      }
+
     void setValue(unsigned int pointId, unsigned int time, bool value);
 
     const unsigned int addPoint(std::vector<std::string> signature);
@@ -27,10 +42,6 @@ class Monitor {
 
     void renamePoint(unsigned int pointId, std::string newName);
     void renamePoint(std::string oldName, std::string newName);
-
-    const std::vector<std::pair<unsigned int, bool> >& getLog(unsigned int pointId);
-    const std::vector<std::pair<unsigned int, bool> >& getLog(std::string nickname);
-    const std::vector<std::pair<unsigned int, bool> >& getLog(std::vector<std::string> signature);
 
     unsigned int numPoints(void);
     std::vector<unsigned int> getPoints(void);

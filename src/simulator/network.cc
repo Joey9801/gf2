@@ -319,6 +319,48 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsig
   return pointId;
 }
 
+void Network::removeMonitorPoint(std::vector<std::string>& signature) {
+  removeMonitorPoint(signature, 0);
+  return;
+}
+
+void Network::removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
+  if(not _monitor) {
+    // TODO raise an error - monitor not set
+    LOG_ERROR << "Cannot set monitor point without Monitor object";
+    throw 1;
+  }
+
+  unsigned int remaining = signature.size() - depth;
+  if(remaining < 2) {
+    // TODO raise an error - not enough information in the signature
+    LOG_ERROR << "Not enough information in signature to remove monitor point";
+    throw 1;
+  }
+
+  unsigned int componentId = findComponent(signature[remaining-1]);
+  BaseComponent * c = _components[componentId];
+
+  if(remaining == 2) {
+    // This is the network containing the node to monitor
+    unsigned int pointId = _monitor->findPoint(signature);
+    _monitor->removePoint(signature);
+    _monitorPoints.erase(pointId);
+  }
+  else {
+    //Attempt to cast the component as a Network
+    Network * net = dynamic_cast<Network*>(c);
+    if(not net) {
+      //TODO raise an error, the component in the signature wasn't a network
+      LOG_ERROR << "The monitor point signature was not found in the network";
+      throw 1;
+    }
+    net->removeMonitorPoint(signature, depth+1);
+  }
+
+  return;
+}
+
 NodeTree * Network::getNodeTree(void) {
   NodeTree * n = new NodeTree(NodeType::Network);
 

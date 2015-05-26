@@ -84,21 +84,6 @@ void Monitor::renamePoint(unsigned int id, std::string newName) {
   return;
 }
 
-const std::vector<std::pair<unsigned int, bool> >& Monitor::getLog(unsigned int id) {
-  unsigned int pointId = findPoint(id);
-  return _points[pointId]->log;
-}
-
-const std::vector<std::pair<unsigned int, bool> >& Monitor::getLog(std::string nickname) {
-  unsigned int pointId = findPoint(nickname);
-  return getLog(pointId);
-}
-
-const std::vector<std::pair<unsigned int, bool> >& Monitor::getLog(std::vector<std::string> signature) {
-  unsigned int pointId = findPoint(signature);
-  return getLog(pointId);
-}
-
 unsigned int Monitor::numPoints(void) {
   return _points.size();
 }

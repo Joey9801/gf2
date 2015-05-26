@@ -84,6 +84,9 @@ class Network : public BaseComponent
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
+    void removeMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
+
     NodeTree * getNodeTree(void);
 
     BaseComponent * clone(void);

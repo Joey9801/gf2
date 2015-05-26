@@ -40,6 +40,7 @@ class ComponentView: public wxPanel
     bool IsMonitored(long item) const;
     void OnItemSelect(wxListEvent &event);
     void OnToggleMonitor(wxCommandEvent &event);
+    void OnToggleInput(wxCommandEvent &event);
 };
 
 #endif /*componentview.h*/

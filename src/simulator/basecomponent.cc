@@ -103,10 +103,36 @@ unsigned int BaseComponent::getOutputNode(std::string  name) {
     return _outputs[0];
   }
   else if(_pinOutMap.find(name) == _pinOutMap.end()){
+    LOG_ERROR << "\"" << name << "\" not an output of " << _name;
     throw 1;
   }
   unsigned int pinOut = _pinOutMap[name];
   return getOutputNode(pinOut);
+}
+
+std::vector<unsigned int> BaseComponent::getOutputVectorNodes(unsigned int pinIn) {
+  LOG_ERROR << "HOw did you even get this function to call?!";
+  throw 1;
+}
+std::vector<unsigned int> BaseComponent::getOutputVectorNodes(std::string name) {
+  if( not isOutputVector(name) ) {
+    LOG_ERROR << "Cannot get vector nodes of \"" << name << "\" as is not an output vector";
+    throw 1;
+  }
+
+  std::vector<unsigned int> nodes;
+  unsigned int size = _outputVectors[name];
+  nodes.reserve(size);
+
+  std::stringstream ss;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    nodes.push_back(getOutputNode(ss.str()));
+  }
+
+  return nodes;
 }
 
 unsigned int BaseComponent::numOutputs(void) {
@@ -120,11 +146,36 @@ unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
 unsigned int BaseComponent::getInputNode(std::string  name) {
   if(_pinInMap.find(name) == _pinInMap.end()){
     //TODO raise an error
+    LOG_ERROR << "\"" << name << "\" not an input of " << _name;
     throw 1;
-    return 0;
   }
   unsigned int pinIn = _pinInMap[name];
   return getInputNode(pinIn);
+}
+
+std::vector<unsigned int> BaseComponent::getInputVectorNodes(unsigned int pinIn) {
+  LOG_ERROR << "HOw did you even get this function to call?!";
+  throw 1;
+}
+std::vector<unsigned int> BaseComponent::getInputVectorNodes(std::string name) {
+  if( not isInputVector(name) ) {
+    LOG_ERROR << "Cannot get vector nodes of \"" << name << "\" as is not an input vector";
+    throw 1;
+  }
+
+  std::vector<unsigned int> nodes;
+  unsigned int size = _inputVectors[name];
+  nodes.reserve(size);
+
+  std::stringstream ss;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    nodes.push_back(getInputNode(ss.str()));
+  }
+
+  return nodes;
 }
 
 unsigned int BaseComponent::numInputs(void) {
@@ -155,11 +206,47 @@ void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
     throw 1;
-    return;
   }
 
   unsigned int index = _pinInMap[name];
   connectInput(index, node);
+}
+
+void BaseComponent::connectVectorInput(unsigned int inputId, std::vector<unsigned int> nodes) {
+  LOG_ERROR << "How did you even get this function to call?!";
+  throw 1;
+}
+void BaseComponent::connectVectorInput(std::string name, std::vector<unsigned int> nodes) {
+  if( nodes.size() != _inputVectors[name] ) {
+    LOG_ERROR << "Trying to connect mismatched vector sizes";
+    throw 1;
+  }
+
+  LOG_VERBOSE << "name: " << name;
+
+  unsigned int size = nodes.size();
+  std::stringstream ss;
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    connectInput(ss.str(), nodes[i]);
+  }
+  return;
+}
+
+bool BaseComponent::isInputVector(unsigned int inputId) {
+  // ID always references a specific IO
+  return false;
+}
+bool BaseComponent::isOutputVector(unsigned int outputId) {
+  // ID always references a specific IO
+  return false;
+}
+bool BaseComponent::isInputVector(std::string inputName) {
+  return (_inputVectors.find(inputName) != _inputVectors.end());
+}
+bool BaseComponent::isOutputVector(std::string outputName) {
+  return (_outputVectors.find(outputName) != _outputVectors.end());
 }
 
 std::string BaseComponent::getName(void) {
@@ -193,6 +280,8 @@ BaseComponent * BaseComponent::clone(void) {
   c->_outputs = _outputs;
   c->_pinInMap = _pinInMap;
   c->_pinOutMap = _pinOutMap;
+  c->_inputVectors = _inputVectors;
+  c->_outputVectors = _outputVectors;
 
   return c;
 }

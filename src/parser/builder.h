@@ -11,8 +11,11 @@
 #include "parser.h"
 #include "../structures/definition.h"
 #include "../simulator/network.h"
+#include "../simulator/rootnetwork.h"
 
 namespace Builder {
+  RootNetwork * buildRoot(std::string filepath);
+
   Network * build(std::string filepath);
 
   Network * buildNetwork(Definition * def);

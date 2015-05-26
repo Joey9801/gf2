@@ -24,7 +24,7 @@
                 clock : counter1.count[3]
             }
         },
-        ripple-adder : {
+        ripple : {
             type : includes.ripple-adder,
             inputs : {
                 a[] : counter1.count[],
@@ -32,7 +32,7 @@
                 carry : const.false
             }
         },
-        lookahead-adder : {
+        lookahead : {
             type : includes.lookahead-adder,
             inputs : {
                 a[] : counter1.count[],

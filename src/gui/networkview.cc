@@ -11,23 +11,29 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
 }
 
 void NetworkView::loadNetwork(NodeTree *root) {
+  LOG_DEBUG;
   _treectrl->DeleteAllItems();
 
-  wxTreeItemId nodeId = _treectrl->AddRoot("Root network", -1, -1, root);
+  LOG_DEBUG;
+  wxTreeItemId nodeId = _treectrl->AddRoot(root->nickname, -1, -1, root);
 
+  LOG_DEBUG;
   for(std::vector<NodeTree*>::iterator it = root->children.begin();
       it != root->children.end();
       it++)
     recursive_addNode(nodeId, (*it));
 
+  LOG_DEBUG;
   return;
 }
 
 void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTree *node) {
 
+  LOG_DEBUG;
   if (node->nickname!="inputs" and node->nickname!="outputs"){
     wxTreeItemId nodeId = _treectrl->AppendItem(parentid, node->nickname,-1, -1, node);
 
+  LOG_DEBUG;
     for(std::vector<NodeTree*>::iterator it = node->children.begin();
         it != node->children.end();
         it++)

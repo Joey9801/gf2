@@ -14,7 +14,7 @@
 
 #include "../structures/nodetree.h"
 #include "../simulator/monitor.h"
-#include "../simulator/network.h"
+#include "../simulator/rootnetwork.h"
 
 class ComponentView: public wxPanel
 {
@@ -25,11 +25,11 @@ class ComponentView: public wxPanel
     void selectComponent(NodeTree * component);
 
     void setMonitor(Monitor * m);
-    void setNetwork(Network * n);
+    void setNetwork(RootNetwork * n);
 
   private:
     Monitor * _monitor;
-    Network * _network;
+    RootNetwork * _network;
 
     wxStaticText *_overview;
     wxListView *_listview;

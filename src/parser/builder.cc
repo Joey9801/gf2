@@ -1,6 +1,14 @@
 #include "builder.h"
 
 namespace Builder {
+  RootNetwork * buildRoot(std::string filepath) {
+    Network * net = build(filepath);
+
+    RootNetwork * rnet;
+    rnet = new RootNetwork(net);
+
+    return rnet;
+  }
   Network * build(std::string filepath) {
     Definition * def = Parser::parseDefinition(filepath);
 
@@ -20,6 +28,7 @@ namespace Builder {
     LOG_DEBUG << "Building network";
 
     Network * net = new Network();
+    net->setDefinition(def);
 
     std::map<std::string, Network*> includes;
     LOG_DEBUG << "Recursing into includes";

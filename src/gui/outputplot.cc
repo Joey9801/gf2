@@ -61,7 +61,7 @@ void MyGLCanvas::Render()
   glClear(GL_COLOR_BUFFER_BIT);
 
   rowheight = 50;
-  SetMinSize(wxSize(_monitor->maxLength*bitwidth, -1));
+  SetMinSize(wxSize(_monitor->maxTime*bitwidth, -1));
 
   drawAxis();
 

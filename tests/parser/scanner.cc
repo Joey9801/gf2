@@ -6,33 +6,46 @@
 #include <fstream>
 #include <string>
 
-/// Create the filename (including path) for the single-character definition
-/// file containing the specified character
-std::string getCharacterFilename(int character) {
-  char filenamecstr[256];
+/// Create the filename (including path) for the definition file containing the
+/// specified character, within a subfolder of the scanner_test directory which
+/// has the specified folder name
+std::string getCharacterFilename(int character, std::string testFolderName) {
+  char filenamecstr[30];
   sprintf(  filenamecstr,
-            "tests/parser/test_files/scanner_tests/characters/char%03u.def",
+            "/char%03u.def",
             character);
-  return std::string(filenamecstr);
+  std::string filename("tests/parser/test_files/scanner_tests/");
+  filename.append(testFolderName);
+  filename.append(filenamecstr);
+  return filename;
+}
+
+/// Create the files for all characters with a specified pre-string and
+/// post-string within the specified directory. Return the number of successes,
+/// so that the calling function can check all 256 files now exist
+int createOneFilePerCharacter(std::string preString, std::string postString,
+                              std::string testFolderName) {
+  int successes = 0;
+  // Create files for all 256 characters, in the specified folder, which
+  // contain [preString][character][postString]
+  for (int character = 0; character < 256; ++character) {
+    std::ofstream file;
+    file.open(getCharacterFilename(character, testFolderName).c_str());
+    if (file.is_open()) {
+      ++successes;
+      file << preString << char(character) << postString;
+      file.close();
+    }
+  }
+  return successes;
 }
 
 /// Create single-character files for all 256 characters and test that they get
 /// scanned correctly
 SCENARIO("Create files containing each character and run the scanner on these") {
-  int successes = 0;
-  // Create files for all 256 characters, each one containing just the single
-  // character
-  for (int character = 0; character < 256; ++character) {
-    std::ofstream file;
-    file.open(getCharacterFilename(character).c_str());
-    if (file.is_open()) {
-      ++successes;
-      file << char(character);
-      file.close();
-    }
-  }
-  // Make sure the files exist
-  REQUIRE(successes == 256);
+  const std::string folderName = "characters";
+  // Make sure the files are all successfully created
+  REQUIRE(createOneFilePerCharacter("", "", folderName) == 256);
 
   Scanner scanner;
 
@@ -43,7 +56,7 @@ SCENARIO("Create files containing each character and run the scanner on these") 
   for (int character = 0; character < 256; ++character) {
     lexemes.clear();
     errors.clear();
-    scanner.scan(getCharacterFilename(character), errors, lexemes);
+    scanner.scan(getCharacterFilename(character, folderName), errors, lexemes);
     bool shouldBeErrorless = true;
     if ((!isValidCharacter(character)) || (char(character) == '"')) {
       shouldBeErrorless = false;

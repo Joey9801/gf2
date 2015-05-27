@@ -457,6 +457,67 @@ SCENARIO("Try to scan non-existent file") {
   CHECK(lexemes.empty());
 }
 
+/// Try to scan file with empty comments in it and test that it is scanned correctly
+SCENARIO("Try to scan file containing empty comments") {
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+
+  scanner.scan("tests/parser/test_files/scanner_tests/emptycomments.def",
+    errors,
+    lexemes);
+
+  CHECK(errors.empty());
+  REQUIRE(lexemes.size() == 43);
+  
+  for (int lexemeNo = 0; lexemeNo < 43; ++lexemeNo) {
+    if (lexemeNo % 2 == 0) {
+      switch (lexemeNo) {
+        case 0:
+        case 32:
+        case 42: {
+          CHECK(lexemes[lexemeNo].getType() == LexemeType::COMMENT);
+          break;
+        }
+        default: {
+          CHECK(lexemes[lexemeNo].getType() == LexemeType::IDENTIFIER);
+          break;
+        }
+      }
+    } else {
+      CHECK(lexemes[lexemeNo].getType() == LexemeType::WHITESPACE);
+    }
+  }
+
+  CHECK(lexemes[ 0].getString() == "/**/");
+  CHECK(lexemes[ 2].getString() == "Check");
+  CHECK(lexemes[ 4].getString() == "that");
+  CHECK(lexemes[ 6].getString() == "blank");
+  CHECK(lexemes[ 8].getString() == "comments");
+
+  CHECK(lexemes[10].getString() == "work");
+  CHECK(lexemes[12].getString() == "at");
+  CHECK(lexemes[14].getString() == "the");
+  CHECK(lexemes[16].getString() == "start");
+  CHECK(lexemes[18].getString() == "of");
+
+  CHECK(lexemes[20].getString() == "a");
+  CHECK(lexemes[22].getString() == "file");
+  CHECK(lexemes[24].getString() == "and");
+  CHECK(lexemes[26].getString() == "in");
+  CHECK(lexemes[28].getString() == "the");
+
+  CHECK(lexemes[30].getString() == "middle");
+  CHECK(lexemes[32].getString() == "/**/");
+  CHECK(lexemes[34].getString() == "and");
+  CHECK(lexemes[36].getString() == "at");
+  CHECK(lexemes[38].getString() == "the");
+
+  CHECK(lexemes[40].getString() == "end");
+  CHECK(lexemes[42].getString() == "/**/");
+}
+
 SCENARIO("Scan test.def") {
   Scanner scanner;
 

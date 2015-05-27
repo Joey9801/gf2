@@ -440,6 +440,23 @@ SCENARIO("Create files with each character input in the POTENTIALENDCOMMENT stat
   }
 }
 
+/// Try to scan a non-existent file and check that expected error is returned
+SCENARIO("Try to scan non-existent file") {
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+
+  scanner.scan("tests/parser/test_files/scanner_tests/non_existent_file.def",
+    errors,
+    lexemes);
+
+  // File shouldn't exist, so scanner should give 1 error and 0 lexemes
+  REQUIRE(errors.size() == 1);
+  CHECK(errors[0].getErrorDescription() == "SCANNER ERROR: File open operation failed - aborted scanning");
+  CHECK(lexemes.empty());
+}
+
 SCENARIO("Scan test.def") {
   Scanner scanner;
 

@@ -1,6 +1,63 @@
 #include <catch.h>
 
 #include "../../src/parser/scanner.h"
+#include "../../src/parser/charcheck.h"
+
+#include <fstream>
+#include <string>
+
+/// Create the filename (including path) for the single-character definition
+/// file containing the specified character
+std::string getCharacterFilename(int character) {
+  char filenamecstr[256];
+  sprintf(  filenamecstr,
+            "tests/parser/test_files/scanner_tests/characters/char%03u.def",
+            character);
+  return std::string(filenamecstr);
+}
+
+/// Create single-character files for all 256 characters and test that they get
+/// scanned correctly
+SCENARIO("Create files containing each character and run the scanner on these") {
+  int successes = 0;
+  // Create files for all 256 characters, each one containing just the single
+  // character
+  for (int character = 0; character < 256; ++character) {
+    std::ofstream file;
+    file.open(getCharacterFilename(character).c_str());
+    if (file.is_open()) {
+      ++successes;
+      file << char(character);
+      file.close();
+    }
+  }
+  // Make sure the files exist
+  REQUIRE(successes == 256);
+
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+  // Check that the files return an error and no lexemes if they should, and
+  // that the files return a lexeme and no errors if they should
+  for (int character = 0; character < 256; ++character) {
+    lexemes.clear();
+    errors.clear();
+    scanner.scan(getCharacterFilename(character), errors, lexemes);
+    bool shouldBeErrorless = true;
+    if ((!isValidCharacter(character)) || (char(character) == '"')) {
+      shouldBeErrorless = false;
+    }
+    if (shouldBeErrorless) {
+      CHECK(errors.empty());
+      CHECK(!lexemes.empty());
+    }
+    else {
+      CHECK(!errors.empty());
+      CHECK(lexemes.empty());
+    }
+  }
+}
 
 SCENARIO("Scan test.def") {
   Scanner scanner;
@@ -8,7 +65,9 @@ SCENARIO("Scan test.def") {
   std::vector<Lexeme> lexemes;
   std::vector<ParserError> errors;
 
-  scanner.scan("tests/parser/test_files/scanner_tests/test.def", errors, lexemes);
+  scanner.scan( "tests/parser/test_files/scanner_tests/test.def",
+                errors,
+                lexemes);
   
   WHEN("Check errors are correct") {
     REQUIRE(errors.size() == 1);

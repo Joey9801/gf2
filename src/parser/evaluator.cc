@@ -205,6 +205,8 @@ bool Evaluator::singleIdentifierProcessLexeme(
           // If type has been changed then create token, otherwise generate an
           // error and abort evaluation
           if (type == TokenType::VALUE) {
+            // Control should never reach here, but it is here for safety
+            // just in case
             errors.push_back(ParserError( addEvaluatorErrorPrefix(
                                               "A SINGULARITY lexeme with mismatched string and type was sent - aborting evaluation"),
                                           lexeme.getStartLineNo(),

@@ -457,6 +457,22 @@ SCENARIO("Try to scan non-existent file") {
   CHECK(lexemes.empty());
 }
 
+/// Try to scan a blank file and check that it is scanned correctly
+SCENARIO("Try to scan blank file") {
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+
+  scanner.scan("tests/parser/test_files/scanner_tests/blank_file.def",
+    errors,
+    lexemes);
+
+  // File should be blank, so scanner should give 0 errors and 0 lexemes
+  CHECK(errors.empty());
+  CHECK(lexemes.empty());
+}
+
 /// Try to scan file with empty comments in it and test that it is scanned correctly
 SCENARIO("Try to scan file containing empty comments") {
   Scanner scanner;

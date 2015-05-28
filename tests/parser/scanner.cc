@@ -518,6 +518,177 @@ SCENARIO("Try to scan file containing empty comments") {
   CHECK(lexemes[42].getString() == "/**/");
 }
 
+/// Try to scan a file containing a valid definition which covers as many
+/// transitions and states as possible
+SCENARIO("Try to scan a valid definition which covers as many transitions and states as possible") {
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+
+  scanner.scan("tests/parser/test_files/scanner_tests/allerrorfreetransitionsallstates.def",
+    errors,
+    lexemes);
+
+  CHECK(errors.empty());
+  REQUIRE(lexemes.size() == 31);
+
+  CHECK(lexemes[ 0].getString() == "/*This file attempts to cover as many states and transitions as possible using a syntactically valid definition file ** */");
+  CHECK(lexemes[ 0].getType() == LexemeType::COMMENT);
+  CHECK(lexemes[ 0].getStartLineNo() == 1);
+  CHECK(lexemes[ 0].getStartCharNo() == 1);
+  
+  CHECK(lexemes[ 1].getString() == "\n 	\n");
+  CHECK(lexemes[ 1].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[ 1].getStartLineNo() == 1);
+  CHECK(lexemes[ 1].getStartCharNo() == 123);
+  
+  CHECK(lexemes[ 2].getString() == "{");
+  CHECK(lexemes[ 2].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[ 2].getStartLineNo() == 3);
+  CHECK(lexemes[ 2].getStartCharNo() == 1);
+  
+  CHECK(lexemes[ 3].getString() == "description");
+  CHECK(lexemes[ 3].getType() == LexemeType::IDENTIFIER);
+  CHECK(lexemes[ 3].getStartLineNo() == 3);
+  CHECK(lexemes[ 3].getStartCharNo() == 2);
+  
+  CHECK(lexemes[ 4].getString() == " ");
+  CHECK(lexemes[ 4].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[ 4].getStartLineNo() == 3);
+  CHECK(lexemes[ 4].getStartCharNo() == 13);
+  
+  CHECK(lexemes[ 5].getString() == ":");
+  CHECK(lexemes[ 5].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[ 5].getStartLineNo() == 3);
+  CHECK(lexemes[ 5].getStartCharNo() == 14);
+  
+  CHECK(lexemes[ 6].getString() == "All states, all transitions test");
+  CHECK(lexemes[ 6].getType() == LexemeType::STRING);
+  CHECK(lexemes[ 6].getStartLineNo() == 3);
+  CHECK(lexemes[ 6].getStartCharNo() == 15);
+  
+  CHECK(lexemes[ 7].getString() == ",");
+  CHECK(lexemes[ 7].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[ 7].getStartLineNo() == 3);
+  CHECK(lexemes[ 7].getStartCharNo() == 49);
+  
+  CHECK(lexemes[ 8].getString() == "\n  ");
+  CHECK(lexemes[ 8].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[ 8].getStartLineNo() == 3);
+  CHECK(lexemes[ 8].getStartCharNo() == 50);
+  
+  CHECK(lexemes[ 9].getString() == "file with spaces.def");
+  CHECK(lexemes[ 9].getType() == LexemeType::STRING);
+  CHECK(lexemes[ 9].getStartLineNo() == 4);
+  CHECK(lexemes[ 9].getStartCharNo() == 3);
+  
+  CHECK(lexemes[10].getString() == " ");
+  CHECK(lexemes[10].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[10].getStartLineNo() == 4);
+  CHECK(lexemes[10].getStartCharNo() == 25);
+  
+  CHECK(lexemes[11].getString() == ":");
+  CHECK(lexemes[11].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[11].getStartLineNo() == 4);
+  CHECK(lexemes[11].getStartCharNo() == 26);
+
+  CHECK(lexemes[12].getString() == " ");
+  CHECK(lexemes[12].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[12].getStartLineNo() == 4);
+  CHECK(lexemes[12].getStartCharNo() == 27);
+
+  CHECK(lexemes[13].getString() == "file_with_spaces");
+  CHECK(lexemes[13].getType() == LexemeType::IDENTIFIER);
+  CHECK(lexemes[13].getStartLineNo() == 4);
+  CHECK(lexemes[13].getStartCharNo() == 28);
+
+  CHECK(lexemes[14].getString() == "\n  ");
+  CHECK(lexemes[14].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[14].getStartLineNo() == 4);
+  CHECK(lexemes[14].getStartCharNo() == 44);
+
+  CHECK(lexemes[15].getString() == "inputs");
+  CHECK(lexemes[15].getType() == LexemeType::IDENTIFIER);
+  CHECK(lexemes[15].getStartLineNo() == 5);
+  CHECK(lexemes[15].getStartCharNo() == 3);
+
+  CHECK(lexemes[16].getString() == ":");
+  CHECK(lexemes[16].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[16].getStartLineNo() == 5);
+  CHECK(lexemes[16].getStartCharNo() == 9);
+
+  CHECK(lexemes[17].getString() == "{");
+  CHECK(lexemes[17].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[17].getStartLineNo() == 5);
+  CHECK(lexemes[17].getStartCharNo() == 10);
+
+  CHECK(lexemes[18].getString() == "\n    ");
+  CHECK(lexemes[18].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[18].getStartLineNo() == 5);
+  CHECK(lexemes[18].getStartCharNo() == 11);
+
+  CHECK(lexemes[19].getString() == "/*These are inputs*/");
+  CHECK(lexemes[19].getType() == LexemeType::COMMENT);
+  CHECK(lexemes[19].getStartLineNo() == 6);
+  CHECK(lexemes[19].getStartCharNo() == 5);
+
+  CHECK(lexemes[20].getString() == "\n    ");
+  CHECK(lexemes[20].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[20].getStartLineNo() == 6);
+  CHECK(lexemes[20].getStartCharNo() == 25);
+
+  CHECK(lexemes[21].getString() == "clock");
+  CHECK(lexemes[21].getType() == LexemeType::IDENTIFIER);
+  CHECK(lexemes[21].getStartLineNo() == 7);
+  CHECK(lexemes[21].getStartCharNo() == 5);
+
+  CHECK(lexemes[22].getString() == " ");
+  CHECK(lexemes[22].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[22].getStartLineNo() == 7);
+  CHECK(lexemes[22].getStartCharNo() == 10);
+
+  CHECK(lexemes[23].getString() == ":");
+  CHECK(lexemes[23].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[23].getStartLineNo() == 7);
+  CHECK(lexemes[23].getStartCharNo() == 11);
+
+  CHECK(lexemes[24].getString() == " ");
+  CHECK(lexemes[24].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[24].getStartLineNo() == 7);
+  CHECK(lexemes[24].getStartCharNo() == 12);
+
+  CHECK(lexemes[25].getString() == "false");
+  CHECK(lexemes[25].getType() == LexemeType::IDENTIFIER);
+  CHECK(lexemes[25].getStartLineNo() == 7);
+  CHECK(lexemes[25].getStartCharNo() == 13);
+
+  CHECK(lexemes[26].getString() == "/*This input is a clock*/");
+  CHECK(lexemes[26].getType() == LexemeType::COMMENT);
+  CHECK(lexemes[26].getStartLineNo() == 7);
+  CHECK(lexemes[26].getStartCharNo() == 18);
+
+  CHECK(lexemes[27].getString() == "\n  ");
+  CHECK(lexemes[27].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[27].getStartLineNo() == 7);
+  CHECK(lexemes[27].getStartCharNo() == 43);
+
+  CHECK(lexemes[28].getString() == "}");
+  CHECK(lexemes[28].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[28].getStartLineNo() == 8);
+  CHECK(lexemes[28].getStartCharNo() == 3);
+
+  CHECK(lexemes[29].getString() == "\n");
+  CHECK(lexemes[29].getType() == LexemeType::WHITESPACE);
+  CHECK(lexemes[29].getStartLineNo() == 8);
+  CHECK(lexemes[29].getStartCharNo() == 4);
+
+  CHECK(lexemes[30].getString() == "}");
+  CHECK(lexemes[30].getType() == LexemeType::SINGULARITY);
+  CHECK(lexemes[30].getStartLineNo() == 9);
+  CHECK(lexemes[30].getStartCharNo() == 1);
+}
+
 SCENARIO("Scan test.def") {
   Scanner scanner;
 

@@ -76,13 +76,4 @@ SCENARIO("Create some tokens and check their values") {
     REQUIRE(token.getStartCharNo() ==
       std::numeric_limits<unsigned int>::min());
   }
-
-  /// Check that an undefined singularity token works as expected
-  WHEN("Create an undefined singularity token") {
-    Token token(TokenType::UNDEFSINGULARITY, "@", 666, 999);
-    REQUIRE(token.getType() == TokenType::UNDEFSINGULARITY);
-    REQUIRE(token.getValue() == "@");
-    REQUIRE(token.getStartLineNo() == 666);
-    REQUIRE(token.getStartCharNo() == 999);
-  }
 }

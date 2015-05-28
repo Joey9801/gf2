@@ -279,3 +279,25 @@ SCENARIO("Check that only \"pair separators\" pass \"pair separator\" character 
     currentChar++;
   } while (currentChar != 0);
 }
+
+/// Check that only characters defined as "member access operators" pass the
+/// "member access operator" check
+SCENARIO("Check that only \"member access operators\" pass \"member access operator\" character check") {
+  char currentChar = 0;
+  do {
+    char result = 0;
+    if (currentChar == '.')
+    {
+      result = isMemberAccessOperator(currentChar) ? 1 : 0;
+    }
+    else
+    {
+      result = isMemberAccessOperator(currentChar) ? 0 : 1;
+    }
+    // The slightly odd way of testing here ensures that the value of the
+    // character that has failed will be displayed if a test fails
+    result *= currentChar;
+    CHECK(int(result) == int(currentChar));
+    currentChar++;
+  } while (currentChar != 0);
+}

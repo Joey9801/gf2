@@ -57,12 +57,18 @@ bool isPairSeparator(const char ch) {
   return ch == ':';
 }
 
+/// Check whether the given character is a valid member access operator
+bool isMemberAccessOperator(const char ch) {
+  return ch == '.';
+}
+
 /// Check whether the given character is any valid character in the language
 bool isValidCharacter(const char ch) {
-  return  isStringChar(ch)        ||
-          isCommentChar(ch)       ||
-          isOpeningDictDelim(ch)  ||
-          isClosingDictDelim(ch)  ||
-          isDictSeparator(ch)     ||
-          isPairSeparator(ch);
+  return  isStringChar(ch)          ||
+          isCommentChar(ch)         ||
+          isOpeningDictDelim(ch)    ||
+          isClosingDictDelim(ch)    ||
+          isDictSeparator(ch)       ||
+          isPairSeparator(ch)       ||
+          isMemberAccessOperator(ch);
 }

@@ -28,6 +28,8 @@ bool isDictSeparator(const char ch);
 
 bool isPairSeparator(const char ch);
 
+bool isMemberAccessOperator(const char ch);
+
 bool isValidCharacter(const char ch);
 
 #endif // CHARCHECK_H_

@@ -916,6 +916,193 @@ SCENARIO("Try to scan an invalid definition which covers all transitions and sta
   CHECK(lexemes[41].getStartCharNo() == 20);
 }
 
+/// Test that the scanner works correctly when the file ends in any state
+SCENARIO("Test that the scanner works correctly when the file ends in any state") {
+  Scanner scanner;
+
+  std::vector<Lexeme> lexemes;
+  std::vector<ParserError> errors;
+
+  WHEN("State at end of file is IDLE") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofidle.def",
+                  errors,
+                  lexemes);
+
+    // It should be fine to end the file in the IDLE state, so expect no errors
+    // and 3 lexemes
+    CHECK(errors.empty());
+    REQUIRE(lexemes.size() == 3);
+
+    CHECK(lexemes[0].getString() == "idle");
+    CHECK(lexemes[0].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[0].getStartLineNo() == 1);
+    CHECK(lexemes[0].getStartCharNo() == 1);
+
+    CHECK(lexemes[1].getString() == " ");
+    CHECK(lexemes[1].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[1].getStartLineNo() == 1);
+    CHECK(lexemes[1].getStartCharNo() == 5);
+
+    CHECK(lexemes[2].getString() == ";");
+    CHECK(lexemes[2].getType() == LexemeType::SINGULARITY);
+    CHECK(lexemes[2].getStartLineNo() == 1);
+    CHECK(lexemes[2].getStartCharNo() == 6);
+  }
+
+  WHEN("State at end of file is IDENTIFIERPROCESSING") {
+    CHECK(errors.empty());
+    REQUIRE(lexemes.empty());
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofidentifierprocessing.def",
+                  errors,
+                  lexemes);
+
+    // It should be fine to end the file in the IDENTIFIERPROCESSING state, so
+    // expect no errors and 3 lexemes
+    CHECK(errors.empty());
+    REQUIRE(lexemes.size() == 3);
+
+    CHECK(lexemes[0].getString() == "identifier");
+    CHECK(lexemes[0].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[0].getStartLineNo() == 1);
+    CHECK(lexemes[0].getStartCharNo() == 1);
+
+    CHECK(lexemes[1].getString() == " ");
+    CHECK(lexemes[1].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[1].getStartLineNo() == 1);
+    CHECK(lexemes[1].getStartCharNo() == 11);
+
+    CHECK(lexemes[2].getString() == "processing");
+    CHECK(lexemes[2].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[2].getStartLineNo() == 1);
+    CHECK(lexemes[2].getStartCharNo() == 12);
+  }
+
+  WHEN("State at end of file is STRINGPROCESSING") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofstringprocessing.def",
+                  errors,
+                  lexemes);
+
+    // It should not be fine to end the file in the STRINGPROCESSING state, so
+    // expect 1 error and no lexemes
+    REQUIRE(errors.size() == 1);
+    CHECK(lexemes.empty());
+
+    CHECK(errors[0].getErrorDescription() ==
+        "SCANNER ERROR: String unterminated by end of file");
+    CHECK(errors[0].getLineNo() == 1);
+    CHECK(errors[0].getCharNo() == 1);
+  }
+
+  WHEN("State at end of file is COMMENTPROCESSING") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofcommentprocessing.def",
+                  errors,
+                  lexemes);
+
+    // It should not be fine to end the file in the COMMENTPROCESSING state, so
+    // expect 1 error and no lexemes
+    REQUIRE(errors.size() == 1);
+    CHECK(lexemes.empty());
+
+    CHECK(errors[0].getErrorDescription() ==
+        "SCANNER ERROR: Comment unterminated by end of file");
+    CHECK(errors[0].getLineNo() == 1);
+    CHECK(errors[0].getCharNo() == 1);
+  }
+
+  WHEN("State at end of file is WHITESPACEPROCESSING") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofwhitespaceprocessing.def",
+                  errors,
+                  lexemes);
+
+    // It should be fine to end the file in the WHITESPACEPROCESSING state, so
+    // expect no errors and 4 lexemes
+    CHECK(errors.empty());
+    REQUIRE(lexemes.size() == 4);
+
+    CHECK(lexemes[0].getString() == "whitespace");
+    CHECK(lexemes[0].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[0].getStartLineNo() == 1);
+    CHECK(lexemes[0].getStartCharNo() == 1);
+
+    CHECK(lexemes[1].getString() == " ");
+    CHECK(lexemes[1].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[1].getStartLineNo() == 1);
+    CHECK(lexemes[1].getStartCharNo() == 11);
+
+    CHECK(lexemes[2].getString() == "processing");
+    CHECK(lexemes[2].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[2].getStartLineNo() == 1);
+    CHECK(lexemes[2].getStartCharNo() == 12);
+
+    CHECK(lexemes[3].getString() == "    ");
+    CHECK(lexemes[3].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[3].getStartLineNo() == 1);
+    CHECK(lexemes[3].getStartCharNo() == 22);
+  }
+
+  WHEN("State at end of file is POTENTIALBEGINCOMMENT") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofpotentialbegincomment.def",
+                  errors,
+                  lexemes);
+
+    // It should be fine to end the file in the POTENTIALBEGINCOMMENT state, so
+    // expect no errors and 7 lexemes
+    CHECK(errors.empty());
+    REQUIRE(lexemes.size() == 7);
+
+    CHECK(lexemes[0].getString() == "potential");
+    CHECK(lexemes[0].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[0].getStartLineNo() == 1);
+    CHECK(lexemes[0].getStartCharNo() == 1);
+
+    CHECK(lexemes[1].getString() == " ");
+    CHECK(lexemes[1].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[1].getStartLineNo() == 1);
+    CHECK(lexemes[1].getStartCharNo() == 10);
+
+    CHECK(lexemes[2].getString() == "begin");
+    CHECK(lexemes[2].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[2].getStartLineNo() == 1);
+    CHECK(lexemes[2].getStartCharNo() == 11);
+
+    CHECK(lexemes[3].getString() == " ");
+    CHECK(lexemes[3].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[3].getStartLineNo() == 1);
+    CHECK(lexemes[3].getStartCharNo() == 16);
+
+    CHECK(lexemes[4].getString() == "comment");
+    CHECK(lexemes[4].getType() == LexemeType::IDENTIFIER);
+    CHECK(lexemes[4].getStartLineNo() == 1);
+    CHECK(lexemes[4].getStartCharNo() == 17);
+
+    CHECK(lexemes[5].getString() == " ");
+    CHECK(lexemes[5].getType() == LexemeType::WHITESPACE);
+    CHECK(lexemes[5].getStartLineNo() == 1);
+    CHECK(lexemes[5].getStartCharNo() == 24);
+
+    CHECK(lexemes[6].getString() == "/");
+    CHECK(lexemes[6].getType() == LexemeType::SINGULARITY);
+    CHECK(lexemes[6].getStartLineNo() == 1);
+    CHECK(lexemes[6].getStartCharNo() == 25);
+  }
+
+  WHEN("State at end of file is POTENTIALENDCOMMENT") {
+    scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofpotentialendcomment.def",
+                  errors,
+                  lexemes);
+
+    // It should not be fine to end the file in the POTENTIALENDCOMMENT state,
+    // so expect 1 error and no lexemes
+    REQUIRE(errors.size() == 1);
+    CHECK(lexemes.empty());
+
+    CHECK(errors[0].getErrorDescription() ==
+        "SCANNER ERROR: Comment unterminated by end of file");
+    CHECK(errors[0].getLineNo() == 1);
+    CHECK(errors[0].getCharNo() == 1);
+  }
+}
+
 SCENARIO("Scan test.def") {
   Scanner scanner;
 

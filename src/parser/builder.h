@@ -8,6 +8,7 @@
 
 #include <plog/Log.h>
 
+#include "../errors/error.h"
 #include "parser.h"
 #include "../structures/definition.h"
 #include "../simulator/monitor.h"

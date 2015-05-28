@@ -12,6 +12,7 @@
 #include "componentconstructors.h"
 #include "monitor.h"
 #include "../structures/definition.h"
+#include "../errors/error.h"
 
 class RootNetwork;
 extern constructor_map componentConstructor;
@@ -100,6 +101,8 @@ class Network : public BaseComponent
     BaseComponent * clone(void);
 
     unsigned int numConnections;
+
+    ErrorList errorList;
 
   protected:
     std::map<std::string, unsigned int> _componentNames;

@@ -10,6 +10,8 @@
 
 /*! An enumeration of all the possible token types */
 enum class TokenType : char {
+  IDENTIFIER,           /*!<  An identifier token - should contain the full
+                              identifier and no more */
   VALUE,                /*!<  A value token - should contain the full value and
                               no more. This is a value in the context of the
                               syntax of the circuit definition language */

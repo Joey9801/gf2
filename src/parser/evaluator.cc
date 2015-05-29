@@ -146,9 +146,9 @@ bool Evaluator::singleIdentifierProcessLexeme(
       (lexeme.getType() == LexemeType::COMMENT)     ||
       (lexeme.getType() == LexemeType::STRING)) {
     // If the lexeme is a WHITESPACE, COMMENT or STRING lexeme then generate a
-    // VALUE token and go to the IDLE state
+    // IDENTIFIER token and go to the IDLE state
     // If the lexeme is a STRING lexeme then also generate a STRING token
-    tokens.push_back(Token( TokenType::VALUE,
+    tokens.push_back(Token( TokenType::IDENTIFIER,
                             currentString,
                             currTokenStartFileLineNo,
                             currTokenStartFileCharNo));
@@ -179,8 +179,8 @@ bool Evaluator::singleIdentifierProcessLexeme(
             isClosingDictDelim(singularityChar) ||
             isDictSeparator(singularityChar)    ||
             isPairSeparator(singularityChar)) {
-          // Generate the VALUE token for the previous lexeme
-          tokens.push_back(Token( TokenType::VALUE,
+          // Generate the IDENTIFIER token for the previous lexeme
+          tokens.push_back(Token( TokenType::IDENTIFIER,
                                   currentString,
                                   currTokenStartFileLineNo,
                                   currTokenStartFileCharNo));

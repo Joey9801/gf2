@@ -228,12 +228,12 @@ SCENARIO("Evaluate all transitions out of all states") {
     WHEN("Transition out of state with whitespace lexeme") {
       lexemes.push_back(Lexeme(LexemeType::WHITESPACE, " ", lineNo, charNo));
       evaluator.evaluate(lexemes, errors, tokens);
-      THEN("No errors and identifier tokenised as value") {
-        // Expect identifier to be tokenised as a VALUE token and no errors
+      THEN("No errors and identifier tokenised as identifier") {
+        // Expect identifier to be tokenised as a IDENTIFIER token and no errors
         // to be produced
         CHECK(errors.empty());
         REQUIRE(tokens.size() == 1);
-        CHECK(tokens[0].getType() == TokenType::VALUE);
+        CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
         CHECK(tokens[0].getStartLineNo() == 1);
         CHECK(tokens[0].getStartCharNo() == 1);
@@ -244,12 +244,12 @@ SCENARIO("Evaluate all transitions out of all states") {
     WHEN("Transition out of state with comment lexeme") {
       lexemes.push_back(Lexeme(LexemeType::COMMENT, "/*comment*/", lineNo, charNo));
       evaluator.evaluate(lexemes, errors, tokens);
-      THEN("No errors and identifier tokenised as value") {
-        // Expect identifier to be tokenised as a VALUE token and no errors
+      THEN("No errors and identifier tokenised as identifier") {
+        // Expect identifier to be tokenised as a IDENTIFIER token and no errors
         // to be produced
         CHECK(errors.empty());
         REQUIRE(tokens.size() == 1);
-        CHECK(tokens[0].getType() == TokenType::VALUE);
+        CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
         CHECK(tokens[0].getStartLineNo() == 1);
         CHECK(tokens[0].getStartCharNo() == 1);
@@ -260,12 +260,12 @@ SCENARIO("Evaluate all transitions out of all states") {
     WHEN("Transition out of state with string lexeme") {
       lexemes.push_back(Lexeme(LexemeType::STRING, "a string", lineNo, charNo));
       evaluator.evaluate(lexemes, errors, tokens);
-      THEN("No errors, identifier tokenised as value and string tokenised as string") {
-        // Expect identifier to be tokenised as a VALUE token, string to be
+      THEN("No errors, identifier tokenised as identifier and string tokenised as string") {
+        // Expect identifier to be tokenised as a IDENTIFIER token, string to be
         // tokenised as a STRING token and no errors to be produced
         CHECK(errors.empty());
         REQUIRE(tokens.size() == 2);
-        CHECK(tokens[0].getType() == TokenType::VALUE);
+        CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
         CHECK(tokens[0].getStartLineNo() == 1);
         CHECK(tokens[0].getStartCharNo() == 1);
@@ -282,12 +282,12 @@ SCENARIO("Evaluate all transitions out of all states") {
       WHEN("Singularity is an opening dict delimiter") {
         lexemes.push_back(Lexeme(LexemeType::SINGULARITY, "{", lineNo, charNo));
         evaluator.evaluate(lexemes, errors, tokens);
-        THEN("No errors, identifier tokenised as value and singularity tokenised as opening dict delimiter") {
-          // Expect identifier to be tokenised as a VALUE token, singularity to
+        THEN("No errors, identifier tokenised as identifier and singularity tokenised as opening dict delimiter") {
+          // Expect identifier to be tokenised as a IDENTIFIER token, singularity to
           // be tokenised as a DICTDELIMOPEN token and no errors to be produced
           CHECK(errors.empty());
           REQUIRE(tokens.size() == 2);
-          CHECK(tokens[0].getType() == TokenType::VALUE);
+          CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
           CHECK(tokens[0].getStartLineNo() == 1);
           CHECK(tokens[0].getStartCharNo() == 1);
@@ -302,12 +302,12 @@ SCENARIO("Evaluate all transitions out of all states") {
       WHEN("Singularity is a closing dict delimiter") {
         lexemes.push_back(Lexeme(LexemeType::SINGULARITY, "}", lineNo, charNo));
         evaluator.evaluate(lexemes, errors, tokens);
-        THEN("No errors, identifier tokenised as value and singularity tokenised as closing dict delimiter") {
-          // Expect identifier to be tokenised as a VALUE token, singularity to
+        THEN("No errors, identifier tokenised as identifier and singularity tokenised as closing dict delimiter") {
+          // Expect identifier to be tokenised as a IDENTIFIER token, singularity to
           // be tokenised as a DICTDELIMCLOSE token and no errors to be produced
           CHECK(errors.empty());
           REQUIRE(tokens.size() == 2);
-          CHECK(tokens[0].getType() == TokenType::VALUE);
+          CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
           CHECK(tokens[0].getStartLineNo() == 1);
           CHECK(tokens[0].getStartCharNo() == 1);
@@ -322,12 +322,12 @@ SCENARIO("Evaluate all transitions out of all states") {
       WHEN("Singularity is a dict separator") {
         lexemes.push_back(Lexeme(LexemeType::SINGULARITY, ",", lineNo, charNo));
         evaluator.evaluate(lexemes, errors, tokens);
-        THEN("No errors, identifier tokenised as value and singularity tokenised as dict separator") {
-          // Expect identifier to be tokenised as a VALUE token, singularity to
+        THEN("No errors, identifier tokenised as identifier and singularity tokenised as dict separator") {
+          // Expect identifier to be tokenised as a IDENTIFIER token, singularity to
           // be tokenised as a DICTSEPARATOR token and no errors to be produced
           CHECK(errors.empty());
           REQUIRE(tokens.size() == 2);
-          CHECK(tokens[0].getType() == TokenType::VALUE);
+          CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
           CHECK(tokens[0].getStartLineNo() == 1);
           CHECK(tokens[0].getStartCharNo() == 1);
@@ -342,12 +342,12 @@ SCENARIO("Evaluate all transitions out of all states") {
       WHEN("Singularity is a pair separator") {
         lexemes.push_back(Lexeme(LexemeType::SINGULARITY, ":", lineNo, charNo));
         evaluator.evaluate(lexemes, errors, tokens);
-        THEN("No errors, identifier tokenised as value and singularity tokenised as pair separator") {
-          // Expect identifier to be tokenised as a VALUE token, singularity to
+        THEN("No errors, identifier tokenised as identifier and singularity tokenised as pair separator") {
+          // Expect identifier to be tokenised as a IDENTIFIER token, singularity to
           // be tokenised as a PAIRSEPARATOR token and no errors to be produced
           CHECK(errors.empty());
           REQUIRE(tokens.size() == 2);
-          CHECK(tokens[0].getType() == TokenType::VALUE);
+          CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
           CHECK(tokens[0].getStartLineNo() == 1);
           CHECK(tokens[0].getStartCharNo() == 1);

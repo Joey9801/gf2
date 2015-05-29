@@ -161,3 +161,17 @@ unsigned int RootNetwork::addMonitorPoint(std::vector<std::string>& signature) {
   }
   return Network::addMonitorPoint(signature, 0);
 }
+void RootNetwork::removeMonitorPoint(std::vector<std::string>& signature) {
+  if(signature.size()==2) {
+    LOG_DEBUG << signature[0] << ", " << signature[1];
+    if(signature[1] == "Root network") {
+      unsigned int pointId = _monitor->removePoint(signature);
+      LOG_DEBUG;
+      _monitorPoints.erase(pointId);
+      LOG_DEBUG;
+      return;
+    }
+  }
+  Network::removeMonitorPoint(signature, 0);
+  return;
+}

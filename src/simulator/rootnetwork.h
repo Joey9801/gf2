@@ -31,6 +31,7 @@ class RootNetwork : public Network
     NodeTree * getNodeTree(void);
 
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(std::vector<std::string>& signature);
 
   private:
     std::vector<bool> _inputVals;

@@ -63,10 +63,10 @@
 \clearpage
 
 \section{Example definition files}
-    In this section several example definition files are declared: A 4-bit synchronous counter based on JK flip flops, a fully adder, a 4-bit ripple carry adder, and a 4-bit carry lookahead adder.
-    The include functionality of our simulator is demonstrated in each of the 4-bit adders (they include the full adder), as well as a further definition called \texttt{4bit-adder-test.def} which includes both the 4-bit adders wired to two synchronous counters as a demonstration.
+    In this section several example definition files are declared: A 4-bit synchronous counter based on JK flip flops, a full adder, a 4-bit ripple carry adder, and a 4-bit carry lookahead adder.
+    The include functionality of our simulator is demonstrated in both of the 4-bit adders (they include the full adder), as well as a further definition called \texttt{4bit-adder-test.def} which includes both the 4-bit adders wired to two synchronous counters as a demonstration.
 
-    To demonstrate how easily these definition files might be generated automatically, an example 16-bit carry lookahead adder is also included. This definition is more than 15000 characters long even with all the spaces and newlines removed. Even larger examples are just as trivial to generate though would be impractical to include in a report, for instance a 64 bit carry lookahead adder requires nearly half a million characters to define.
+    To demonstrate how easily these definition files might be generated automatically, an example 16-bit carry lookahead adder is also included. This definition is more than 15000 characters long even with all the spaces and newlines removed. Even larger examples are just as trivial to generate, though would be impractical to include in a report. For instance a 64 bit carry lookahead adder requires nearly half a million characters to define - about 100 pages at the same font size as the 16 bit variant.
 
     It should be noted that although the following files are in strict lower case, the format is fully case insensitive such that the requirements in the specification about uppercase items are fufilled.
     It should also be noted that the ordering of the keys does not matter.
@@ -109,6 +109,7 @@
 \clearpage
 
     \subsection{16 bit carry lookahead adder}
+        The following definition is stored as a single line with no spaces. Line breaks are inserted here at regular intervals for readability, without regard to whether they intersect a word. Doing so to an actual definition file would prevent it from being parsed.
         \lstinputlisting{16bit-lookahead-adder.def}
 
 \null

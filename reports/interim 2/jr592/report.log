@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.2.8)  29 MAY 2015 10:08
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2015.2.8)  29 MAY 2015 10:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -238,11 +238,11 @@ No file report.bbl.
 Here is how much of TeX's memory you used:
  2817 strings out of 495028
  41049 string characters out of 6181498
- 695574 words of memory out of 5000000
+ 700574 words of memory out of 5000000
  5990 multiletter control sequences out of 15000+600000
  8221 words of font info for 30 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 38i,7n,32p,457b,1438s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,7n,32p,520b,1438s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cm
 r10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
@@ -251,7 +251,7 @@ share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/te
 xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-
 dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on report.pdf (14 pages, 206669 bytes).
+Output written on report.pdf (14 pages, 207129 bytes).
 PDF statistics:
  91 PDF objects out of 1000 (max. 8388607)
  58 compressed objects within 1 object stream

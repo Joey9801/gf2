@@ -1,11 +1,13 @@
 #include "monitor.h"
 
 MonitorPoint::MonitorPoint() {
-  log.push_back(std::pair<unsigned int, bool>(0, false));
-  log.push_back(std::pair<unsigned int, bool>(0, false));
 }
 
 void MonitorPoint::appendData(unsigned int time, bool value) {
+  if(log.size()==0){ 
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+  }
   log.back().first = time;
   if(value != log.back().second) {
     log.push_back(std::pair<unsigned int, bool>(time, value));

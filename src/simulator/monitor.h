@@ -25,12 +25,12 @@ class Monitor {
     ~Monitor();
 
     template <typename T>
-      void removePoint(T ident) {
+      unsigned int removePoint(T ident) {
         unsigned int pointId = findPoint(ident);
         delete _points[pointId];
         _points.erase(pointId);
 
-        return;
+        return pointId;
       }
 
     template <typename T>

@@ -28,6 +28,7 @@ namespace Builder {
   void configureComponents(Network * net, Definition * def);
   void connectComponents(Network * net, Definition * def);
   void createMonitorPoints(RootNetwork * rnet);
+  void setInitialInputs(RootNetwork * rnet);
 
   namespace Helpers {
     std::pair<std::string, std::string> separateDotted(std::string in);

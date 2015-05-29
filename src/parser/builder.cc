@@ -17,6 +17,15 @@ namespace Builder {
         throw;
     }
 
+    try {
+      setInitialInputs(rnet);
+    }
+    catch(const ErrorList& e) {
+      rnet->errorList.addList(e);
+      if(not rnet->errorList.recoverable())
+        throw;
+    }
+
     return rnet;
   }
   Network * build(std::string filepath) {
@@ -411,6 +420,29 @@ namespace Builder {
         }
       }
     }
+
+    throw errorList;
+  }
+
+  void setInitialInputs(RootNetwork * rnet) {
+    ErrorList errorList;
+    Definition * def = rnet->getDefinition();
+
+    if(def->pairs.find("inputs") != def->pairs.end()) {
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
+          it != def->pairs["inputs"]->pairs.end();
+          it++) {
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos)) {
+          // Handle vector input
+        }
+        else {
+          // Handle regular input
+        }
+      }
+    }
+    // No error adding in an else statement, since a lack of inputs field
+    // will have already been caught.
 
     throw errorList;
   }

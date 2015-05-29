@@ -27,8 +27,12 @@ Network::~Network() {}
 //returns componentId
 unsigned int Network::addComponent(std::string type) {
   if(componentConstructor.find(type) == componentConstructor.end()) {
-    //TODO report an error
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Unknown component type";
+    e.detail = "\"" + type + "\" is not a known component";
+    e.recoverable = false;
+
+    throw e;
   }
 
   unsigned int componentId = _components.size();
@@ -80,8 +84,12 @@ void Network::configureComponent(unsigned int componentId, std::string key, std:
 
 void Network::renameComponent(std::string oldName, std::string newName) {
   if(_componentNames.find(oldName) == _componentNames.end()) {
-    //TODO raise some sort of error
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + oldName + "\" is not a known component name";
+    e.recoverable = false;
+
+    throw e;
   }
 
   LOG_VERBOSE << "oldName: " << oldName << ", newName: " << newName;
@@ -118,8 +126,12 @@ unsigned int Network::findComponent(std::string componentName) {
     if(componentName == "const")
       return compl 0;
 
-    LOG_ERROR << "\"" << componentName << "\" is not a componentName in the current network";
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + componentName + "\" is not a known component name";
+    e.recoverable = false;
+
+    throw e;
   }
   unsigned int componentId = _componentNames[componentName];
   return componentId;
@@ -178,8 +190,12 @@ unsigned int Network::addVectorInput(std::string signature) {
   // Returns the inputId of the first one
   if((signature.find_first_of('[') == std::string::npos)
   or (signature.find_first_of(']') == std::string::npos)) {
-    LOG_ERROR << "Tried to create a vector input with invalid signature: " << signature;
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Invalid vector definition";
+    e.detail = "\"" + signature + "\" is not a valid input vector definition";
+    e.recoverable = false;
+
+    throw e;
   }
 
   std::string name = signature.substr(0, signature.find_first_of('['));
@@ -206,8 +222,12 @@ unsigned int Network::addVectorOutput(std::string signature) {
   // Returns the outputId of the first one
   if((signature.find_first_of('[') == std::string::npos)
   or (signature.find_first_of(']') == std::string::npos)) {
-    LOG_ERROR << "Tried to create a vector output with invalid signature: " << signature;
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Invalid vector definition";
+    e.detail = "\"" + signature + "\" is not a valid output vector definition";
+    e.recoverable = false;
+
+    throw e;
   }
 
   std::string name = signature.substr(0, signature.find_first_of('['));
@@ -297,16 +317,24 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
 
 unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
   if(not _monitor) {
-    // TODO raise an error - monitor not set
     LOG_ERROR << "Cannot set monitor point without Monitor object";
     throw 1;
   }
 
   unsigned int remaining = signature.size() - depth;
   if(remaining < 2) {
-    // TODO raise an error - not enough information in the signature
-    LOG_ERROR << "Not enough information in signature to add monitor point";
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Cannot add monitor point";
+
+    std::stringstream ss;
+    for(unsigned int i=signature.size()-1; i>0; i++)
+      ss << signature[i] << ".";
+    ss << signature[0];
+
+    e.detail = "\"" + ss.str() + "\" is not a valid monitor point signature";
+    e.recoverable = false;
+
+    throw e;
   }
 
   unsigned int componentId = findComponent(signature[remaining-1]);
@@ -324,9 +352,18 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsig
     //Attempt to cast the component as a Network
     Network * net = dynamic_cast<Network*>(c);
     if(not net) {
-      //TODO raise an error, the component in the signature wasn't a network
-      LOG_ERROR << "The monitor point signature was not found in the network";
-      throw 1;
+      GF2Error e = GF2Error();
+      e.name = "Cannot add monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "\"" + ss.str() + "\" is not a valid monitor point signature";
+      e.recoverable = false;
+
+      throw e;
     }
     pointId = net->addMonitorPoint(signature, depth+1);
   }
@@ -348,9 +385,18 @@ void Network::removeMonitorPoint(std::vector<std::string>& signature, unsigned i
 
   unsigned int remaining = signature.size() - depth;
   if(remaining < 2) {
-    // TODO raise an error - not enough information in the signature
-    LOG_ERROR << "Not enough information in signature to remove monitor point";
-    throw 1;
+      GF2Error e = GF2Error();
+      e.name = "Cannot remove monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "Signature \"" + ss.str() + "\" is not not found in monitor point lists";
+      e.recoverable = false;
+
+      throw e;
   }
 
   unsigned int componentId = findComponent(signature[remaining-1]);
@@ -366,9 +412,18 @@ void Network::removeMonitorPoint(std::vector<std::string>& signature, unsigned i
     //Attempt to cast the component as a Network
     Network * net = dynamic_cast<Network*>(c);
     if(not net) {
-      //TODO raise an error, the component in the signature wasn't a network
-      LOG_ERROR << "The monitor point signature was not found in the network";
-      throw 1;
+      GF2Error e = GF2Error();
+      e.name = "Cannot remove monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "Signature \"" + ss.str() + "\" is not not found in monitor point lists";
+      e.recoverable = false;
+
+      throw e;
     }
     net->removeMonitorPoint(signature, depth+1);
   }

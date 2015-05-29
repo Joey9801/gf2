@@ -3,7 +3,7 @@
 bool MyApp::OnInit() {
   //Initialise the logger
   static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
-  plog::init(plog::debug, &consoleAppender);
+  plog::init(plog::info, &consoleAppender);
 
   //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );

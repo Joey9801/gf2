@@ -207,6 +207,19 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
 
         _listview->SetItem(item, 2, wxString("Yes"));
       }
+      else {
+        std::string outputName = _listview->GetItemText(item, 1).ToStdString();
+        std::vector<std::string> signature = _component->getOutputSignature(outputName);
+
+        std::stringstream ss("");
+        for(unsigned int i=signature.size()-1; i>0; i--)
+          ss << signature[i] << ".";
+        ss << signature[0];
+
+        _network->removeMonitorPoint(signature);
+        _listview->SetItem(item, 2, wxString(""));
+      }
+
     }
   }
 }

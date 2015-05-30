@@ -1,22 +1,47 @@
 #include "outputplot.h"
 
-int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
 OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
-  :   wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER|wxHSCROLL)
+  :   wxPanel(parent, id)
 {
+  _simulationControl = new wxToolBar(this, -1,
+      wxDefaultPosition, wxDefaultSize,
+      wxTB_VERTICAL |wxTB_FLAT);
+  wxImage::AddHandler( new wxPNGHandler );
+  
+  wxBitmap runImg(wxT("resources/control_play.png"), wxBITMAP_TYPE_PNG);
+  wxBitmapButton *runButton = new wxBitmapButton(_simulationControl, ID_RunSim, runImg);
+  runButton->SetToolTip(_("Run Simulation"));
+  _simulationControl->AddControl(runButton);
+
+  wxBitmap pauseImg(wxT("resources/control_pause.png"), wxBITMAP_TYPE_PNG);
+  wxBitmapButton *pauseButton = new wxBitmapButton(_simulationControl, ID_PauseSim, pauseImg);
+  pauseButton->SetToolTip(_("Pause Simulation"));
+  _simulationControl->AddControl(pauseButton);
+
+  wxBitmap stopImg(wxT("resources/control_stop.png"), wxBITMAP_TYPE_PNG);
+  wxBitmapButton *stopButton = new wxBitmapButton(_simulationControl, ID_StopSim, stopImg);
+  stopButton->SetToolTip(_("Stop Simulation"));
+  _simulationControl->AddControl(stopButton);
+
+  _simulationControl->Realize();
+
   //make some fake command line args for glutinit
   char a  =  ' '; char *b = &a; char **tmp1 = &b;
   int tmp2 = 0; glutInit(&tmp2, tmp1);
 
-  _plotcanvas = new MyGLCanvas(this, -1);
+  wxScrolledWindow *canvasscroller = new wxScrolledWindow(this, -1);
+  _plotcanvas = new PlotCanvas(canvasscroller, -1);
+  wxBoxSizer *scrolledsizer = new wxBoxSizer(wxVERTICAL);
+  scrolledsizer->Add(_plotcanvas, 1,wxEXPAND,0);
+  canvasscroller->SetSizer(scrolledsizer);
+  canvasscroller->SetScrollRate(10, 10);
+  canvasscroller->SetAutoLayout(true);
 
-  wxBoxSizer *nvsizer = new wxBoxSizer(wxVERTICAL);
-  nvsizer->Add(_plotcanvas, 1,wxEXPAND,0);
-  SetSizer(nvsizer);
-  SetScrollRate(10, 10);
-  SetAutoLayout(true);
-
+  wxBoxSizer *opsizer = new wxBoxSizer(wxHORIZONTAL);
+  opsizer->Add(_simulationControl, 0,wxEXPAND,0);
+  opsizer->Add(canvasscroller, 1,wxEXPAND,0);
+  SetSizer(opsizer);
 }
 
 void OutputPlot::setMonitor(Monitor * m) {
@@ -30,29 +55,38 @@ void OutputPlot::refresh(void) {
   return;
 }
 
-void MyGLCanvas::setMonitor(Monitor * m) {
+void PlotCanvas::setMonitor(Monitor * m) {
   _monitor = m;
   return;
 }
 
-MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
+int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+
+PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
   wxGLCanvas(parent, id, wxglcanvas_attrib_list)
   // Constructor - initialises private variables
 {
   context = new wxGLContext(this);
   init = false;
 
-  Bind(wxEVT_SIZE, &MyGLCanvas::OnSize, this);
-  Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
-  Bind(wxEVT_MOUSEWHEEL, &MyGLCanvas::OnMousewheel, this);
+  Bind(wxEVT_SIZE, &PlotCanvas::OnSize, this);
+  Bind(wxEVT_PAINT, &PlotCanvas::OnPaint, this);
+  Bind(wxEVT_MOUSEWHEEL, &PlotCanvas::OnMousewheel, this);
 
-  bitwidth = 30.0;
+  bitwidth = 32.0;
+  rowheight = 50.0;
   xzero = 200.0;
   yzero  = 20.0;
 }
 
-void MyGLCanvas::Render()
+void PlotCanvas::Render()
 {
+  LOG_DEBUG;
+  std::vector<unsigned int> ids = _monitor->getPoints();
+
+  SetMinSize(wxSize(xzero + _monitor->maxTime * bitwidth, yzero + rowheight * ids.size()));
+  SendSizeEventToParent();
+
   SetCurrent(*context);
   if (!init) {
     InitGL();
@@ -60,12 +94,9 @@ void MyGLCanvas::Render()
   }
   glClear(GL_COLOR_BUFFER_BIT);
 
-  rowheight = 50;
-  SetMinSize(wxSize(_monitor->maxTime*bitwidth, -1));
 
   drawAxis();
 
-  std::vector<unsigned int> ids = _monitor->getPoints();
   for(unsigned int i=0; i<ids.size(); i++)
     drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]));
 
@@ -74,7 +105,7 @@ void MyGLCanvas::Render()
   SwapBuffers();
 }
 
-void MyGLCanvas::drawAxis(void) {
+void PlotCanvas::drawAxis(void) {
   //draw axis line
   glColor3f(0.0, 0.0, 0.0);//axis colour
     glBegin(GL_LINE_STRIP);
@@ -97,7 +128,7 @@ void MyGLCanvas::drawAxis(void) {
   return;
 }
 
-void MyGLCanvas::drawPlot(
+void PlotCanvas::drawPlot(
     unsigned int num,
     const wxString& label,
     const std::vector<std::pair<unsigned int, bool> >& data)
@@ -128,7 +159,7 @@ void MyGLCanvas::drawPlot(
   return;
 }
 
-void MyGLCanvas::InitGL()
+void PlotCanvas::InitGL()
   // Function to initialise the GL context
 {
   int w, h;
@@ -146,27 +177,30 @@ void MyGLCanvas::InitGL()
 }
 
 // Event handler for when the canvas is exposed
-void MyGLCanvas::OnPaint(wxPaintEvent& event) {
+void PlotCanvas::OnPaint(wxPaintEvent& event) {
+  LOG_DEBUG;
   // required for correct refreshing under MS windows
   wxPaintDC dc(this);
   Render();
 }
 
 // Event handler for when the canvas is resized
-void MyGLCanvas::OnSize(wxSizeEvent& event) {
+void PlotCanvas::OnSize(wxSizeEvent& event) {
+  LOG_DEBUG;
   // this will force the viewport and projection matrices to be reconfigured on the next paint
   init = false;
 }
 
-void MyGLCanvas::OnMousewheel(wxMouseEvent& event) {
+void PlotCanvas::OnMousewheel(wxMouseEvent& event) {
+  LOG_DEBUG;
   if (event.GetWheelRotation()>0.0) {
     bitwidth += 5;
   }
   else if (event.GetWheelRotation()<0.0) {
     bitwidth -= 5.0;
   }
-  if (bitwidth<5.0) {
-    bitwidth = 5.0;
+  if (bitwidth<1.0) {
+    bitwidth = 1.0;
   }
   init = false;
   Render();

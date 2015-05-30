@@ -9,6 +9,8 @@
 #include <GL/glut.h>
 #include <wx/glcanvas.h>
 #include <wx/scrolwin.h>
+#include <wx/toolbar.h>
+#include <wx/spinctrl.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -18,10 +20,36 @@
 
 #include "../simulator/monitor.h"
 
-class MyGLCanvas: public wxGLCanvas
+enum {
+  ID_RunSim = 1,
+  ID_PauseSim,
+  ID_StopSim,
+  ID_SimulationSteps
+};
+
+class PlotCanvas;
+
+class OutputPlot: public wxPanel
 {
   public:
-    MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
+    OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
+    virtual ~OutputPlot(){};
+
+    void AddPlotTrace(std::string label, unsigned int pointId);
+    void setMonitor(Monitor * m);
+
+    void refresh(void);
+
+  private:
+    PlotCanvas *_plotcanvas;
+    Monitor * _monitor;
+    wxToolBar *_simulationControl;
+};
+
+class PlotCanvas: public wxGLCanvas
+{
+  public:
+    PlotCanvas(wxWindow *parent, wxWindowID id); // constructor
     void Render(); // function to draw canvas contents
     void setMonitor(Monitor * m);
 
@@ -39,22 +67,6 @@ class MyGLCanvas: public wxGLCanvas
     float xzero, yzero;
     float rowheight, bitwidth;
 
-    Monitor * _monitor;
-};
-
-class OutputPlot: public wxScrolledWindow
-{
-  public:
-    OutputPlot(wxWindow *parent, wxWindowID id=wxID_ANY);
-    virtual ~OutputPlot(){};
-
-    void AddPlotTrace(std::string label, unsigned int pointId);
-    void setMonitor(Monitor * m);
-
-    void refresh(void);
-
-  private:
-    MyGLCanvas *_plotcanvas;
     Monitor * _monitor;
 };
 

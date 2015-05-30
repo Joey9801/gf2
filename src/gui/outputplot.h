@@ -10,7 +10,7 @@
 #include <wx/glcanvas.h>
 #include <wx/scrolwin.h>
 #include <wx/toolbar.h>
-#include <wx/spinctrl.h>
+#include <wx/numdlg.h>
 #include <vector>
 #include <string>
 #include <map>
@@ -19,12 +19,12 @@
 #include <plog/Log.h>
 
 #include "../simulator/monitor.h"
+#include "../simulator/rootnetwork.h"
 
 enum {
   ID_RunSim = 1,
   ID_PauseSim,
-  ID_StopSim,
-  ID_SimulationSteps
+  ID_StopSim
 };
 
 class PlotCanvas;
@@ -37,13 +37,20 @@ class OutputPlot: public wxPanel
 
     void AddPlotTrace(std::string label, unsigned int pointId);
     void setMonitor(Monitor * m);
+    void setNetwork(RootNetwork * n);
+    void EnableToolbar(bool enabled);
 
     void refresh(void);
 
   private:
-    PlotCanvas *_plotcanvas;
     Monitor * _monitor;
+    RootNetwork * _network;
+
+    PlotCanvas *_plotcanvas;
+    wxScrolledWindow *_canvasscroller;
     wxToolBar *_simulationControl;
+
+    void OnRunSimulation(wxCommandEvent& event);
 };
 
 class PlotCanvas: public wxGLCanvas

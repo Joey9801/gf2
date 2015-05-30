@@ -27,14 +27,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   wxMenu *menuHelp = new wxMenu;
   menuHelp->Append(wxID_ABOUT);
 
-  wxMenu *menuSim = new wxMenu;
-  menuSim->Append(ID_StartSimulation, "&Run Simulation\tCtrl-R", "Start the Simulation");
-  menuSim->Enable(ID_StartSimulation, false);
-
   wxMenuBar *menuBar = new wxMenuBar;
   menuBar->Append(menuFile, "&File");
   menuBar->Append(menuHelp, "&Help");
-  menuBar->Append(menuSim, "&Simulation");
   SetMenuBar(menuBar);
 
   CreateStatusBar();
@@ -75,8 +70,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
-  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnRunSimulation, this, ID_StartSimulation);
-  Bind(wxEVT_BUTTON, &MyFrame::OnRunSimulation, this, ID_RunSim);
 
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
@@ -142,33 +135,18 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _compview->setNetwork(_network);
     _compview->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
+    _outputplot->setNetwork(_network);
 
     LOG_DEBUG << "About to load the network view";
     _netview->loadNetwork(_network->getNodeTree());
     _compview->selectComponent(_network->getNodeTree());
 
-    LOG_DEBUG << "About to enable the simulation button";
-    GetMenuBar()->Enable(GetMenuBar()->FindMenuItem("Simulation", "Run Simulation"), true);
+    LOG_DEBUG << "About to enable the simulation toolbar";
+    _outputplot->EnableToolbar(true);
   }
 
   // Clean up after ourselves
   OpenDialog->Destroy();
-
-  return;
-}
-
-void MyFrame::OnRunSimulation(wxCommandEvent& event) {
-  //Create a nodelist, since we're not yet using the RootNetwork object
-  //unsigned int numNodes = _network->numInputs() + _network->numOutputs();
-  //std::vector<bool> nodes(numNodes, false);
-
-  long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
-      "Steps", "Setup Simulation", 10, 1, 1000);
-  //Run for a fixed 50 cycles for the moment
-  for(unsigned int i=0; i<numberofsteps; i++)
-    _network->step();
-
-  _outputplot->refresh();
 
   return;
 }

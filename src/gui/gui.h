@@ -10,7 +10,6 @@
 #endif
 #include <wx/splitter.h>
 #include <wx/sizer.h>
-#include <wx/numdlg.h>
 
 #include <plog/Log.h>
 #include <plog/Appenders/ConsoleAppender.h>
@@ -25,8 +24,7 @@
 #include "../parser/builder.h"
 
 enum {
-  ID_LoadNetwork = 1,
-  ID_StartSimulation
+  ID_LoadNetwork = 1
 };
 
 class MyApp: public wxApp
@@ -55,7 +53,6 @@ class MyFrame: public wxFrame
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnCompSelect(wxTreeEvent& event);
-    void OnRunSimulation(wxCommandEvent& event);
 };
 
 #endif /*gui.h*/

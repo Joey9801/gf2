@@ -25,28 +25,41 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   _simulationControl->AddControl(stopButton);
 
   _simulationControl->Realize();
+  _simulationControl->Enable(false);
 
   //make some fake command line args for glutinit
   char a  =  ' '; char *b = &a; char **tmp1 = &b;
   int tmp2 = 0; glutInit(&tmp2, tmp1);
 
-  wxScrolledWindow *canvasscroller = new wxScrolledWindow(this, -1);
-  _plotcanvas = new PlotCanvas(canvasscroller, -1);
+  _canvasscroller = new wxScrolledWindow(this, -1);
+  _plotcanvas = new PlotCanvas(_canvasscroller, -1);
   wxBoxSizer *scrolledsizer = new wxBoxSizer(wxVERTICAL);
   scrolledsizer->Add(_plotcanvas, 1,wxEXPAND,0);
-  canvasscroller->SetSizer(scrolledsizer);
-  canvasscroller->SetScrollRate(10, 10);
-  canvasscroller->SetAutoLayout(true);
+  _canvasscroller->SetSizer(scrolledsizer);
+  _canvasscroller->SetScrollRate(10, 10);
+  _canvasscroller->SetAutoLayout(true);
 
   wxBoxSizer *opsizer = new wxBoxSizer(wxHORIZONTAL);
   opsizer->Add(_simulationControl, 0,wxEXPAND,0);
-  opsizer->Add(canvasscroller, 1,wxEXPAND,0);
+  opsizer->Add(_canvasscroller, 1,wxEXPAND,0);
   SetSizer(opsizer);
+
+  Bind(wxEVT_BUTTON, &OutputPlot::OnRunSimulation, this, ID_RunSim);
+}
+
+void OutputPlot::EnableToolbar(bool enabled)
+{
+  _simulationControl->Enable(enabled);
 }
 
 void OutputPlot::setMonitor(Monitor * m) {
   _monitor = m;
   _plotcanvas -> setMonitor(m);
+  return;
+}
+
+void OutputPlot::setNetwork(RootNetwork * n) {
+  _network = n;
   return;
 }
 
@@ -57,6 +70,19 @@ void OutputPlot::refresh(void) {
 
 void PlotCanvas::setMonitor(Monitor * m) {
   _monitor = m;
+  return;
+}
+
+void OutputPlot::OnRunSimulation(wxCommandEvent& event) {
+
+  long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
+      "Steps", "Setup Simulation", 10, 1, 1000);
+  for(unsigned int i=0; i<numberofsteps; i++)
+    _network->step();
+
+  refresh();
+  _canvasscroller->Scroll(_canvasscroller->GetClientSize().x, -1);
+
   return;
 }
 

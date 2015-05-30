@@ -1,11 +1,12 @@
 #include "outputplot.h"
 
-int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
 OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   :   wxPanel(parent, id)
 {
-  _simulationControl = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
+  _simulationControl = new wxToolBar(this, -1,
+      wxDefaultPosition, wxDefaultSize,
+      wxTB_VERTICAL |wxTB_FLAT);
   wxImage::AddHandler( new wxPNGHandler );
   
   wxBitmap runImg(wxT("resources/control_play.png"), wxBITMAP_TYPE_PNG);
@@ -23,8 +24,6 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   stopButton->SetToolTip(_("Stop Simulation"));
   _simulationControl->AddControl(stopButton);
 
-  _simulationControl->AddControl(new wxComboBox(_simulationControl, ID_SimulationSteps));
-
   _simulationControl->Realize();
 
   //make some fake command line args for glutinit
@@ -39,7 +38,7 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   canvasscroller->SetScrollRate(10, 10);
   canvasscroller->SetAutoLayout(true);
 
-  wxBoxSizer *opsizer = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *opsizer = new wxBoxSizer(wxHORIZONTAL);
   opsizer->Add(_simulationControl, 0,wxEXPAND,0);
   opsizer->Add(canvasscroller, 1,wxEXPAND,0);
   SetSizer(opsizer);
@@ -61,6 +60,8 @@ void PlotCanvas::setMonitor(Monitor * m) {
   return;
 }
 
+int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
+
 PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
   wxGLCanvas(parent, id, wxglcanvas_attrib_list)
   // Constructor - initialises private variables
@@ -72,7 +73,8 @@ PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
   Bind(wxEVT_PAINT, &PlotCanvas::OnPaint, this);
   Bind(wxEVT_MOUSEWHEEL, &PlotCanvas::OnMousewheel, this);
 
-  bitwidth = 31.0;
+  bitwidth = 32.0;
+  rowheight = 50.0;
   xzero = 200.0;
   yzero  = 20.0;
 }
@@ -83,7 +85,9 @@ void PlotCanvas::Render()
   std::vector<unsigned int> ids = _monitor->getPoints();
 
   SetMinSize(wxSize(_monitor->maxLength*bitwidth, yzero + rowheight * ids.size()));
+  LOG_DEBUG;
   SendSizeEventToParent();
+  LOG_DEBUG;
   //FitInside();
 
   SetCurrent(*context);
@@ -92,8 +96,6 @@ void PlotCanvas::Render()
     init = true;
   }
   glClear(GL_COLOR_BUFFER_BIT);
-
-  rowheight = 50;
 
   drawAxis();
 

@@ -11,18 +11,23 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   
   wxBitmap runImg(wxT("resources/control_play.png"), wxBITMAP_TYPE_PNG);
   wxBitmapButton *runButton = new wxBitmapButton(_simulationControl, ID_RunSim, runImg);
-  runButton->SetToolTip(_("Run Simulation"));
+  runButton->SetToolTip(_("Run Live Simulation"));
   _simulationControl->AddControl(runButton);
 
   wxBitmap pauseImg(wxT("resources/control_pause.png"), wxBITMAP_TYPE_PNG);
   wxBitmapButton *pauseButton = new wxBitmapButton(_simulationControl, ID_PauseSim, pauseImg);
-  pauseButton->SetToolTip(_("Pause Simulation"));
+  pauseButton->SetToolTip(_("Pause Live Simulation"));
   _simulationControl->AddControl(pauseButton);
 
   wxBitmap stopImg(wxT("resources/control_stop.png"), wxBITMAP_TYPE_PNG);
   wxBitmapButton *stopButton = new wxBitmapButton(_simulationControl, ID_StopSim, stopImg);
   stopButton->SetToolTip(_("Stop Simulation"));
   _simulationControl->AddControl(stopButton);
+
+  wxBitmap skipImg(wxT("resources/control_skip.png"), wxBITMAP_TYPE_PNG);
+  wxBitmapButton *skipButton = new wxBitmapButton(_simulationControl, ID_SkipSim, skipImg);
+  skipButton->SetToolTip(_("Simulate for many steps at once"));
+  _simulationControl->AddControl(skipButton);
 
   _simulationControl->Realize();
   _simulationControl->Enable(false);
@@ -44,7 +49,13 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   opsizer->Add(_canvasscroller, 1,wxEXPAND,0);
   SetSizer(opsizer);
 
-  Bind(wxEVT_BUTTON, &OutputPlot::OnRunSimulation, this, ID_RunSim);
+  Bind(wxEVT_BUTTON, &OutputPlot::OnRunButton, this, ID_RunSim);
+  Bind(wxEVT_BUTTON, &OutputPlot::OnPauseButton, this, ID_PauseSim);
+  Bind(wxEVT_BUTTON, &OutputPlot::OnStopButton, this, ID_StopSim);
+  Bind(wxEVT_BUTTON, &OutputPlot::OnSkipButton, this, ID_SkipSim);
+
+  _liveSimulationTimer = new wxTimer(this, -1);
+  Bind(wxEVT_TIMER, &OutputPlot::OnLiveSimulationStep, this);
 }
 
 void OutputPlot::EnableToolbar(bool enabled)
@@ -73,8 +84,35 @@ void PlotCanvas::setMonitor(Monitor * m) {
   return;
 }
 
-void OutputPlot::OnRunSimulation(wxCommandEvent& event) {
+void OutputPlot::OnRunButton(wxCommandEvent& event)
+{
+  LOG_ERROR;
+  _liveSimulationTimer->Start(100);
+}
 
+void OutputPlot::OnLiveSimulationStep(wxTimerEvent& event)
+{
+  LOG_ERROR;
+  _network->step();
+
+  refresh();
+  _canvasscroller->Scroll(_canvasscroller->GetClientSize().x, -1);
+
+  return;
+}
+
+void OutputPlot::OnPauseButton(wxCommandEvent& event)
+{
+  _liveSimulationTimer->Stop();
+}
+
+void OutputPlot::OnStopButton(wxCommandEvent& event)
+{
+  _liveSimulationTimer->Stop();
+}
+
+void OutputPlot::OnSkipButton(wxCommandEvent& event)
+{
   long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
       "Steps", "Setup Simulation", 10, 1, 1000);
   for(unsigned int i=0; i<numberofsteps; i++)
@@ -86,6 +124,7 @@ void OutputPlot::OnRunSimulation(wxCommandEvent& event) {
   return;
 }
 
+//PlotCanvas Implementation
 int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
 
 PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :

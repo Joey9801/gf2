@@ -24,7 +24,8 @@
 enum {
   ID_RunSim = 1,
   ID_PauseSim,
-  ID_StopSim
+  ID_StopSim,
+  ID_SkipSim
 };
 
 class PlotCanvas;
@@ -50,7 +51,13 @@ class OutputPlot: public wxPanel
     wxScrolledWindow *_canvasscroller;
     wxToolBar *_simulationControl;
 
-    void OnRunSimulation(wxCommandEvent& event);
+    wxTimer *_liveSimulationTimer;
+
+    void OnRunButton(wxCommandEvent& event);
+    void OnPauseButton(wxCommandEvent& event);
+    void OnStopButton(wxCommandEvent& event);
+    void OnSkipButton(wxCommandEvent& event);
+    void OnLiveSimulationStep(wxTimerEvent& event);
 };
 
 class PlotCanvas: public wxGLCanvas

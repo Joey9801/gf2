@@ -3,7 +3,7 @@
 bool MyApp::OnInit() {
   //Initialise the logger
   static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
-  plog::init(plog::debug, &consoleAppender);
+  plog::init(plog::info, &consoleAppender);
 
   //Create the main window
   MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
@@ -124,9 +124,9 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   if (OpenDialog->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
     CurrentNetfilePath = OpenDialog->GetPath();
 
-    Network * net;
+    RootNetwork * net;
     try {
-      net = Builder::build( CurrentNetfilePath.ToStdString() );
+      net = Builder::buildRoot( CurrentNetfilePath.ToStdString() );
     }
     catch(...) {
       LOG_ERROR << "Failed to build the network";
@@ -136,16 +136,18 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 
     delete _network;
     delete _monitor;
-    _monitor = new Monitor();
     _network = net;
+    _monitor = net->getMonitor();
     _network->setMonitor(_monitor);
     _compview->setNetwork(_network);
     _compview->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
 
+    LOG_DEBUG << "About to load the network view";
     _netview->loadNetwork(_network->getNodeTree());
     _compview->selectComponent(_network->getNodeTree());
 
+    LOG_DEBUG << "About to enable the simulation button";
     GetMenuBar()->Enable(GetMenuBar()->FindMenuItem("Simulation", "Run Simulation"), true);
   }
 
@@ -157,14 +159,14 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 
 void MyFrame::OnRunSimulation(wxCommandEvent& event) {
   //Create a nodelist, since we're not yet using the RootNetwork object
-  unsigned int numNodes = _network->numInputs() + _network->numOutputs();
-  std::vector<bool> nodes(numNodes, false);
+  //unsigned int numNodes = _network->numInputs() + _network->numOutputs();
+  //std::vector<bool> nodes(numNodes, false);
 
   long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
       "Steps", "Setup Simulation", 10, 1, 1000);
   //Run for a fixed 50 cycles for the moment
   for(unsigned int i=0; i<numberofsteps; i++)
-    _network->step(nodes, nodes);
+    _network->step();
 
   _outputplot->refresh();
 

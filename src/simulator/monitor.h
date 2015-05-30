@@ -8,11 +8,15 @@
 #include <string>
 
 struct MonitorPoint {
-  unsigned int appendData(unsigned int time, bool value);
+  MonitorPoint();
+
+  void appendData(unsigned int time, bool value);
 
   std::string nickname;
   std::vector<std::string> signature;
   std::vector<std::pair<unsigned int, bool> > log;
+
+  bool _lastValue;
 };
 
 class Monitor {
@@ -21,12 +25,12 @@ class Monitor {
     ~Monitor();
 
     template <typename T>
-      void removePoint(T ident) {
+      unsigned int removePoint(T ident) {
         unsigned int pointId = findPoint(ident);
         delete _points[pointId];
         _points.erase(pointId);
 
-        return;
+        return pointId;
       }
 
     template <typename T>
@@ -51,7 +55,7 @@ class Monitor {
     unsigned int findPoint(unsigned int pointId);
     unsigned int findPoint(std::string nickname);
     unsigned int findPoint(std::vector<std::string> signature);
-    unsigned int maxLength;
+    unsigned int maxTime;
 
   private:
     unsigned int nextId;

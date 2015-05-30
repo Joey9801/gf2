@@ -1,15 +1,65 @@
 #include "builder.h"
 
 namespace Builder {
-  Network * build(std::string filepath) {
-    Definition * def = Parser::parseDefinition(filepath);
+  RootNetwork * buildRoot(std::string filepath) {
+    Network * net = build(filepath);
 
+    RootNetwork * rnet;
+    rnet = new RootNetwork(net);
+    rnet->setMonitor(new Monitor());
+
+    try {
+      createMonitorPoints(rnet);
+    }
+    catch(const ErrorList& e) {
+      rnet->errorList.addList(e);
+      if(not rnet->errorList.recoverable())
+        throw;
+    }
+
+    try {
+      setInitialInputs(rnet);
+    }
+    catch(const ErrorList& e) {
+      rnet->errorList.addList(e);
+      if(not rnet->errorList.recoverable())
+        throw;
+    }
+
+    return rnet;
+  }
+  Network * build(std::string filepath) {
+    ErrorList errorList;
     Network * net;
+    Definition * def;
+
+    try {
+      def = Parser::parseDefinition(filepath);
+    }
+    catch(const ErrorList& e) {
+      throw;
+    }
+    catch(...) {
+      LOG_ERROR << "Parsing \"" << filepath << "\" caused an unrecoverable error";
+      throw;
+    }
+
+    def->filepath = filepath;
     try {
       net = buildNetwork(def);
     }
+    catch(const ErrorList& e) {
+      LOG_ERROR << "Encountered unrecoverable errorList while parsing \"" << filepath << "\"";
+
+      std::vector<std::string> errors = errorList.formatErrors();
+      for(std::vector<std::string>::iterator it = errors.begin();
+          it != errors.end();
+          it++) {
+        LOG_ERROR << (*it);
+      }
+      throw;
+    }
     catch(...) {
-      LOG_ERROR << filepath;
       throw;
     }
 
@@ -17,56 +67,77 @@ namespace Builder {
   }
 
   Network * buildNetwork(Definition * def) {
-    LOG_DEBUG << "Building network";
+    LOG_VERBOSE << "Building network";
 
+    ErrorList errorList;
     Network * net = new Network();
+    net->setDefinition(def);
 
     std::map<std::string, Network*> includes;
-    LOG_DEBUG << "Recursing into includes";
+    LOG_VERBOSE << "Recursing into includes";
 
     try {
       makeIncludes(def, includes);
     }
-    catch(...) {
-      LOG_ERROR << "Exception raised while making includes";
-      throw;
+    catch(const ErrorList& e) {
+      errorList.addList(e);
+      if(not errorList.recoverable()) {
+        throw errorList;
+      }
     }
-    LOG_DEBUG << "Finished making includes";
+    LOG_VERBOSE << "Finished making includes";
 
-    LOG_DEBUG << "Adding Network IO";
+    LOG_VERBOSE << "Adding Network IO";
     try {
       addIO(net, def);
     }
-    catch(...) {
-      LOG_ERROR << "Exception raised while adding network IO";
-      throw;
+    catch(const ErrorList& e) {
+      errorList.addList(e);
+      if(not errorList.recoverable()) {
+        throw errorList;
+      }
     }
 
-    LOG_DEBUG << "Adding components";
+    LOG_VERBOSE << "Adding components";
     try {
-    addComponents(net, def, includes);
+      addComponents(net, def, includes);
     }
-    catch(...) {
-      LOG_ERROR << "Exception raised while adding components";
-      throw;
+    catch(const ErrorList& e) {
+      errorList.addList(e);
+      if(not errorList.recoverable()) {
+        throw errorList;
+      }
     }
 
-    LOG_DEBUG << "Configuring components";
+    LOG_VERBOSE << "Configuring components";
     try {
       configureComponents(net, def);
     }
-    catch(...) {
-      LOG_ERROR << "Exception raised while configuring components";
-      throw;
+    catch(const ErrorList& e) {
+      errorList.addList(e);
+      if(not errorList.recoverable()) {
+        throw errorList;
+      }
     }
 
-    LOG_DEBUG << "Connecting components";
+    LOG_VERBOSE << "Connecting components";
     try {
-    connectComponents(net, def);
+      connectComponents(net, def);
     }
-    catch(...) {
-      LOG_ERROR << "Exception raised while making connections";
-      throw;
+    catch(const ErrorList& e) {
+      errorList.addList(e);
+      if(not errorList.recoverable()) {
+        throw errorList;
+      }
+    }
+
+    if(errorList.anyErrors()) {
+      std::vector<std::string> errors = errorList.formatErrors();
+      for(std::vector<std::string>::iterator it = errors.begin();
+          it != errors.end();
+          it++) {
+        LOG_ERROR << (*it);
+      }
     }
 
     return net;
@@ -81,7 +152,6 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["includes"]->pairs.begin();
           it != def->pairs["includes"]->pairs.end();
           it++) {
-        LOG_DEBUG << "Making: " << it->first;
         includes[it->second->value] = build(it->first);
       }
     }
@@ -93,6 +163,8 @@ namespace Builder {
     //Add all the named IO in def to net
     //for_each(element in def inputs/outputs)
     //  net->addInput/addOutput
+
+    ErrorList errorList;
 
     if( def->pairs.find("inputs") != def->pairs.end() ) {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
@@ -106,7 +178,12 @@ namespace Builder {
       }
     }
     else {
-      //TODO add a warning
+      ParseError * e = new ParseError();
+      e->name = "Missing root node";
+      e->detail = "\"inputs\" is missing";
+      e->location.file = def->filepath;
+      e->recoverable = true;
+      errorList.addError(e);
     }
 
     if( def->pairs.find("outputs") != def->pairs.end() ) {
@@ -122,10 +199,15 @@ namespace Builder {
       }
     }
     else {
-      //TODO add a warning
+      ParseError * e = new ParseError();
+      e->name = "Missing root node";
+      e->detail = "\"outputs\" is missing";
+      e->location.file = def->filepath;
+      e->recoverable = true;
+      errorList.addError(e);
     }
 
-    return;
+    throw errorList;
   }
 
   void addComponents(Network * net, Definition * def, std::map<std::string, Network*>& includes) {
@@ -133,23 +215,48 @@ namespace Builder {
     //for_each(component_nickname in def)
     //  net->addComponent
 
+    ErrorList errorList;
+
     if( def->pairs.find("components") == def->pairs.end() ) {
-      //TODO raise an error
-      throw 1;
+      ParseError * e = new ParseError();
+      e->name = "Missing root node";
+      e->detail = "\"components\" is missing";
+      e->location.file = def->filepath;
+      e->recoverable = false;
+      errorList.addError(e);
+      throw errorList;
     }
     for(std::map<std::string, Definition*>::iterator it = def->pairs["components"]->pairs.begin();
         it != def->pairs["components"]->pairs.end();
         it++) {
+
+      if(it->second->pairs.find("type") == it->second->pairs.end()) {
+        ParseError * e = new ParseError();
+        e->name = "Field is missing";
+        e->detail = "Component \"type\" field is missing";
+        e->location.file = def->filepath;
+        e->recoverable = false;
+        errorList.addError(e);
+        throw errorList;
+      }
+
       std::string name = it->first;
       std::string type = it->second->pairs["type"]->value;
 
-      if(type.find_first_of('.') != std::string::npos) {
-        std::pair<std::string, std::string> value = Helpers::separateDotted(type);
-        if( value.first == "includes" )
-          net->addComponent(includes[value.second]->clone(), name);
+      try {
+        if(type.find_first_of('.') != std::string::npos) {
+          std::pair<std::string, std::string> value = Helpers::separateDotted(type);
+          if( value.first == "includes" )
+            net->addComponent(includes[value.second]->clone(), name);
+        }
+        else {
+          net->addComponent(type, name);
+        }
       }
-      else {
-        net->addComponent(type, name);
+      catch(GF2Error& e) {
+        GF2Error * err = new GF2Error(e);
+        errorList.addError(err);
+        throw errorList;
       }
     }
 
@@ -157,6 +264,8 @@ namespace Builder {
   }
 
   void configureComponents(Network * net, Definition * def) {
+    ErrorList errorList;
+
     for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
         it1 != def->pairs["components"]->pairs.end();
         it1++) {
@@ -166,11 +275,37 @@ namespace Builder {
         for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["config"]->pairs.begin();
             it2 != it1->second->pairs["config"]->pairs.end();
             it2++) {
-          net->configureComponent( it1->first, it2->first, it2->second->value );
+          try {
+            net->configureComponent( it1->first, it2->first, it2->second->value );
+          }
+          catch(const GF2Error& e) {
+            errorList.addError(e);
+            if(not errorList.recoverable())
+              throw;
+          }
         }
       }
     }
 
+    //Configure the current network
+    if( def->pairs.find("config") != def->pairs.end() ) {
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["config"]->pairs.begin();
+          it != def->pairs["config"]->pairs.end();
+          it++) {
+        net->configure(it->first, it->second->value);
+      }
+    }
+    else {
+      ParseError * e = new ParseError();
+      e->name = "Field is missing";
+      e->detail = "\"config\" field is missing";
+      e->location.file = def->filepath;
+      e->recoverable = true;
+      errorList.addError(e);
+    }
+
+
+    throw errorList;
   }
 
   void connectComponents(Network * net, Definition * def) {
@@ -179,6 +314,7 @@ namespace Builder {
     //  for_each(input in component_inputs)
     //    connect the input to the thing
 
+    ErrorList errorList;
     LOG_VERBOSE << "Connecting outputs";
     if( def->pairs.find("outputs") != def->pairs.end() ) {
       //Connect any outputs
@@ -189,7 +325,6 @@ namespace Builder {
             and (it->first.find_first_of(']') != std::string::npos)) {
           // Iterate through the vector initialisation
           std::stringstream ss;
-          LOG_DEBUG << "it->first: " << it->first;
           std::string name = it->first.substr(0, it->first.find_first_of('['));
           for(std::map<std::string, Definition*>::iterator it2 = it->second->pairs.begin();
               it2 != it->second->pairs.end();
@@ -197,7 +332,14 @@ namespace Builder {
             ss.str("");
             ss << name << "[" << it2->first << "]";
             std::pair<std::string, std::string> dest = Helpers::separateDotted( it2->second->value );
-            net->connect(dest.first, dest.second, "outputs", ss.str());
+            try {
+              net->connect(dest.first, dest.second, "outputs", ss.str());
+            }
+            catch(const GF2Error& e) {
+              errorList.addError(e);
+              if(not errorList.recoverable())
+                throw errorList;
+            }
           }
         }
         else {
@@ -206,51 +348,103 @@ namespace Builder {
         }
       }
     }
+    else {
+      ParseError * e = new ParseError();
+      e->name = "Field is missing";
+      e->detail = "\"config\" field is missing";
+      e->recoverable = true;
+      errorList.addError(e);
+    }
 
     LOG_VERBOSE << "Connecting components";
-    if( def->pairs.find("components") != def->pairs.end() ) {
-      for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
-          it1 != def->pairs["components"]->pairs.end();
-          it1++) {
-        //Iterating over each component
-        if( it1->second->pairs.find("inputs") != it1->second->pairs.end() ) {
-          //If the component has inputs
-          for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["inputs"]->pairs.begin();
-              it2 != it1->second->pairs["inputs"]->pairs.end();
-              it2++) {
-            //Iterating over each input in a component
-            std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
-            std::string pinOut = source.second;
-            std::string pinIn = it2->first;
+    for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
+        it1 != def->pairs["components"]->pairs.end();
+        it1++) {
+      //Iterating over each component
+      if( it1->second->pairs.find("inputs") != it1->second->pairs.end() ) {
+        //If the component has inputs
+        for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["inputs"]->pairs.begin();
+            it2 != it1->second->pairs["inputs"]->pairs.end();
+            it2++) {
+          //Iterating over each input in a component
+          std::pair<std::string, std::string> source = Helpers::separateDotted( it2->second->value );
+          std::string pinOut = source.second;
+          std::string pinIn = it2->first;
 
 
-            //If the IO name is a vector, strip the "[]" from the end
-            if( it2->first.length() > 2 )
-              if( it2->first.substr( it2->first.length()-2) == "[]" )
-                pinIn = it2->first.substr(0, it2->first.size()-2);
-            if( source.second.length() > 2 )
-              if( source.second.substr( source.second.length()-2) == "[]" )
-                pinOut = source.second.substr(0, source.second.size()-2);
+          //If the IO name is a vector, strip the "[]" from the end
+          if( it2->first.length() > 2 )
+            if( it2->first.substr( it2->first.length()-2) == "[]" )
+              pinIn = it2->first.substr(0, it2->first.size()-2);
+          if( source.second.length() > 2 )
+            if( source.second.substr( source.second.length()-2) == "[]" )
+              pinOut = source.second.substr(0, source.second.size()-2);
 
-            try {
-              net->connect( source.first, pinOut, it1->first, pinIn );
-            }
-            catch(...) {
-              LOG_ERROR << "net->connect(" << source.first << ", " << pinOut << ", "
-                << it1->first << ", " << pinIn << ")";
-              throw;
-            }
+          try {
+            net->connect( source.first, pinOut, it1->first, pinIn );
+          }
+          catch(const GF2Error& e) {
+            errorList.addError(e);
+            if(not errorList.recoverable())
+              throw errorList;
           }
         }
       }
-      LOG_DEBUG << "Finished making " << net->numConnections << " connections";
-    }
-    else {
-      //This should already have been checked, but throw anyway just in case
-      throw 1;
     }
 
-    return;
+    throw errorList;
+  }
+
+  void createMonitorPoints(RootNetwork * rnet) {
+    ErrorList errorList;
+    Definition * def = rnet->getDefinition();
+
+    if(def->pairs.find("monitor") != def->pairs.end()) {
+      std::vector<std::string> signature;
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["monitor"]->pairs.begin();
+          it != def->pairs["monitor"]->pairs.end();
+          it++) {
+        std::pair<std::string, std::string> dest = Helpers::separateDotted(it->second->value);
+        signature.clear();
+        signature.push_back(dest.second);
+        signature.push_back(dest.first);
+
+        try {
+          unsigned int pointId = rnet->addMonitorPoint(signature);
+          rnet->getMonitor()->renamePoint(pointId, it->first);
+        }
+        catch(const GF2Error& e) {
+          errorList.addError(e);
+          if(not errorList.recoverable())
+            throw errorList;
+        }
+      }
+    }
+
+    throw errorList;
+  }
+
+  void setInitialInputs(RootNetwork * rnet) {
+    ErrorList errorList;
+    Definition * def = rnet->getDefinition();
+
+    if(def->pairs.find("inputs") != def->pairs.end()) {
+      for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
+          it != def->pairs["inputs"]->pairs.end();
+          it++) {
+        if((it->first.find_first_of('[') != std::string::npos)
+            and (it->first.find_first_of(']') != std::string::npos)) {
+          // Handle vector input
+        }
+        else {
+          // Handle regular input
+        }
+      }
+    }
+    // No error adding in an else statement, since a lack of inputs field
+    // will have already been caught.
+
+    throw errorList;
   }
 
   namespace Helpers {

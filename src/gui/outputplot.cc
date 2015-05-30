@@ -84,11 +84,8 @@ void PlotCanvas::Render()
   LOG_DEBUG;
   std::vector<unsigned int> ids = _monitor->getPoints();
 
-  SetMinSize(wxSize(_monitor->maxLength*bitwidth, yzero + rowheight * ids.size()));
-  LOG_DEBUG;
+  SetMinSize(wxSize(xzero + _monitor->maxTime * bitwidth, yzero + rowheight * ids.size()));
   SendSizeEventToParent();
-  LOG_DEBUG;
-  //FitInside();
 
   SetCurrent(*context);
   if (!init) {
@@ -96,6 +93,7 @@ void PlotCanvas::Render()
     init = true;
   }
   glClear(GL_COLOR_BUFFER_BIT);
+
 
   drawAxis();
 
@@ -156,7 +154,6 @@ void PlotCanvas::drawPlot(
     float y = data[i].second ? (rowheight*0.8) : 0;
 
     glVertex2f(xzero + data[i].first * bitwidth, base + y);
-    glVertex2f(xzero + (data[i].first+1) * bitwidth, base + y);
   }
   glEnd();
   return;

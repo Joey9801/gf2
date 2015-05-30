@@ -1,0 +1,68 @@
+{
+    inputs: {
+        clock: false
+    }, 
+    components: {
+        jk0: {
+            inputs: {
+                k: const.true, 
+                j: const.true, 
+                clock: inputs.clock
+            }, 
+            type: jk
+        }, 
+        jk1: {
+            inputs: {
+                k: and1, 
+                j: and1, 
+                clock: inputs.clock
+            }, 
+            type: jk
+        }, 
+        jk2: {
+            inputs: {
+                k: and2, 
+                j: and2, 
+                clock: inputs.clock
+            }, 
+            type: jk
+        }, 
+        jk3: {
+            inputs: {
+                k: and3, 
+                j: and3, 
+                clock: inputs.clock
+            }, 
+            type: jk
+        }, 
+        and1: {
+            inputs: {
+                i1: jk0.q
+            }, 
+            type: and
+        }, 
+        and3: {
+            inputs: {
+                i1: jk0.q, 
+                i3: jk2.q, 
+                i2: jk1.q
+            }, 
+            type: and
+        }, 
+        and2: {
+            inputs: {
+                i1: jk0.q, 
+                i2: jk1.q
+            }, 
+            type: and
+        }
+    }, 
+    outputs: {
+        count[4]: {
+            1: jk1.q, 
+            0: jk0.q, 
+            3: jk3.q, 
+            2: jk2.q
+        }
+    }
+}

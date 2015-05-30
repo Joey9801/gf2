@@ -13,18 +13,22 @@ NetworkView::NetworkView(wxWindow *parent, wxWindowID id)
 void NetworkView::loadNetwork(NodeTree *root) {
   _treectrl->DeleteAllItems();
 
-  wxTreeItemId nodeId = _treectrl->AddRoot("Root network", -1, -1, root);
+  wxTreeItemId nodeId = _treectrl->AddRoot(root->nickname, -1, -1, root);
 
-  for(std::vector<NodeTree*>::iterator it = root->children.begin();
-      it != root->children.end();
-      it++)
-    recursive_addNode(nodeId, (*it));
+  try {
+    for(std::vector<NodeTree*>::iterator it = root->children.begin();
+        it != root->children.end();
+        it++)
+      recursive_addNode(nodeId, (*it));
+  }
+  catch(...) {
+    LOG_ERROR << "Something went wrong with recursively building the NodeTree - Tell Joe what you did to make this happen";
+  }
 
   return;
 }
 
 void NetworkView::recursive_addNode(wxTreeItemId parentid, NodeTree *node) {
-
   if (node->nickname!="inputs" and node->nickname!="outputs"){
     wxTreeItemId nodeId = _treectrl->AppendItem(parentid, node->nickname,-1, -1, node);
 

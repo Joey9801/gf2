@@ -11,16 +11,20 @@
 #include "dummyio.h"
 #include "componentconstructors.h"
 #include "monitor.h"
+#include "../structures/definition.h"
+#include "../errors/error.h"
 
+class RootNetwork;
 extern constructor_map componentConstructor;
 
 class Network : public BaseComponent
 {
+  friend class RootNetwork;
   public:
     Network();
     ~Network();
 
-    void step(std::vector<bool>& a, std::vector<bool>& b);
+    virtual void step(std::vector<bool>& a, std::vector<bool>& b);
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
@@ -81,17 +85,24 @@ class Network : public BaseComponent
     unsigned int countComponents(void);
 
     void setMonitor(Monitor * m);
+    Monitor * getMonitor(void);
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
     void removeMonitorPoint(std::vector<std::string>& signature);
     void removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
-    NodeTree * getNodeTree(void);
+    void configure(std::string key, std::string value);
+
+    virtual NodeTree * getNodeTree(void);
+    Definition * getDefinition(void);
+    void setDefinition(Definition * def);
 
     BaseComponent * clone(void);
 
     unsigned int numConnections;
+
+    ErrorList errorList;
 
   protected:
     std::map<std::string, unsigned int> _componentNames;
@@ -105,32 +116,15 @@ class Network : public BaseComponent
 
     Monitor * _monitor;
 
+    Definition * _definition;
+
     std::map<unsigned int, unsigned int> _monitorPoints;
 
     unsigned int _time;
+    unsigned int _rate;
+    bool _async;
 
 };
 
-// Special type of network which can operate independantly from anything else
-// Should only be used as the Root of the whole network
-class RootNetwork : public Network
-{
-  public:
-    RootNetwork();
-    ~RootNetwork();
-
-    using Network::step;
-    void step(void);
-
-    unsigned int addInput(void);
-    unsigned int addInput(std::string);
-    unsigned int addOutput(void);
-    unsigned int addOutput(std::string);
-
-    void setInput(unsigned int inputId, bool value);
-    void setInput(std::string inputName, bool value);
-    bool getOutput(unsigned int outputId);
-    bool getOutput(std::string outputName);
-};
 
 #endif

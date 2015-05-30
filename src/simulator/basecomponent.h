@@ -8,6 +8,7 @@
 
 #include <plog/Log.h>
 
+#include "../errors/error.h"
 #include "../structures/nodetree.h"
 
 typedef std::map<std::string, unsigned int> pin_map;

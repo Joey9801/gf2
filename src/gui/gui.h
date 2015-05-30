@@ -20,7 +20,7 @@
 #include "outputplot.h"
 
 #include "../structures/nodetree.h"
-#include "../simulator/network.h"
+#include "../simulator/rootnetwork.h"
 #include "../simulator/monitor.h"
 #include "../parser/builder.h"
 
@@ -42,7 +42,7 @@ class MyFrame: public wxFrame
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
   private:
-    Network * _network;
+    RootNetwork * _network;
     Monitor * _monitor;
 
     NetworkView *_netview;

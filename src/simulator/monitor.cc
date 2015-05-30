@@ -1,12 +1,24 @@
 #include "monitor.h"
 
-unsigned int MonitorPoint::appendData(unsigned int time, bool value) {
-  log.push_back(std::pair<unsigned int, bool>(time, value));
-  return log.size();
+MonitorPoint::MonitorPoint() {
+}
+
+void MonitorPoint::appendData(unsigned int time, bool value) {
+  if(log.size()==0){ 
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+  }
+  log.back().first = time;
+  if(value != log.back().second) {
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+    log.push_back(std::pair<unsigned int, bool>(time, value));
+  }
+
+  return;
 }
 
 Monitor::Monitor() :
-  maxLength(0),
+  maxTime(0),
   nextId(0)
 {
 }
@@ -51,9 +63,9 @@ unsigned int Monitor::findPoint(std::vector<std::string> signature) {
 
 void Monitor::setValue(unsigned int id, unsigned int time, bool value) {
   unsigned int pointId = findPoint(id);
-  unsigned int length = _points[pointId]->appendData(time, value);
-  if(length > maxLength) {
-    maxLength = length;
+  _points[pointId]->appendData(time, value);
+  if(time > maxTime) {
+    maxTime = time;
   }
   return;
 }

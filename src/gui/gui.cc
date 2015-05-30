@@ -76,6 +76,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnRunSimulation, this, ID_StartSimulation);
+  Bind(wxEVT_BUTTON, &MyFrame::OnRunSimulation, this, ID_RunSim);
 
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);

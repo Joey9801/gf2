@@ -17,15 +17,12 @@
 #include "networkview.h"
 #include "componentview.h"
 #include "outputplot.h"
+#include "errordialog.h"
 
 #include "../structures/nodetree.h"
 #include "../simulator/rootnetwork.h"
 #include "../simulator/monitor.h"
 #include "../parser/builder.h"
-
-enum {
-  ID_LoadNetwork = 1
-};
 
 class MyApp: public wxApp
 {
@@ -39,6 +36,11 @@ class MyFrame: public wxFrame
   public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
+  enum {
+    ID_LoadNetwork = 1,
+    ID_ShowErrors
+  };
+
   private:
     RootNetwork * _network;
     Monitor * _monitor;
@@ -50,6 +52,7 @@ class MyFrame: public wxFrame
     wxString CurrentNetfilePath; // The Path to the network file we have open
 
     void OnLoadNetwork(wxCommandEvent& event);
+    void OnShowErrors(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnCompSelect(wxTreeEvent& event);

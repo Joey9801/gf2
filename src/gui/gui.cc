@@ -25,6 +25,8 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuHelp = new wxMenu;
+  menuHelp->Append(ID_ShowErrors, "Show &Errors\tCtrl-E", "Show all errors");
+  menuFile->AppendSeparator();
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menuBar = new wxMenuBar;
@@ -69,6 +71,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Events from Menubar
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnShowErrors, this, ID_ShowErrors);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
 
   //Events from Panes
@@ -152,6 +155,18 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   return;
 }
 
+void MyFrame::OnShowErrors(wxCommandEvent& event) {
+  ErrorDialog* dlg = new ErrorDialog(this, -1, "Errors and Warnings");
+
+  // Creates a "open file" dialog
+  if (dlg->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
+  }
+
+  // Clean up after ourselves
+  dlg->Destroy();
+
+  return;
+}
 void MyFrame::OnToggleMonitor(wxCommandEvent &event)
 {
   _outputplot->refresh();

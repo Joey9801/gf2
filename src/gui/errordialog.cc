@@ -32,12 +32,12 @@ void ErrorDialog::showErrorList(ErrorList *list)
   if(list->anyErrors()){
     std::vector<std::string> errors = list->formatErrors();
     for(std::vector<std::string>::size_type i = 0; i != errors.size(); i++) {
-      long itemIndex = _errorlist->InsertItem(0, wxString(errors[i]));
+      _errorlist->InsertItem(1, wxString(errors[i]));
     }
   }
 }
 
 void ErrorDialog::clearErrorList()
 {
-  _listview->DeleteAllItems();
+  _errorlist->DeleteAllItems();
 }

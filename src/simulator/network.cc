@@ -508,3 +508,16 @@ BaseComponent * Network::clone(void) {
 
   return (BaseComponent*)n;
 }
+
+void Network::Reset()
+{
+  for(unsigned int i=2; i<_components.size(); i++){
+    _components[i]->Reset();
+  }
+
+  _nodesA.assign(_nodesA.size(), false);
+  _nodesB.assign(_nodesB.size(), false);
+
+  _time = 0;
+  return;
+}

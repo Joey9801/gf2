@@ -104,6 +104,7 @@ class Network : public BaseComponent
 
     ErrorList errorList;
 
+    virtual void Reset();
   protected:
     std::map<std::string, unsigned int> _componentNames;
     std::vector<BaseComponent*> _components;

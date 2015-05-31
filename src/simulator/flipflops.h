@@ -12,6 +12,7 @@ class DType : public BaseComponent
     ~DType();
     void step(std::vector<bool>& a, std::vector<bool>& b);
 
+    virtual void Reset();
   private:
     // Used to detect rising/falling edges
     bool _lastIn;
@@ -28,6 +29,7 @@ class JK : public BaseComponent
     ~JK();
     void step(std::vector<bool>& a, std::vector<bool>& b);
 
+    virtual void Reset();
   private:
     bool _lastIn, _lastOut;
 };

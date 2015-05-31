@@ -42,6 +42,10 @@ void DType::step(std::vector<bool>& a, std::vector<bool>& b) {
   return;
 }
 
+void DType::Reset(){
+  _lastIn = false;
+  _lastOut = false;
+}
 
 JK::JK() :
   BaseComponent("jk", 4, 2)
@@ -81,4 +85,9 @@ void JK::step(std::vector<bool>& a, std::vector<bool>& b) {
   _lastIn = clock;
   _lastOut = out;
   return;
+}
+
+void JK::Reset(){
+  _lastIn = false;
+  _lastOut = false;
 }

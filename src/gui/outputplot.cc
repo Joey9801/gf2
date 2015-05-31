@@ -86,13 +86,11 @@ void PlotCanvas::setMonitor(Monitor * m) {
 
 void OutputPlot::OnRunButton(wxCommandEvent& event)
 {
-  LOG_ERROR;
   _liveSimulationTimer->Start(100);
 }
 
 void OutputPlot::OnLiveSimulationStep(wxTimerEvent& event)
 {
-  LOG_ERROR;
   _network->step();
 
   refresh();
@@ -109,12 +107,15 @@ void OutputPlot::OnPauseButton(wxCommandEvent& event)
 void OutputPlot::OnStopButton(wxCommandEvent& event)
 {
   _liveSimulationTimer->Stop();
+  //reset network state and clear monitor point data
+  _network->Reset();
+  _monitor->clearAllData();
 }
 
 void OutputPlot::OnSkipButton(wxCommandEvent& event)
 {
   long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
-      "Steps", "Setup Simulation", 10, 1, 1000);
+      "Steps", "Setup Simulation", 10, 1, 10000);
   for(unsigned int i=0; i<numberofsteps; i++)
     _network->step();
 

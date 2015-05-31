@@ -58,6 +58,11 @@ BaseComponent * SignalGenerator::clone(void) {
   return (BaseComponent*)c;
 }
 
+void SignalGenerator::Reset(){
+  _count = 0;
+  _it = _data.begin();
+}
+
 Clock::Clock() {
   _data.resize(2);
   _data[0] = false;

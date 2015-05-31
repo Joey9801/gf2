@@ -73,6 +73,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+  Bind(wxEVT_BUTTON, &MyFrame::OnToggleMonitor, this, ComponentView::ID_ToggleMonitor);
 
   _monitor = new Monitor();
   _outputplot->setMonitor(_monitor);
@@ -149,4 +150,9 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   OpenDialog->Destroy();
 
   return;
+}
+
+void MyFrame::OnToggleMonitor(wxCommandEvent &event)
+{
+  _outputplot->refresh();
 }

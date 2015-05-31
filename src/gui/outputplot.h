@@ -21,13 +21,6 @@
 #include "../simulator/monitor.h"
 #include "../simulator/rootnetwork.h"
 
-enum {
-  ID_RunSim = 1,
-  ID_PauseSim,
-  ID_StopSim,
-  ID_SkipSim
-};
-
 class PlotCanvas;
 
 class OutputPlot: public wxPanel
@@ -42,6 +35,13 @@ class OutputPlot: public wxPanel
     void EnableToolbar(bool enabled);
 
     void refresh(void);
+
+    enum {
+      ID_RunSim = 1,
+      ID_PauseSim,
+      ID_StopSim,
+      ID_SkipSim
+    };
 
   private:
     Monitor * _monitor;

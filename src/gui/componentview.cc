@@ -41,9 +41,9 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   _listview->InsertColumn(3, col3);
 
   //Add the control buttons
-  _ToggleMonitorButton = new wxButton(this, -1, "Toggle Monitor Point");
+  _ToggleMonitorButton = new wxButton(this, ID_ToggleMonitor, "Toggle Monitor Point");
   _ToggleMonitorButton->Disable();
-  _ToggleInputButton = new wxButton(this, -1, "Switch Input State");
+  _ToggleInputButton = new wxButton(this, ID_ToggleInput, "Switch Input State");
   _ToggleInputButton->Disable();
 
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
@@ -58,8 +58,8 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   SetSizer(cvsizer);
 
   _listview->Bind(wxEVT_LIST_ITEM_SELECTED, &ComponentView::OnItemSelect, this);
-  _ToggleMonitorButton->Bind(wxEVT_BUTTON, &ComponentView::OnToggleMonitor, this);
-  _ToggleInputButton->Bind(wxEVT_BUTTON, &ComponentView::OnToggleInput, this);
+  Bind(wxEVT_BUTTON, &ComponentView::OnToggleMonitor, this, ID_ToggleMonitor);
+  Bind(wxEVT_BUTTON, &ComponentView::OnToggleInput, this, ID_ToggleInput);
   return;
 }
 
@@ -219,9 +219,9 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
         _network->removeMonitorPoint(signature);
         _listview->SetItem(item, 2, wxString(""));
       }
-
     }
   }
+  event.Skip();
 }
 
 void ComponentView::OnToggleInput(wxCommandEvent &event)

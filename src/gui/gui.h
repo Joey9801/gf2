@@ -53,6 +53,8 @@ class MyFrame: public wxFrame
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnCompSelect(wxTreeEvent& event);
+
+    void OnToggleMonitor(wxCommandEvent &event);
 };
 
 #endif /*gui.h*/

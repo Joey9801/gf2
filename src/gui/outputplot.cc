@@ -110,6 +110,7 @@ void OutputPlot::OnStopButton(wxCommandEvent& event)
   //reset network state and clear monitor point data
   _network->Reset();
   _monitor->clearAllData();
+  refresh();
 }
 
 void OutputPlot::OnSkipButton(wxCommandEvent& event)

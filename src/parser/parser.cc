@@ -56,10 +56,35 @@ Definition* Parser::parseDict(std::vector<Token>& tokens,
                               std::vector<ParserError>& errors) {
   // Create a new dict definition and store the pointer in def.
   Definition* def = new Definition(Dict);
+  bool returnEoFError = false;
 
+  // Don't dereference currentToken if it is at the end of the token vector
   if (currentToken != tokens.end()) {
-
+    bool dictFinished = false;
+    // Repeatedly try to parse pairs until the dict has been parsed
+    while (!dictFinished) {
+      // currentToken is valid, so try to parse a pair
+      std::pair<std::string, Definition*> pair = parsePair( tokens,
+                                                            currentToken,
+                                                            errors);
+      def->pairs[pair.first] = pair.second;
+      if (currentToken != tokens.end()) {
+        // If the next token is a closing dict delimiter then the dict is
+        // finished, so move the iterator past the delimiter and return.
+        dictFinished = (currentToken->getType() == TokenType::DICTDELIMCLOSE);
+        // The alternative is that the next token is a dict separator, so
+        // either way move past it ready to continue parsing
+        ++currentToken;
+      } else {
+        dictFinished = true;
+        returnEoFError = true;
+      }
+    }
   } else {
+    returnEoFError = true;
+  }
+
+  if (returnEoFError) {
     // End of file occurred in the middle of a dict definition -
     // return this error
     errors.push_back(ParserError(addParserErrorPrefix(
@@ -71,7 +96,7 @@ Definition* Parser::parseDict(std::vector<Token>& tokens,
   return def;
 }
 
-/// Parses a pair and returns a pair containing a string and a definition pointer, alongside errors
+/// Parses a pair and returns a std::pair containing a string and a definition pointer, alongside errors
 std::pair<std::string, Definition*> Parser::parsePair(
     std::vector<Token>& tokens,
     std::vector<Token>::iterator& currentToken,

@@ -272,3 +272,105 @@ SCENARIO("Lex files to generate all scanner errors") {
     }
   }
 }
+
+/// Lex files which will cover all transitions of the scanner FSM which will
+/// produce evaluator errors
+SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator errors") {
+  Lexor lexor;
+
+  std::vector<ParserError> errors;
+  std::vector<Token> tokens;
+
+  /// Lex a file containing a forward slash followed by another and check that
+  /// it returns an evaluator error and no tokens
+  GIVEN("Lex file containing two consecutive forward slashes") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/forward_slash_forward_slash.def",
+              errors,
+              tokens);
+
+    THEN("An error and no tokens are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+          "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 1);
+
+      CHECK(tokens.empty());
+    }
+  }
+
+  /// Lex a file containing a forward slash followed by an identifier and check
+  /// that it returns an evaluator error and one token (for the preceeding
+  /// identifier)
+  GIVEN("Lex file containing a forward slash followed immediately by an identifier") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/forward_slash_identifier.def",
+              errors,
+              tokens);
+
+    THEN("An error and a token are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+          "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 6);
+
+      CHECK(tokens.size() == 1);
+    }
+  }
+
+  /// Lex a file containing a forward slash followed by a valid singularity
+  /// (delimiter/separator) and check that it returns an evaluator error and
+  /// one token (for the preceeding identifier)
+  GIVEN("Lex file containing a forward slash followed immediately by a valid singularity") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/forward_slash_singularity.def",
+              errors,
+              tokens);
+
+    THEN("An error and a token are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+          "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 6);
+
+      CHECK(tokens.size() == 1);
+    }
+  }
+
+  /// Lex a file containing a forward slash followed by a string and check that
+  /// it returns an evaluator error and one token (for the preceeding
+  /// identifier)
+  GIVEN("Lex file containing a forward slash followed immediately by a string") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/forward_slash_string.def",
+              errors,
+              tokens);
+
+    THEN("An error and a token are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+          "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 6);
+
+      CHECK(tokens.size() == 1);
+    }
+  }
+
+  /// Lex a file containing a forward slash followed by whitespace and check that
+  /// it returns an evaluator error and one token (for the preceeding identifier)
+  GIVEN("Lex file containing a forward slash followed immediately by whitespace") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/forward_slash_whitespace.def",
+              errors,
+              tokens);
+
+    THEN("An error and a token are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+        "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 6);
+
+      CHECK(tokens.size() == 1);
+    }
+  }
+}

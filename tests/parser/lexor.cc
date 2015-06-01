@@ -374,3 +374,82 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
     }
   }
 }
+
+/// Lex files which will cover all evaluator errors
+SCENARIO("Lex files which will cover all evaluator errors") {
+  Lexor lexor;
+
+  std::vector<ParserError> errors;
+  std::vector<Token> tokens;
+
+  /// Lex a file which results in an invalid singularity lexeme transition out
+  /// of the IDLE state of the evaluator FSM
+  GIVEN("Lex file containing an invalid singularity lexeme after whitespace") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/invalid_singularity_from_idle.def",
+              errors,
+              tokens);
+
+    THEN("An error and a token are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+        "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 30);
+
+      CHECK(tokens.size() == 1);
+    }
+  }
+
+  /// Lex a file which results in an invalid singularity lexeme transition out
+  /// of the SINGLEIDENTIFIER state of the evaluator FSM
+  GIVEN("Lex file containing an invalid singularity lexeme after an identifier") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/invalid_singularity_from_identifier.def",
+              errors,
+              tokens);
+
+    THEN("An error and no tokens are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+        "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter, separator, member access operator or identifier - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 11);
+
+      CHECK(tokens.size() == 0);
+    }
+  }
+
+  /// Lex a file which results in an invalid singularity lexeme transition out
+  /// of the MEMBERACCESSEDIDENTIFIER state of the evaluator FSM
+  GIVEN("Lex file containing an invalid singularity lexeme after a member access operator") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/invalid_singularity_from_member_access.def",
+              errors,
+              tokens);
+
+    THEN("An error and no tokens are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+        "EVALUATOR ERROR: Expected identifier after member access operator - aborting evaluation");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 12);
+
+      CHECK(tokens.size() == 0);
+    }
+  }
+
+  /// Lex a file which ends immediately after a member access operator
+  GIVEN("Lex file which ends after a member access operator") {
+    lexor.lex("tests/parser/test_files/lexor_tests/evaluator_failures/end_from_member_access.def",
+      errors,
+      tokens);
+
+    THEN("An error and no tokens are produced") {
+      REQUIRE(errors.size() == 1);
+      CHECK(errors[0].getErrorDescription() ==
+        "EVALUATOR ERROR: Premature end of file - expected identifier after member access operator");
+      CHECK(errors[0].getLineNo() == 1);
+      CHECK(errors[0].getCharNo() == 12);
+
+      CHECK(tokens.size() == 0);
+    }
+  }
+}

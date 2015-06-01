@@ -6,7 +6,7 @@ bool MyApp::OnInit() {
   plog::init(plog::info, &consoleAppender);
 
   //Create the main window
-  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
+  MyFrame *frame = new MyFrame( _("Logic Simulator"), wxPoint(500, 50), wxSize(800, 100) );
   frame->SetMinSize( wxSize(800, 600) );
   frame->Show( true );
 
@@ -18,20 +18,20 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 {
   //Create menus and attach them to menu bar
   wxMenu *menuFile = new wxMenu;
-  menuFile->Append(ID_LoadNetwork, "&Open Network File\tCtrl-O",
-    "Load a file defining the logic network");
+  menuFile->Append(ID_LoadNetwork, _("&Open Network File\tCtrl-O"),
+    _("Load a file defining the logic network"));
 
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuHelp = new wxMenu;
-  menuHelp->Append(ID_ShowErrors, "Show &Errors\tCtrl-E", "Show all errors");
+  menuHelp->Append(ID_ShowErrors, _("Show &Errors\tCtrl-E"), _("Show all errors"));
   menuFile->AppendSeparator();
   menuHelp->Append(wxID_ABOUT);
 
   wxMenuBar *menuBar = new wxMenuBar;
-  menuBar->Append(menuFile, "&File");
-  menuBar->Append(menuHelp, "&Help");
+  menuBar->Append(menuFile, _("&File"));
+  menuBar->Append(menuHelp, _("&Help"));
   SetMenuBar(menuBar);
 
   CreateStatusBar();
@@ -103,10 +103,10 @@ void MyFrame::OnExit(wxCommandEvent& event)
 void MyFrame::OnAbout(wxCommandEvent& event) {
   wxMessageBox(
 
-"This is a logic simulator developed for project GF2 at CUED by\n\
-           Joe Roberts, Duncan Barber and Daniel Potter",
+_("This is a logic simulator developed for project GF2 at CUED by\n\
+           Joe Roberts, Duncan Barber and Daniel Potter"),
 
-      "About this program", wxOK | wxICON_INFORMATION );
+      _("About this program"), wxOK | wxICON_INFORMATION );
 
   return;
 }
@@ -156,7 +156,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
 }
 
 void MyFrame::OnShowErrors(wxCommandEvent& event) {
-  ErrorDialog* dlg = new ErrorDialog(this, -1, "Errors and Warnings");
+  ErrorDialog* dlg = new ErrorDialog(this, -1, _("Errors and Warnings"));
 
   // Creates a "open file" dialog
   if (dlg->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"

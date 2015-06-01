@@ -46,6 +46,7 @@ class ComponentView: public wxPanel
     void OnItemSelect(wxListEvent &event);
     void OnToggleMonitor(wxCommandEvent &event);
     void OnToggleInput(wxCommandEvent &event);
+    void OnColWidthChanged(wxCommandEvent &event);
 };
 
 #endif /*componentview.h*/

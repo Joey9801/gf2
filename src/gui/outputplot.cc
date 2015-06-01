@@ -115,8 +115,8 @@ void OutputPlot::OnStopButton(wxCommandEvent& event)
 
 void OutputPlot::OnSkipButton(wxCommandEvent& event)
 {
-  long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
-      "Steps", "Setup Simulation", 10, 1, 10000);
+  long numberofsteps = wxGetNumberFromUser(_("Enter number of steps to simulate:"),
+      _("Steps"), _("Setup Simulation"), 10, 1, 10000);
   for(unsigned int i=0; i<numberofsteps; i++)
     _network->step();
 

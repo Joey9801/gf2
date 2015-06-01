@@ -6,7 +6,7 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   : wxPanel(parent, id)
 {
   //Create Overview text field
-  _overview = new wxStaticText(this, -1, "Component name:\nComponent type:",
+  _overview = new wxStaticText(this, -1, _("Component name: ") + "\n" + _("Component type: "),
       wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT);
 
   // Create list view
@@ -41,9 +41,9 @@ ComponentView::ComponentView(wxWindow *parent, wxWindowID id)
   _listview->InsertColumn(3, col3);
 
   //Add the control buttons
-  _ToggleMonitorButton = new wxButton(this, ID_ToggleMonitor, "Toggle Monitor Point");
+  _ToggleMonitorButton = new wxButton(this, ID_ToggleMonitor, _("Toggle Monitor Point"));
   _ToggleMonitorButton->Disable();
-  _ToggleInputButton = new wxButton(this, ID_ToggleInput, "Switch Input State");
+  _ToggleInputButton = new wxButton(this, ID_ToggleInput, _("Switch Input State"));
   _ToggleInputButton->Disable();
 
   wxBoxSizer *cvsizer = new wxBoxSizer(wxVERTICAL);
@@ -68,14 +68,15 @@ void ComponentView::selectComponent(NodeTree *component) {
   _listview->DeleteAllItems();
 
 
-  _overview->SetLabel("Component name: " + _component->nickname + "\nComponent type: " + _component->name);
+  _overview->SetLabel(_("Component name: ") + _component->nickname + "\n"
+      + _("Component type: ") + _component->name);
   long itemIndex;
 
   //add all the outputs to the listview
   for(std::vector<std::string>::size_type i = _component->outputNames.size() - 1;
           i != (std::vector<int>::size_type) -1; i--) {
     //Add output name
-    itemIndex = _listview->InsertItem(0, wxString("Output"));
+    itemIndex = _listview->InsertItem(0, _("Output"));
     _listview->SetItem(itemIndex, 1, wxString(_component->outputNames[i]));
     if(IsMonitored(itemIndex)) _listview->SetItem(itemIndex, 2, wxString("Yes"));
 
@@ -105,9 +106,9 @@ void ComponentView::selectComponent(NodeTree *component) {
 
     if(_component->parent){ //If _component isnt the root network
       if(_component->inputNodes[i] == 0){
-        _listview->SetItem(itemIndex, 3, "Low (constant)");
+        _listview->SetItem(itemIndex, 3, _("Low (constant)"));
       }else if(_component->inputNodes[i] == 1){
-        _listview->SetItem(itemIndex, 3, "High (constant)");
+        _listview->SetItem(itemIndex, 3, _("High (constant)"));
       }else {
         for(std::vector<NodeTree*>::iterator it = _component->parent->children.begin(); 
             it != _component->parent->children.end(); ++it) {
@@ -123,10 +124,10 @@ void ComponentView::selectComponent(NodeTree *component) {
     } 
     else {//If we're on Root network
       if(_network->getInput(_component->inputNames[i])){
-        _listview->SetItem(itemIndex, 3, "High");
+        _listview->SetItem(itemIndex, 3, _("High"));
       }
       else{
-        _listview->SetItem(itemIndex, 3, "Low");
+        _listview->SetItem(itemIndex, 3, _("Low"));
       }
     }
   }
@@ -166,7 +167,7 @@ void ComponentView::OnItemSelect(wxListEvent &event)
   bool onlyoutputsselected = true;
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
-    if(_listview->GetItemText(item, 0) == "Input") {
+    if(_listview->GetItemText(item, 0) == _("Input")) {
       onlyoutputsselected = false;
       break;
     }
@@ -178,7 +179,7 @@ void ComponentView::OnItemSelect(wxListEvent &event)
     bool onlyinputsselected = true;
     long item = -1;
     while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
-      if(_listview->GetItemText(item, 0) == "Output") {
+      if(_listview->GetItemText(item, 0) == _("Output")) {
         onlyinputsselected = false;
         break;
       }
@@ -192,7 +193,7 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
 {
   long item = -1;
   while ((item = _listview->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != -1){
-    if(_listview->GetItemText(item, 0) == "Output") {
+    if(_listview->GetItemText(item, 0) == _("Output")) {
       if(not IsMonitored(item)) {
         std::string outputName = _listview->GetItemText(item, 1).ToStdString();
         std::vector<std::string> signature = _component->getOutputSignature(outputName);
@@ -205,7 +206,7 @@ void ComponentView::OnToggleMonitor(wxCommandEvent &event)
         unsigned int pointId = _network->addMonitorPoint(signature);
         _monitor->renamePoint(pointId, ss.str());
 
-        _listview->SetItem(item, 2, wxString("Yes"));
+        _listview->SetItem(item, 2, _("Yes"));
       }
       else {
         std::string outputName = _listview->GetItemText(item, 1).ToStdString();
@@ -232,7 +233,7 @@ void ComponentView::OnToggleInput(wxCommandEvent &event)
     bool next = not _network->getInput(inputName);
 
     _network->setInput(inputName, next);
-    _listview->SetItem(item, 3, wxString(next ? "High" : "Low"));
+    _listview->SetItem(item, 3, next ? _("High") : _("Low"));
 
   }
 }

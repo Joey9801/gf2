@@ -1,0 +1,11 @@
+/* This file should put the lexor through its paces, as it should cover every
+   valid transition between scanner states that results in a valid transition
+   between evaluator states. This comment has already started this process** */
+
+These identifier.lexemes {should} "make it through" to the"evaluator" class.successfully
+
+/* Another scanner-testing comment */
+
+identifier/* immediately followed by comment */
+{"string after singularity test"}
+final test:,singularity followed by singularity

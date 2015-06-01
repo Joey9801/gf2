@@ -1,0 +1,1 @@
+/* this invalid character in this comment will make the scanner complain: £ */

@@ -1,5 +1,102 @@
 #include "gui.h"
 
+// command line arguments handling
+void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    parser.AddParam(_("locale"),
+                    wxCMD_LINE_VAL_STRING,
+                    wxCMD_LINE_PARAM_OPTIONAL);
+
+    wxApp::OnInitCmdLine(parser);
+}
+
+bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    if ( !wxApp::OnCmdLineParsed(parser) )
+        return false;
+
+    if ( parser.GetParamCount() )
+    {
+        const wxString loc = parser.GetParam();
+        const wxLanguageInfo * const lang = wxLocale::FindLanguageInfo(loc);
+        if ( !lang )
+        {
+            wxLogError(_("Locale \"%s\" is unknown."), loc);
+            return false;
+        }
+
+        _lang = static_cast<wxLanguage>(lang->Language);
+    }
+
+    return true;
+}
+
+// `Main program' equivalent, creating windows and returning main app frame
+bool MyApp::OnInit()
+{
+    if ( !wxApp::OnInit() )
+        return false;
+
+    if ( _lang == wxLANGUAGE_UNKNOWN )
+    {
+        int lng = wxGetSingleChoiceIndex
+                  (
+                    _("Please choose language:"),
+                    _("Language"),
+                    WXSIZEOF(langNames),
+                    langNames
+                  );
+        _lang = lng == -1 ? wxLANGUAGE_DEFAULT : langIds[lng];
+    }
+
+    // don't use wxLOCALE_LOAD_DEFAULT flag so that Init() doesn't return
+    // false just because it failed to load wxstd catalog
+    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) )
+    {
+        wxLogWarning(_("This language is not supported by the system."));
+
+        // continue nevertheless
+    }
+
+    // normally this wouldn't be necessary as the catalog files would be found
+    // in the default locations, but when the program is not installed the
+    // catalogs are in the build directory where we wouldn't find them by
+    // default
+    wxLocale::AddCatalogLookupPathPrefix("./i18n");
+
+    // Initialize the catalogs we'll be using
+    const wxLanguageInfo* pInfo = wxLocale::GetLanguageInfo(_lang);
+    if (!_locale.AddCatalog("logicsim"))
+    {
+        wxLogError(_("Couldn't find/load the 'logicsim' catalog for locale '%s'."),
+                   pInfo ? pInfo->GetLocaleName() : _("unknown"));
+    }
+
+    // Now try to add wxstd.mo so that loading "NOTEXIST.ING" file will produce
+    // a localized error message:
+    _locale.AddCatalog("wxstd");
+        // NOTE: it's not an error if we couldn't find it!
+
+    // this catalog is installed in standard location on Linux systems and
+    // shows that you may make use of the standard message catalogs as well
+    //
+    // if it's not installed on your system, it is just silently ignored
+#ifdef __LINUX__
+    {
+        wxLogNull noLog;
+        _locale.AddCatalog("fileutils");
+    }
+#endif
+
+    // Create the main frame window
+    MyFrame *frame = new MyFrame(_locale);
+
+    // Show the frame
+    frame->Show(true);
+
+    return true;
+}
+/*
 bool MyApp::OnInit() {
   //Initialise the logger
   static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
@@ -12,9 +109,11 @@ bool MyApp::OnInit() {
 
   return true;
 }
+*/
 
-MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-  : wxFrame(NULL, wxID_ANY, title, pos, size)
+MyFrame::MyFrame(wxLocale& locale)
+  : wxFrame(NULL, wxID_ANY, _("Logic Simulator"), wxPoint(500, 50), wxSize(800, 100)),
+    _locale(locale)
 {
   //Create menus and attach them to menu bar
   wxMenu *menuFile = new wxMenu;

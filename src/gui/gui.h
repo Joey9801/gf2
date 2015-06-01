@@ -8,6 +8,8 @@
 #ifndef WX_PRECOMP
   #include <wx/wx.h>
 #endif
+#include <wx/cmdline.h>
+#include <wx/intl.h>
 #include <wx/splitter.h>
 #include <wx/sizer.h>
 
@@ -24,17 +26,49 @@
 #include "../simulator/monitor.h"
 #include "../parser/builder.h"
 
+/*
 class MyApp: public wxApp
 {
   public:
     bool OnInit(); //automatically called when the application starts
   private:
 };
+*/
+class MyApp: public wxApp
+{
+public:
+    MyApp() { _lang = wxLANGUAGE_UNKNOWN; }
+
+    virtual void OnInitCmdLine(wxCmdLineParser& parser);
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+    virtual bool OnInit();
+
+protected:
+    wxLanguage _lang;  // language specified by user
+    wxLocale _locale;  // locale we'll be using
+};
+
+// language data
+static const wxLanguage langIds[] =
+{
+    wxLANGUAGE_DEFAULT,
+    wxLANGUAGE_GERMAN,
+    wxLANGUAGE_ENGLISH_US
+};
+
+// note that it makes no sense to translate these strings, they are
+// shown before we set the locale anyhow
+const wxString langNames[] =
+{
+    "System default",
+    "German",
+    "English"
+};
 
 class MyFrame: public wxFrame
 {
   public:
-    MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
+    MyFrame(wxLocale& locale);
 
   enum {
     ID_LoadNetwork = 1,
@@ -42,6 +76,8 @@ class MyFrame: public wxFrame
   };
 
   private:
+    wxLocale& _locale;  // locale we'll be using
+
     RootNetwork * _network;
     Monitor * _monitor;
 

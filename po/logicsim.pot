@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Logic simulator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-01 13:07+0100\n"
+"PO-Revision-Date: 2015-06-01 13:36-0000\n"
+"Last-Translator: Daniel Potter <djp73@cam.ac.uk>\n"
+"Language-Team: Joe Roberts, Duncan Barber and Daniel Potter\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: src/gui/gui.cc:33
+msgid "&File"
+msgstr "&Datei"
+
+#: src/gui/gui.cc:34
+msgid "&Help"
+msgstr "&Hilfe"
+
+#: src/gui/gui.cc:21
+msgid "&Open Network File\tCtrl-O"
+msgstr "&Netzwerk Datei &Öffnen\tStrg-O"
+
+#: src/gui/gui.cc:109
+msgid "About this program"
+msgstr "&Über dieses Programm"
+
+#: src/gui/gui.cc:116
+msgid "Choose a file to open"
+msgstr "Wähle eine Datei zum öffnen"
+
+#: src/gui/componentview.cc:9
+#: src/gui/componentview.cc:71
+msgid "Component name: "
+msgstr "Komponentenname: "
+
+#: src/gui/componentview.cc:9
+#: src/gui/componentview.cc:72
+msgid "Component type: "
+msgstr "Komponententyp: "
+
+#: src/gui/componentview.cc:39
+msgid "Connected to"
+msgstr "Verbunden mit"
+
+#: src/gui/errordialog.cc:20
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/gui/outputplot.cc:118
+msgid "Enter number of steps to simulate:"
+msgstr "Wie viele Schritte sollen simuliert werden:"
+
+#: src/gui/gui.cc:159
+msgid "Errors and Warnings"
+msgstr "Fehler und Warnungen"
+
+#: src/gui/componentview.cc:127
+#: src/gui/componentview.cc:236
+msgid "High"
+msgstr "High"
+
+#: src/gui/componentview.cc:111
+msgid "High (constant)"
+msgstr "High (konstant)"
+
+#: src/gui/componentview.cc:18
+msgid "I/O"
+msgstr "Ein-/Ausgabe"
+
+#: src/gui/componentview.cc:170
+msgid "Input"
+msgstr "Eingabe"
+
+#: src/gui/gui.cc:22
+msgid "Load a file defining the logic network"
+msgstr "Netzwerkdefinitionsdatei laden"
+
+#: src/gui/gui.cc:9
+msgid "Logic Simulator"
+msgstr "Logik Simulator"
+
+#: src/gui/componentview.cc:130
+#: src/gui/componentview.cc:236
+msgid "Low"
+msgstr "Low"
+
+#: src/gui/componentview.cc:109
+msgid "Low (constant)"
+msgstr "Low (konstant)"
+
+#: src/gui/componentview.cc:32
+msgid "Monitored"
+msgstr "Beobachtet"
+
+#: src/gui/componentview.cc:25
+msgid "Name"
+msgstr "Name"
+
+#: src/gui/gui.cc:117
+msgid "Network definition files (*.def)|*.def"
+msgstr "Netzwerkdefinitionsdateien (*.def)|*.def"
+
+#: src/gui/componentview.cc:79
+#: src/gui/componentview.cc:182
+#: src/gui/componentview.cc:196
+msgid "Output"
+msgstr "Ausgabe"
+
+#: src/gui/outputplot.cc:19
+msgid "Pause Live Simulation"
+msgstr "Livesimuation pausieren"
+
+#: src/gui/outputplot.cc:14
+msgid "Run Live Simulation"
+msgstr "Livesimulation starten"
+
+#: src/gui/outputplot.cc:119
+msgid "Setup Simulation"
+msgstr "Simulationseinstellungen"
+
+#: src/gui/gui.cc:28
+msgid "Show &Errors\tCtrl-E"
+msgstr "F&ehler anzeigen\tStrg-E"
+
+#: src/gui/gui.cc:28
+msgid "Show all errors"
+msgstr "Alle Fehler anzeigen"
+
+#: src/gui/outputplot.cc:29
+msgid "Simulate for many steps at once"
+msgstr "Viele Schritte auf einmal simulieren"
+
+#: src/gui/outputplot.cc:119
+msgid "Steps"
+msgstr "Schritte"
+
+#: src/gui/outputplot.cc:24
+msgid "Stop Simulation"
+msgstr "Simulation stoppen"
+
+#: src/gui/componentview.cc:46
+msgid "Switch Input State"
+msgstr "Eingabe schalten"
+
+#: src/gui/gui.cc:106
+msgid ""
+"This is a logic simulator developed for project GF2 at CUED by\n"
+"           Joe Roberts, Duncan Barber and Daniel Potter"
+msgstr ""
+"Dies ist ein logik simulator, der für Projekt GF2 am CUED von\n"
+"           Joe Roberts, Duncan Barber und Daniel Potter entwickelt wurde."
+
+#: src/gui/componentview.cc:44
+msgid "Toggle Monitor Point"
+msgstr "Beobachungspunkt schalten"
+
+#: src/gui/errordialog.cc:13
+msgid "Type"
+msgstr "Typ"
+
+#: src/gui/componentview.cc:209
+msgid "Yes"
+msgstr "Ja"
+

@@ -1,1 +1,2 @@
-include/catch.h linguist-vendored
+include/* linguist-vendored
+example_defs/* linguist-vendored

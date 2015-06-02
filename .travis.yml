@@ -1,11 +1,15 @@
 language: cpp
 
+sudo: true
+
 compiler:
     - gcc
 
 before_install:
     - echo $LANG
     - make clean
+    - sudo apt-get update -qq
+    - sudo apt-get install -y libwxgtk3.0-dev
 
 install:
     - make main

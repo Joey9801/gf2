@@ -21,4 +21,15 @@ class DType : public BaseComponent
     bool _lastOut;
 };
 
+class JK : public BaseComponent
+{
+  public:
+    JK();
+    ~JK();
+    void step(std::vector<bool>& a, std::vector<bool>& b);
+
+  private:
+    bool _lastIn, _lastOut;
+};
+
 #endif

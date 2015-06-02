@@ -1,0 +1,17 @@
+{
+    includes : {
+        tests/parser/test_files/test3.def : signals
+    },
+    components : {
+        and12 : {
+            type : and,
+            inputs : {
+                i1 : signals.sig1,
+                i2 : signals.sig2
+            }
+        },
+        signals : {
+            type : includes.signals
+        }
+    }
+}

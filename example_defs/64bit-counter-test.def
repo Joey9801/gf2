@@ -1,0 +1,20 @@
+{
+    includes : {
+        example_defs/64bit-synch-counter.def : counter
+    },
+    components : {
+        counter : {
+            type : includes.counter,
+            inputs : {
+                clock : clock
+            }
+        },
+        clock : {
+            type : siggen,
+            config : {
+                data : 01,
+                period : 2
+            }
+        }
+    }
+}

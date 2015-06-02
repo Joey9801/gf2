@@ -1,0 +1,30 @@
+{
+    outputs : {
+        sig1 : signal.out,
+        sig2 : signal2.out,
+        sig3 : gate1.out
+    },
+    components : {
+        gate1 : {
+            type : xor,
+            inputs : {
+                i1 : signal.out,
+                i2 : signal2.out
+            }
+        },
+        signal : {
+            type : siggen,
+            config : {
+                data : 01,
+                period: 3
+            }
+        },
+        signal2 : {
+            type : siggen,
+            config : {
+                data : 010010110101111,
+                period: 1
+            }
+        }
+    }
+}

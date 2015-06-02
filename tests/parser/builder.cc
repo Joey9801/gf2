@@ -30,8 +30,8 @@ SCENARIO("A flat definition with only IO connections can be built") {
           }
 
           for(unsigned int i=0; i<4; i++) {
-            bool in1 = i && (1<<0);
-            bool in2 = i && (1<<1);
+            bool in1 = i & (1<<0);
+            bool in2 = i & (1<<1);
 
             //Apply the inputs
             for(unsigned int j=0; j<10; j+=2) {
@@ -51,9 +51,9 @@ SCENARIO("A flat definition with only IO connections can be built") {
             }
 
             //Check whether the outputs were set properly
-            REQUIRE( a[10] == (in1 && in2) );
+            REQUIRE( a[10] == (in1 & in2) );
             REQUIRE( a[11] == (in1 || in2) );
-            REQUIRE( a[12] == not (in1 && in2) );
+            REQUIRE( a[12] == not (in1 & in2) );
             REQUIRE( a[13] == not (in1 || in2) );
             REQUIRE( a[14] == (in1 ^ in2) );
           }

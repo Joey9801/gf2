@@ -31,7 +31,7 @@ bool Scanner::scan( const std::string filename,
         currentFileLine++;
         currentLineChar = 0;
       }
-      if (currentLineChar == std::numeric_limits<unsigned int>::max()) {
+      if (currentLineChar == std::numeric_limits<unsigned long long int>::max()) {
         // If we are unable to count any higher on this line then abort and
         // return an error
         aborted = true;
@@ -40,7 +40,7 @@ bool Scanner::scan( const std::string filename,
                                       currentFileLine,
                                       currentLineChar));
       }
-      if (currentFileLine == std::numeric_limits<unsigned int>::max()) {
+      if (currentFileLine == std::numeric_limits<unsigned long long int>::max()) {
         // If we are unable to count any more lines then abort and return
         // an error
         aborted = true;

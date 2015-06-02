@@ -26,13 +26,13 @@ class ParserError {
  private:
   std::string errorDesc;  ///<  The error message for this error
 
-  unsigned int lineNo;    ///<  The number of the line which produced the error
-                          /*!<  If this value is 0, then the error does not
-                                have associated positional information. */
+  unsigned long long int lineNo;    ///<  The number of the line which produced the error
+                                    /*!<  If this value is 0, then the error does not
+                                          have associated positional information. */
 
-  unsigned int charNo;    ///<  The number of the character on the line which produced the error
-                          /*!<  If this value is 0, then the error does not
-                                have associated positional information. */
+  unsigned long long int charNo;    ///<  The number of the character on the line which produced the error
+                                    /*!<  If this value is 0, then the error does not
+                                          have associated positional information. */
 };
 
 #endif // PARSERERROR_H_

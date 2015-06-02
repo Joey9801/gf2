@@ -240,7 +240,7 @@ void PlotCanvas::drawAxis(unsigned int xpos, float bitwidth) {
   glEnd();
   //draw tickmarks
   float tickspacing = (bitwidth > 10 ? bitwidth : bitwidth * 10);
-  for(float x = xzero + tickspacing - (xpos%(int)tickspacing); x<GetSize().x-15.0; x+=tickspacing){
+  for(float x = xzero + tickspacing - ((xpos * (int)bitwidth)%(int)tickspacing); x<GetSize().x-15.0; x+=tickspacing){
     glBegin(GL_LINE_STRIP);
       glVertex2f(x, yzero*0.7);
       glVertex2f(x, yzero*0.3);

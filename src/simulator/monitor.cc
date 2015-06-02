@@ -120,3 +120,12 @@ std::vector<std::string> Monitor::getSignature(unsigned int id) {
   unsigned int pointId = findPoint(id);
   return _points[pointId]->signature;
 }
+
+void Monitor::clearAllData(){
+  for(std::map<unsigned int, MonitorPoint*>::iterator it=_points.begin();
+      it != _points.end();
+      it++){
+    it->second->log.clear();
+  }
+  maxTime = 0;
+}

@@ -1,0 +1,194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-01 14:45+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/gui/gui.cc:132
+msgid "&File"
+msgstr ""
+
+#: src/gui/gui.cc:133
+msgid "&Help"
+msgstr ""
+
+#: src/gui/gui.cc:120
+msgid "&Open Network File\tCtrl-O"
+msgstr ""
+
+#: src/gui/gui.cc:208
+msgid "About this program"
+msgstr ""
+
+#: src/gui/gui.cc:215
+msgid "Choose a file to open"
+msgstr ""
+
+#: src/gui/componentview.cc:9 src/gui/componentview.cc:71
+msgid "Component name: "
+msgstr ""
+
+#: src/gui/componentview.cc:9 src/gui/componentview.cc:72
+msgid "Component type: "
+msgstr ""
+
+#: src/gui/componentview.cc:39
+msgid "Connected to"
+msgstr ""
+
+#: src/gui/gui.cc:71
+#, c-format
+msgid "Couldn't find/load the 'logicsim' catalog for locale '%s'."
+msgstr ""
+
+#: src/gui/errordialog.cc:20
+msgid "Description"
+msgstr ""
+
+#: src/gui/outputplot.cc:118
+msgid "Enter number of steps to simulate:"
+msgstr ""
+
+#: src/gui/gui.cc:258
+msgid "Errors and Warnings"
+msgstr ""
+
+#: src/gui/componentview.cc:127 src/gui/componentview.cc:236
+msgid "High"
+msgstr ""
+
+#: src/gui/componentview.cc:111
+msgid "High (constant)"
+msgstr ""
+
+#: src/gui/componentview.cc:18
+msgid "I/O"
+msgstr ""
+
+#: src/gui/componentview.cc:170
+msgid "Input"
+msgstr ""
+
+#: src/gui/gui.cc:45
+msgid "Language"
+msgstr ""
+
+#: src/gui/gui.cc:121
+msgid "Load a file defining the logic network"
+msgstr ""
+
+#: src/gui/gui.cc:24
+#, c-format
+msgid "Locale \"%s\" is unknown."
+msgstr ""
+
+#: src/gui/gui.cc:115
+msgid "Logic Simulator"
+msgstr ""
+
+#: src/gui/componentview.cc:130 src/gui/componentview.cc:236
+msgid "Low"
+msgstr ""
+
+#: src/gui/componentview.cc:109
+msgid "Low (constant)"
+msgstr ""
+
+#: src/gui/componentview.cc:32
+msgid "Monitored"
+msgstr ""
+
+#: src/gui/componentview.cc:25
+msgid "Name"
+msgstr ""
+
+#: src/gui/gui.cc:216
+msgid "Network definition files (*.def)|*.def"
+msgstr ""
+
+#: src/gui/componentview.cc:79 src/gui/componentview.cc:182
+#: src/gui/componentview.cc:196
+msgid "Output"
+msgstr ""
+
+#: src/gui/outputplot.cc:19
+msgid "Pause Live Simulation"
+msgstr ""
+
+#: src/gui/gui.cc:44
+msgid "Please choose language:"
+msgstr ""
+
+#: src/gui/outputplot.cc:14
+msgid "Run Live Simulation"
+msgstr ""
+
+#: src/gui/outputplot.cc:119
+msgid "Setup Simulation"
+msgstr ""
+
+#: src/gui/gui.cc:127
+msgid "Show &Errors\tCtrl-E"
+msgstr ""
+
+#: src/gui/gui.cc:127
+msgid "Show all errors"
+msgstr ""
+
+#: src/gui/outputplot.cc:29
+msgid "Simulate for many steps at once"
+msgstr ""
+
+#: src/gui/outputplot.cc:119
+msgid "Steps"
+msgstr ""
+
+#: src/gui/outputplot.cc:24
+msgid "Stop Simulation"
+msgstr ""
+
+#: src/gui/componentview.cc:46
+msgid "Switch Input State"
+msgstr ""
+
+#: src/gui/gui.cc:205
+msgid ""
+"This is a logic simulator developed for project GF2 at CUED by\n"
+"           Joe Roberts, Duncan Barber and Daniel Potter"
+msgstr ""
+
+#: src/gui/gui.cc:56
+msgid "This language is not supported by the system."
+msgstr ""
+
+#: src/gui/componentview.cc:44
+msgid "Toggle Monitor Point"
+msgstr ""
+
+#: src/gui/errordialog.cc:13
+msgid "Type"
+msgstr ""
+
+#: src/gui/componentview.cc:209
+msgid "Yes"
+msgstr ""
+
+#: src/gui/gui.cc:6
+msgid "locale"
+msgstr ""
+
+#: src/gui/gui.cc:72
+msgid "unknown"
+msgstr ""

@@ -19,6 +19,7 @@ class SignalGenerator : public BaseComponent
 
     BaseComponent * clone(void);
 
+    virtual void Reset();
   protected:
     unsigned int _period;
     std::vector<bool> _data;

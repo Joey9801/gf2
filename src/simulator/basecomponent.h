@@ -56,7 +56,8 @@ class BaseComponent {
     virtual NodeTree * getNodeTree(void);
 
     virtual BaseComponent * clone(void);
-
+ 
+    virtual void Reset(){};
   protected:
     std::string _name;
 

@@ -27,6 +27,11 @@ class ComponentView: public wxPanel
     void setMonitor(Monitor * m);
     void setNetwork(RootNetwork * n);
 
+    enum {
+      ID_ToggleMonitor = 1,
+      ID_ToggleInput
+    };
+
   private:
     Monitor * _monitor;
     RootNetwork * _network;
@@ -41,6 +46,7 @@ class ComponentView: public wxPanel
     void OnItemSelect(wxListEvent &event);
     void OnToggleMonitor(wxCommandEvent &event);
     void OnToggleInput(wxCommandEvent &event);
+    void OnColWidthChanged(wxCommandEvent &event);
 };
 
 #endif /*componentview.h*/

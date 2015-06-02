@@ -1,40 +1,131 @@
 #include "gui.h"
 
+// command line arguments handling
+void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    parser.AddParam(_("locale"),
+                    wxCMD_LINE_VAL_STRING,
+                    wxCMD_LINE_PARAM_OPTIONAL);
+
+    wxApp::OnInitCmdLine(parser);
+}
+
+bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    if ( !wxApp::OnCmdLineParsed(parser) )
+        return false;
+
+    if ( parser.GetParamCount() )
+    {
+        const wxString loc = parser.GetParam();
+        const wxLanguageInfo * const lang = wxLocale::FindLanguageInfo(loc);
+        if ( !lang )
+        {
+            wxLogError(_("Locale \"%s\" is unknown."), loc);
+            return false;
+        }
+
+        _lang = static_cast<wxLanguage>(lang->Language);
+    }
+
+    return true;
+}
+
+// `Main program' equivalent, creating windows and returning main app frame
+bool MyApp::OnInit()
+{
+    if ( !wxApp::OnInit() )
+        return false;
+
+    if ( _lang == wxLANGUAGE_UNKNOWN )
+        _lang = wxLANGUAGE_DEFAULT;
+
+    // don't use wxLOCALE_LOAD_DEFAULT flag so that Init() doesn't return
+    // false just because it failed to load wxstd catalog
+    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) ){
+        wxLogWarning(_("This language is not supported by the system."));
+        // continue nevertheless
+    }
+
+    // normally this wouldn't be necessary as the catalog files would be found
+    // in the default locations, but when the program is not installed the
+    // catalogs are in the build directory where we wouldn't find them by
+    // default
+    wxLocale::AddCatalogLookupPathPrefix("./i18n");
+
+    // Initialize the catalogs we'll be using
+    const wxLanguageInfo* pInfo = wxLocale::GetLanguageInfo(_lang);
+    if (!_locale.AddCatalog("logicsim"))
+    {
+        wxLogError(_("Couldn't find/load the 'logicsim' catalog for locale '%s'."),
+                   pInfo ? pInfo->GetLocaleName() : _("unknown"));
+    }
+
+    // Now try to add wxstd.mo so that loading "NOTEXIST.ING" file will produce
+    // a localized error message:
+    _locale.AddCatalog("wxstd");
+        // NOTE: it's not an error if we couldn't find it!
+
+    // this catalog is installed in standard location on Linux systems and
+    // shows that you may make use of the standard message catalogs as well
+    //
+    // if it's not installed on your system, it is just silently ignored
+#ifdef __LINUX__
+    {
+        wxLogNull noLog;
+        _locale.AddCatalog("fileutils");
+    }
+#endif
+
+    //Initialise the logger
+    static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
+    plog::init(plog::debug, &consoleAppender);
+
+    // Create the main frame window
+    MyFrame *frame = new MyFrame(_locale);
+
+    frame->SetMinSize( wxSize(800, 600) );
+
+    // Show the frame
+    frame->Show(true);
+
+    return true;
+}
+/*
 bool MyApp::OnInit() {
   //Initialise the logger
   static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
   plog::init(plog::info, &consoleAppender);
 
   //Create the main window
-  MyFrame *frame = new MyFrame( "Logic Simulator", wxPoint(500, 50), wxSize(800, 100) );
+  MyFrame *frame = new MyFrame( _("Logic Simulator"), wxPoint(500, 50), wxSize(800, 100) );
   frame->SetMinSize( wxSize(800, 600) );
   frame->Show( true );
 
   return true;
 }
+*/
 
-MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-  : wxFrame(NULL, wxID_ANY, title, pos, size)
+MyFrame::MyFrame(wxLocale& locale)
+  : wxFrame(NULL, wxID_ANY, _("Logic Simulator"), wxPoint(500, 50), wxSize(800, 100)),
+    _locale(locale)
 {
   //Create menus and attach them to menu bar
   wxMenu *menuFile = new wxMenu;
-  menuFile->Append(ID_LoadNetwork, "&Open Network File\tCtrl-O",
-    "Load a file defining the logic network");
+  menuFile->Append(ID_LoadNetwork, _("&Open Network File\tCtrl-O"),
+    _("Load a file defining the logic network"));
 
   menuFile->AppendSeparator();
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuHelp = new wxMenu;
+  menuHelp->Append(ID_ShowErrors, _("Show &Errors\tCtrl-E"), _("Show all errors"));
+  menuFile->AppendSeparator();
   menuHelp->Append(wxID_ABOUT);
 
-  wxMenu *menuSim = new wxMenu;
-  menuSim->Append(ID_StartSimulation, "&Run Simulation\tCtrl-R", "Start the Simulation");
-  menuSim->Enable(ID_StartSimulation, false);
-
   wxMenuBar *menuBar = new wxMenuBar;
-  menuBar->Append(menuFile, "&File");
-  menuBar->Append(menuHelp, "&Help");
-  menuBar->Append(menuSim, "&Simulation");
+  menuBar->Append(menuFile, _("&File"));
+  menuBar->Append(menuHelp, _("&Help"));
   SetMenuBar(menuBar);
 
   CreateStatusBar();
@@ -74,12 +165,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
   //Events from Menubar
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnLoadNetwork, this, ID_LoadNetwork);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnShowErrors, this, ID_ShowErrors);
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnAbout, this, wxID_ABOUT);
-  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnRunSimulation, this, ID_StartSimulation);
 
   //Events from Panes
   _netview->Bind(wxEVT_COMMAND_TREE_ITEM_ACTIVATED, &MyFrame::OnCompSelect, this);
+  Bind(wxEVT_BUTTON, &MyFrame::OnToggleMonitor, this, ComponentView::ID_ToggleMonitor);
 
+  _network = NULL;
   _monitor = new Monitor();
   _outputplot->setMonitor(_monitor);
   _compview->setMonitor(_monitor);
@@ -105,10 +198,10 @@ void MyFrame::OnExit(wxCommandEvent& event)
 void MyFrame::OnAbout(wxCommandEvent& event) {
   wxMessageBox(
 
-"This is a logic simulator developed for project GF2 at CUED by\n\
-           Joe Roberts, Duncan Barber and Daniel Potter",
-
-      "About this program", wxOK | wxICON_INFORMATION );
+_("This is a logic simulator developed for project GF2 at CUED by\n\
+           Joe Roberts, Duncan Barber and Daniel Potter\n\n\n")
+      + wxString::FromUTF8("\u0647\u0630\u0627 \u0647\u0648 \u0645\u062d\u0627\u0643\u0627\u0629 \u0627\u0644\u0645\u0646\u0637\u0642 \u0648\u0636\u0639\u062a \u0644\u0644\u0645\u0634\u0631\u0648\u0639 GF2 \u0641\u064a \u0645\u0644\u0642\u0646 \u062c\u0648 \u0631\u0648\u0628\u0631\u062a\u0633\u060c \u062f\u0646\u0643\u0627\u0646 \u0628\u0627\u0631\u0628\u0631 \u0648\u062f\u0627\u0646\u064a\u0627\u0644 \u0628\u0648\u062a\u0631"),
+      _("About this program"), wxOK | wxICON_INFORMATION );
 
   return;
 }
@@ -141,12 +234,14 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _compview->setNetwork(_network);
     _compview->setMonitor(_monitor);
     _outputplot->setMonitor(_monitor);
+    _outputplot->setNetwork(_network);
 
     LOG_DEBUG << "About to load the network view";
     _netview->loadNetwork(_network->getNodeTree());
+    _compview->selectComponent(_network->getNodeTree());
 
-    LOG_DEBUG << "About to enable the simulation button";
-    GetMenuBar()->Enable(GetMenuBar()->FindMenuItem("Simulation", "Run Simulation"), true);
+    LOG_DEBUG << "About to enable the simulation toolbar";
+    _outputplot->EnableToolbar(true);
   }
 
   // Clean up after ourselves
@@ -155,18 +250,20 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   return;
 }
 
-void MyFrame::OnRunSimulation(wxCommandEvent& event) {
-  //Create a nodelist, since we're not yet using the RootNetwork object
-  //unsigned int numNodes = _network->numInputs() + _network->numOutputs();
-  //std::vector<bool> nodes(numNodes, false);
+void MyFrame::OnShowErrors(wxCommandEvent& event) {
+  ErrorDialog* dlg = new ErrorDialog(this, -1, _("Errors and Warnings"));
 
-  long numberofsteps = wxGetNumberFromUser("Enter number of steps to simulate:",
-      "Steps", "Setup Simulation", 10, 1, 1000);
-  //Run for a fixed 50 cycles for the moment
-  for(unsigned int i=0; i<numberofsteps; i++)
-    _network->step();
+  // Creates a "open file" dialog
+  if (dlg->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"
+  }
 
-  _outputplot->refresh();
+  // Clean up after ourselves
+  dlg->Destroy();
 
   return;
+}
+
+void MyFrame::OnToggleMonitor(wxCommandEvent &event)
+{
+  _outputplot->refresh();
 }

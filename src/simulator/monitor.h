@@ -57,6 +57,7 @@ class Monitor {
     unsigned int findPoint(std::vector<std::string> signature);
     unsigned int maxTime;
 
+    void clearAllData();
   private:
     unsigned int nextId;
     std::map<unsigned int, MonitorPoint*> _points;

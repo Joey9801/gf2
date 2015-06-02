@@ -48,6 +48,6 @@
         }
     }, 
     includes: {
-        example_defs/full_adder.def: adder
+        "example_defs/full_adder.def": adder
     }
 }

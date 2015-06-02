@@ -1,6 +1,6 @@
 {
     includes : {
-        example_defs/64bit-synch-counter.def : counter
+        "example_defs/64bit-synch-counter.def" : counter
     },
     components : {
         counter : {

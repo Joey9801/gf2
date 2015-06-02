@@ -109,6 +109,8 @@ class Evaluator {
 
    void resetToStartState();
 
+   bool isValidVectorNumber(std::string str);
+
    std::string addEvaluatorErrorPrefix(std::string errorMessage);
 
    EvaluatorState currentState;           ///<  The current state of the evaluator state machine

@@ -310,6 +310,17 @@ bool Evaluator::valueProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
+  if (lexeme.getType() == LexemeType::SINGULARITY) {
+    if (lexeme.getString().length() == 1) {
+      if (isOpeningVectorBracket(lexeme.getString()[0])) {
+        // If the lexeme is an opening vector bracket then append the lexeme
+        // to the current string and go to the VALUEVECTOROPEN state
+        currentState = EvaluatorState::VALUEVECTOROPEN;
+        currentString.append(lexeme.getString());
+        return true;
+      }
+    }
+  }
   // If it is anything else then generate the VALUE token and move to the
   // IDLE state, then re-input this lexeme (This is a shortcut, as other
   // than the opening vector bracket this state should respond identically
@@ -327,6 +338,41 @@ bool Evaluator::valueVectorOpenProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
+  if (lexeme.getType() == LexemeType::IDENTIFIER) {
+    // If the lexeme is an identifier then check if it is a valid vector number
+    if (isValidVectorNumber(lexeme.getString())) {
+      // If it is a valid vector number then append it to the current string and
+      // go to the VALUEVECTORNUMBERED state
+      currentString.append(lexeme.getString());
+      currentState = EvaluatorState::VALUEVECTORNUMBERED;
+      return true;
+    }
+    // Otherwise allow drop-out to produce error
+  } else {
+    if (lexeme.getType() == LexemeType::SINGULARITY) {
+      if (lexeme.getString().length() == 1) {
+        if (isClosingVectorBracket(lexeme.getString()[0])) {
+          // If the lexeme is a closing vector bracket then append the lexeme
+          // to the current string, generate the VALUE token and go to the
+          // IDLE state
+          currentString.append(lexeme.getString());
+          tokens.push_back(Token( TokenType::VALUE,
+                                  currentString,
+                                  currTokenStartFileLineNo,
+                                  currTokenStartFileCharNo));
+          currentString.clear();
+          currentState = EvaluatorState::IDLE;
+          return true;
+        }
+      }
+    }
+  }
+  // If it is not a valid vector number or a closing vector bracket, produce
+  // an error
+  errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                    "Expected number or closing vector bracket - aborting evaluation"),
+                                lexeme.getStartLineNo(),
+                                lexeme.getStartCharNo()));
   return false;
 }
 
@@ -334,6 +380,28 @@ bool Evaluator::valueVectorNumberedProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
+  if (lexeme.getType() == LexemeType::SINGULARITY) {
+    if (lexeme.getString().length() == 1) {
+      if (isClosingVectorBracket(lexeme.getString()[0])) {
+        // If the lexeme is a closing vector bracket then append the lexeme
+        // to the current string, generate the VALUE token and go to the
+        // IDLE state
+        currentString.append(lexeme.getString());
+        tokens.push_back(Token( TokenType::VALUE,
+                                currentString,
+                                currTokenStartFileLineNo,
+                                currTokenStartFileCharNo));
+        currentString.clear();
+        currentState = EvaluatorState::IDLE;
+        return true;
+      }
+    }
+  }
+  // If it is not a closing vector bracket, produce an error
+  errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                    "Expected number or closing vector bracket - aborting evaluation"),
+                                lexeme.getStartLineNo(),
+                                lexeme.getStartCharNo()));
   return false;
 }
 
@@ -341,6 +409,41 @@ bool Evaluator::identifierVectorOpenProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
+  if (lexeme.getType() == LexemeType::IDENTIFIER) {
+    // If the lexeme is an identifier then check if it is a valid vector number
+    if (isValidVectorNumber(lexeme.getString())) {
+      // If it is a valid vector number then append it to the current string and
+      // go to the IDENTIFIERVECTORNUMBERED state
+      currentString.append(lexeme.getString());
+      currentState = EvaluatorState::IDENTIFIERVECTORNUMBERED;
+      return true;
+    }
+    // Otherwise allow drop-out to produce error
+  } else {
+    if (lexeme.getType() == LexemeType::SINGULARITY) {
+      if (lexeme.getString().length() == 1) {
+        if (isClosingVectorBracket(lexeme.getString()[0])) {
+          // If the lexeme is a closing vector bracket then append the lexeme
+          // to the current string, generate the IDENTIFIER token and go to the
+          // IDLE state
+          currentString.append(lexeme.getString());
+          tokens.push_back(Token( TokenType::IDENTIFIER,
+                                  currentString,
+                                  currTokenStartFileLineNo,
+                                  currTokenStartFileCharNo));
+          currentString.clear();
+          currentState = EvaluatorState::IDLE;
+          return true;
+        }
+      }
+    }
+  }
+  // If it is not a valid vector number or a closing vector bracket, produce
+  // an error
+  errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                    "Expected number or closing vector bracket - aborting evaluation"),
+                                lexeme.getStartLineNo(),
+                                lexeme.getStartCharNo()));
   return false;
 }
 
@@ -348,6 +451,28 @@ bool Evaluator::identifierVectorNumberedProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
+  if (lexeme.getType() == LexemeType::SINGULARITY) {
+    if (lexeme.getString().length() == 1) {
+      if (isClosingVectorBracket(lexeme.getString()[0])) {
+        // If the lexeme is a closing vector bracket then append the lexeme
+        // to the current string, generate the IDENTIFIER token and go to the
+        // IDLE state
+        currentString.append(lexeme.getString());
+        tokens.push_back(Token( TokenType::IDENTIFIER,
+                                currentString,
+                                currTokenStartFileLineNo,
+                                currTokenStartFileCharNo));
+        currentString.clear();
+        currentState = EvaluatorState::IDLE;
+        return true;
+      }
+    }
+  }
+  // If it is not a closing vector bracket, produce an error
+  errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                    "Expected number or closing vector bracket - aborting evaluation"),
+                                lexeme.getStartLineNo(),
+                                lexeme.getStartCharNo()));
   return false;
 }
 
@@ -401,6 +526,19 @@ void Evaluator::resetToStartState() {
   currentString.clear();
   currTokenStartFileLineNo = 0;
   currTokenStartFileCharNo = 0;
+}
+
+/// Checks if the string is a valid vector number (all digits, nothing else)
+bool Evaluator::isValidVectorNumber(std::string str) {
+  if (str.empty()) {
+    return false;
+  }
+  for (std::string::iterator itr = str.begin(); itr != str.end(); ++itr) {
+    if (!isdigit(*itr)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /// Appends the string "EVALUATOR ERROR: " to the front of the string to indicate the module raising the error

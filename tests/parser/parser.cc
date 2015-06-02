@@ -27,6 +27,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "identifier1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "identifier2");
@@ -43,6 +44,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "identifier1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "va.lue");
@@ -59,6 +61,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "identifier1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "a string");
@@ -82,6 +85,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "a string 1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "identifier2");
@@ -98,6 +102,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "a string 1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "va.lue");
@@ -114,6 +119,7 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
         THEN("ParsePair should return this pair successfully") {
           pair = parser.parsePair(tokens, tokenItr, errors);
 
+          CHECK(errors.empty());
           CHECK(pair.first == "a string 1");
           REQUIRE(pair.second != 0);
           CHECK(pair.second->value == "a string 2");

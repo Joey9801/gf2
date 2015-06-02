@@ -64,6 +64,10 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   Bind(wxEVT_BUTTON, &OutputPlot::OnSkipButton, this, ID_SkipSim);
   _plotcanvas->Bind(wxEVT_MOUSEWHEEL, &OutputPlot::OnMousewheel, this);
   _canvasscrollbar->Bind(wxEVT_SCROLL_THUMBTRACK, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_PAGEUP, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_PAGEDOWN, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_LINEUP, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_LINEDOWN, &OutputPlot::OnScroll, this);
   bitwidth = 32.0;
 
   _liveSimulationTimer = new wxTimer(this, -1);
@@ -91,11 +95,18 @@ void OutputPlot::refresh(void) {
   LOG_DEBUG << _canvasscrollbar->GetRange();
   LOG_DEBUG << _monitor->maxTime*bitwidth;
   LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
+
   _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
-      GetSize().x,
+      _plotcanvas->GetSize().x / bitwidth,
+      (_monitor->maxTime+1),
+      GetSize().x / bitwidth);
+  /*
+  _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
+      _plotcanvas->GetSize().x,
       (_monitor->maxTime+1)*bitwidth,
       GetSize().x);
-  _plotcanvas->Render(_canvasscrollbar->GetThumbPosition() / bitwidth, bitwidth);
+      */
+  _plotcanvas->Render(_canvasscrollbar->GetThumbPosition(), bitwidth);
   return;
 }
 
@@ -114,7 +125,8 @@ void OutputPlot::OnLiveSimulationStep(wxTimerEvent& event)
   _network->step();
 
   refresh();
-  _canvasscrollbar->SetThumbPosition(_canvasscrollbar->GetRange()-_canvasscrollbar->GetThumbSize());
+  //_canvasscrollbar->SetThumbPosition(_canvasscrollbar->GetRange()-_canvasscrollbar->GetThumbSize());
+  _canvasscrollbar->SetThumbPosition(_canvasscrollbar->GetRange());
 
   return;
 }
@@ -227,7 +239,8 @@ void PlotCanvas::drawAxis(unsigned int xpos, float bitwidth) {
     glVertex2f(GetSize().x-5.0, yzero*0.5);
   glEnd();
   //draw tickmarks
-  for(float x = xzero; x<GetSize().x-15.0; x+=bitwidth){
+  float tickspacing = (bitwidth > 10 ? bitwidth : bitwidth * 10);
+  for(float x = xzero + tickspacing - (xpos%(int)tickspacing); x<GetSize().x-15.0; x+=tickspacing){
     glBegin(GL_LINE_STRIP);
       glVertex2f(x, yzero*0.7);
       glVertex2f(x, yzero*0.3);

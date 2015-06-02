@@ -50,6 +50,21 @@ bool Evaluator::processLexeme(Lexeme& lexeme,
     case EvaluatorState::MEMBERACCESSEDIDENTIFIER: {
       return memberAccessedIdentifierProcessLexeme(lexeme, errors, tokens);
     }
+    case EvaluatorState::VALUE: {
+      return valueProcessLexeme(lexeme, errors, tokens);
+    }
+    case EvaluatorState::VALUEVECTOROPEN: {
+      return valueVectorOpenProcessLexeme(lexeme, errors, tokens);
+    }
+    case EvaluatorState::VALUEVECTORNUMBERED: {
+      return valueVectorNumberedProcessLexeme(lexeme, errors, tokens);
+    }
+    case EvaluatorState::IDENTIFIERVECTOROPEN: {
+      return identifierVectorOpenProcessLexeme(lexeme, errors, tokens);
+    }
+    case EvaluatorState::IDENTIFIERVECTORNUMBERED: {
+      return identifierVectorNumberedProcessLexeme(lexeme, errors, tokens);
+    }
   }
   // Return false, as something has gone wrong with currentState
   return false;
@@ -274,14 +289,9 @@ bool Evaluator::memberAccessedIdentifierProcessLexeme(
                             std::vector<Token>& tokens) {
   if (lexeme.getType() == LexemeType::IDENTIFIER) {
     // If the lexeme is an IDENTIFIER lexeme then append the identifier to the
-    // current string, generate the VALUE token and go to the IDLE state
+    // current string and go to the VALUE state
     currentString.append(lexeme.getString());
-    tokens.push_back(Token( TokenType::VALUE,
-                            currentString,
-                            currTokenStartFileLineNo,
-                            currTokenStartFileCharNo));
-    currentString.clear();
-    currentState = EvaluatorState::IDLE;
+    currentState = EvaluatorState::VALUE;
     return true;
   } else {
     // Add an error - the passed lexeme is not an IDENTIFIER lexeme but should
@@ -294,6 +304,41 @@ bool Evaluator::memberAccessedIdentifierProcessLexeme(
     // is no way to work out which state the evaluator should be in
     return false;
   }
+}
+
+bool Evaluator::valueProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens) {
+  return false;
+}
+
+bool Evaluator::valueVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens) {
+  return false;
+}
+
+bool Evaluator::valueVectorNumberedProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens) {
+  return false;
+}
+
+bool Evaluator::identifierVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens) {
+  return false;
+}
+
+bool Evaluator::identifierVectorNumberedProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens) {
+  return false;
 }
 
 /// Processes the end of the lexemes as an input to the evaluator state machine
@@ -317,6 +362,24 @@ void Evaluator::processEndOfLexemes(std::vector<ParserError>& errors,
       // of the file
       errors.push_back(ParserError( addEvaluatorErrorPrefix(
                                         "Premature end of file - expected identifier after member access operator")));
+      break;
+    }
+    case EvaluatorState::VALUE: {
+      // Generate the VALUE token from the value
+      tokens.push_back(Token( TokenType::VALUE,
+                              currentString,
+                              currTokenStartFileLineNo,
+                              currTokenStartFileCharNo));
+      break;
+    }
+    case EvaluatorState::VALUEVECTOROPEN:
+    case EvaluatorState::VALUEVECTORNUMBERED:
+    case EvaluatorState::IDENTIFIERVECTOROPEN:
+    case EvaluatorState::IDENTIFIERVECTORNUMBERED: {
+      // Add an error - should have a vector closing bracket (at least) before
+      // the end of the file
+      errors.push_back(ParserError(addEvaluatorErrorPrefix(
+        "Premature end of file - expected vector closing bracket")));
       break;
     }
   }

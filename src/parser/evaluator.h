@@ -23,10 +23,31 @@ enum class EvaluatorState : char {
                                     identifier lexeme has been read in, but it
                                     is not yet known whether this is the value
                                     in its entirety */
-  MEMBERACCESSEDIDENTIFIER    /*!<  The "member accessed identifier" state -
+  MEMBERACCESSEDIDENTIFIER,   /*!<  The "member accessed identifier" state -
                                     a single identifier was immediately
                                     followed by a . character, so a second
                                     identifier is expected immediately */
+  VALUE,                      /*!<  The "value" state - the previous lexeme
+                                    potentially completed a value token but
+                                    there could still be a vector opening
+                                    bracket to come */
+  VALUEVECTOROPEN,            /*!<  The "value vector open" state - the previous
+                                    lexeme was a vector opening bracket and came
+                                    after a potentially complete value token */
+  VALUEVECTORNUMBERED,        /*!<  The "value vector numbered" state - the
+                                    previous lexeme was an identifier which
+                                    represents a number and came after a value
+                                    token with a vector opening bracket on the
+                                    end */
+  IDENTIFIERVECTOROPEN,       /*!<  The "identifier vector open" state - the
+                                    previous lexeme was a vector opening bracket
+                                    and came after a potentially complete
+                                    identifier token */
+  IDENTIFIERVECTORNUMBERED    /*!<  The "identifier vector numbered" state - the
+                                    previous lexeme was an identifier which
+                                    represents a number and came after an
+                                    identifier token with a vector opening
+                                    bracket on the end */
 };
 
 /// Circuit definition file evaluator class
@@ -55,6 +76,30 @@ class Evaluator {
                             std::vector<Token>& tokens);
 
    bool memberAccessedIdentifierProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool valueProcessLexeme( Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool valueVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool valueVectorNumberedProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool identifierVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool identifierVectorNumberedProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens);

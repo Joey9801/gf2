@@ -37,9 +37,6 @@ bool MyApp::OnInit()
     if ( !wxApp::OnInit() )
         return false;
 
-    static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
-    plog::init(plog::debug, &consoleAppender);
-
     if ( _lang == wxLANGUAGE_UNKNOWN )
         _lang = wxLANGUAGE_DEFAULT;
 

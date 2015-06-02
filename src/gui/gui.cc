@@ -220,14 +220,22 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     try {
       net = Builder::buildRoot( CurrentNetfilePath.ToStdString() );
     }
-    catch(...) {
-      LOG_ERROR << "Failed to build the network";
+    catch(ErrorList * e) {
+      LOG_DEBUG << "Caught an errorlist pointer from the network builder";
+      _errorList = e;
+      ShowErrors();
       return;
     }
-    LOG_DEBUG << "Network built successfully";
+    catch(...) {
+      LOG_ERROR << "Caught an unknown exception from the network builder";
+      return;
+    }
+    LOG_INFO << "Network built successfully";
+    _errorList = net->errorList;
 
     delete _network;
     delete _monitor;
+
     _network = net;
     _monitor = net->getMonitor();
     _network->setMonitor(_monitor);
@@ -250,8 +258,16 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
   return;
 }
 
+
 void MyFrame::OnShowErrors(wxCommandEvent& event) {
+  ShowErrors();
+}
+
+void MyFrame::ShowErrors(void) {
   ErrorDialog* dlg = new ErrorDialog(this, -1, _("Errors and Warnings"));
+
+  dlg->setErrorList(_errorList);
+  dlg->showErrorList();
 
   // Creates a "open file" dialog
   if (dlg->ShowModal() == wxID_OK) { // if the user click "Open" instead of "Cancel"

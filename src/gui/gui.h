@@ -25,15 +25,8 @@
 #include "../simulator/rootnetwork.h"
 #include "../simulator/monitor.h"
 #include "../parser/builder.h"
+#include "../errors/error.h"
 
-/*
-class MyApp: public wxApp
-{
-  public:
-    bool OnInit(); //automatically called when the application starts
-  private:
-};
-*/
 class MyApp: public wxApp
 {
 public:
@@ -80,6 +73,7 @@ class MyFrame: public wxFrame
 
     RootNetwork * _network;
     Monitor * _monitor;
+    ErrorList * _errorList;
 
     NetworkView *_netview;
     ComponentView *_compview;
@@ -90,6 +84,7 @@ class MyFrame: public wxFrame
 
     void OnLoadNetwork(wxCommandEvent& event);
     void OnShowErrors(wxCommandEvent& event);
+    void ShowErrors(void);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnCompSelect(wxTreeEvent& event);

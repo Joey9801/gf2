@@ -10,6 +10,7 @@
 
 #include "lexor.h"
 #include "../structures/definition.h"
+#include "../errors/error.h"
 
 /// Circuit definition file parser class
 /*! Uses a lexor to obtain all the tokens from a source file, and then parses

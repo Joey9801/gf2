@@ -8,8 +8,8 @@ std::string GF2Error::formatError(void) {
   return name + ": " + detail;
 }
 
-std::string ParseError::formatError(void) {
-  return name + ": " + detail + " in file " + location.file;
+std::string BuildError::formatError(void) {
+  return name + ": " + detail + "<br>    In file " + location.file + "<br>";
 }
 
 ErrorList::ErrorList() :
@@ -35,6 +35,13 @@ void ErrorList::addError(const GF2Error& e) {
 void ErrorList::addList(const ErrorList& e) {
   _errors.insert(_errors.end(), e._errors.begin(), e._errors.end());
   _recoverable = _recoverable & e._recoverable;
+
+  return;
+}
+
+void ErrorList::addList(ErrorList * e) {
+  _errors.insert(_errors.end(), e->_errors.begin(), e->_errors.end());
+  _recoverable = _recoverable & e->_recoverable;
 
   return;
 }

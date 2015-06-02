@@ -2,7 +2,19 @@
 
 namespace Builder {
   RootNetwork * buildRoot(std::string filepath) {
-    Network * net = build(filepath);
+    Network * net = new Network();
+    try {
+      net = build(filepath);
+    }
+    catch(ErrorList * e) {
+      if(not e->recoverable())
+        throw;
+    }
+    catch(...) {
+      LOG_ERROR << "Builder threw an unexpected error on " << filepath;
+      throw;
+    }
+
 
     RootNetwork * rnet;
     rnet = new RootNetwork(net);
@@ -11,35 +23,62 @@ namespace Builder {
     try {
       createMonitorPoints(rnet);
     }
-    catch(const ErrorList& e) {
-      rnet->errorList.addList(e);
-      if(not rnet->errorList.recoverable())
-        throw;
+    catch(ErrorList * e) {
+      rnet->errorList->addList(e);
+      if(not rnet->errorList->recoverable())
+        throw &rnet->errorList;
     }
 
     try {
       setInitialInputs(rnet);
     }
-    catch(const ErrorList& e) {
-      rnet->errorList.addList(e);
-      if(not rnet->errorList.recoverable())
-        throw;
+    catch(ErrorList * e) {
+      rnet->errorList->addList(e);
+      if(not rnet->errorList->recoverable())
+        throw &rnet->errorList;
     }
 
     return rnet;
   }
+
   Network * build(std::string filepath) {
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
     Network * net;
     Definition * def;
     Parser parser;
     std::vector<ParserError> errors;
 
+    static unsigned int depth = 0;
+    depth++;
+    if(depth > 100) {
+      BuildError * e = new BuildError();
+      e->name = "BuildError";
+      e->detail = "Include depth limit (100) reached. Have you accidentally included a file in itself?";
+      e->recoverable = false;
+      e->location.file = filepath;
+      errorList->addError(e);
+      throw errorList;
+    }
+
+
     try {
       def = parser.parse(filepath, errors);
-    }
-    catch(const ErrorList& e) {
-      throw;
+      if(errors.size() > 0) {
+        for(std::vector<ParserError>::iterator it = errors.begin();
+            it != errors.end();
+            it++) {
+          ParseError * e = new ParseError();
+          e->name = "ParseError";
+          e->detail = it->formatError();
+          e->location.file = filepath;
+          e->location.line = it->getLineNo();
+          e->location.column = it->getCharNo();
+          e->recoverable = false;
+
+          errorList->addError(e);
+        }
+        throw errorList;
+      }
     }
     catch(...) {
       LOG_ERROR << "Parsing \"" << filepath << "\" caused an unrecoverable error";
@@ -50,10 +89,10 @@ namespace Builder {
     try {
       net = buildNetwork(def);
     }
-    catch(const ErrorList& e) {
+    catch(ErrorList * e) {
       LOG_ERROR << "Encountered unrecoverable errorList while parsing \"" << filepath << "\"";
 
-      std::vector<std::string> errors = errorList.formatErrors();
+      std::vector<std::string> errors = errorList->formatErrors();
       for(std::vector<std::string>::iterator it = errors.begin();
           it != errors.end();
           it++) {
@@ -65,13 +104,14 @@ namespace Builder {
       throw;
     }
 
+    depth--;
     return net;
   }
 
   Network * buildNetwork(Definition * def) {
     LOG_VERBOSE << "Building network";
 
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
     Network * net = new Network();
     net->setDefinition(def);
 
@@ -81,9 +121,9 @@ namespace Builder {
     try {
       makeIncludes(def, includes);
     }
-    catch(const ErrorList& e) {
-      errorList.addList(e);
-      if(not errorList.recoverable()) {
+    catch(ErrorList * e) {
+      errorList->addList(e);
+      if(not errorList->recoverable()) {
         throw errorList;
       }
     }
@@ -93,9 +133,9 @@ namespace Builder {
     try {
       addIO(net, def);
     }
-    catch(const ErrorList& e) {
-      errorList.addList(e);
-      if(not errorList.recoverable()) {
+    catch(ErrorList * e) {
+      errorList->addList(e);
+      if(not errorList->recoverable()) {
         throw errorList;
       }
     }
@@ -104,9 +144,9 @@ namespace Builder {
     try {
       addComponents(net, def, includes);
     }
-    catch(const ErrorList& e) {
-      errorList.addList(e);
-      if(not errorList.recoverable()) {
+    catch(ErrorList * e) {
+      errorList->addList(e);
+      if(not errorList->recoverable()) {
         throw errorList;
       }
     }
@@ -115,9 +155,9 @@ namespace Builder {
     try {
       configureComponents(net, def);
     }
-    catch(const ErrorList& e) {
-      errorList.addList(e);
-      if(not errorList.recoverable()) {
+    catch(ErrorList * e) {
+      errorList->addList(e);
+      if(not errorList->recoverable()) {
         throw errorList;
       }
     }
@@ -126,15 +166,15 @@ namespace Builder {
     try {
       connectComponents(net, def);
     }
-    catch(const ErrorList& e) {
-      errorList.addList(e);
-      if(not errorList.recoverable()) {
+    catch(ErrorList * e) {
+      errorList->addList(e);
+      if(not errorList->recoverable()) {
         throw errorList;
       }
     }
 
-    if(errorList.anyErrors()) {
-      std::vector<std::string> errors = errorList.formatErrors();
+    if(errorList->anyErrors()) {
+      std::vector<std::string> errors = errorList->formatErrors();
       for(std::vector<std::string>::iterator it = errors.begin();
           it != errors.end();
           it++) {
@@ -142,6 +182,7 @@ namespace Builder {
       }
     }
 
+    net->errorList = errorList;
     return net;
   }
 
@@ -166,26 +207,38 @@ namespace Builder {
     //for_each(element in def inputs/outputs)
     //  net->addInput/addOutput
 
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
 
     if( def->pairs.find("inputs") != def->pairs.end() ) {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
           it != def->pairs["inputs"]->pairs.end();
           it++) {
-        if((it->first.find_first_of('[') != std::string::npos)
-            and (it->first.find_first_of(']') != std::string::npos))
-          net->addVectorInput( it->first );
-        else
-          net->addInput( it->first );
+        try {
+          if((it->first.find_first_of('[') != std::string::npos)
+              and (it->first.find_first_of(']') != std::string::npos))
+            net->addVectorInput( it->first );
+          else
+            net->addInput( it->first );
+        }
+        catch(GF2Error& err) {
+          LOG_DEBUG;
+          BuildError * e = new BuildError();
+          e->name = "Duplicated input";
+          e->detail = "Network input \"" + it->first + "\" is declared multiple times";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+        }
+
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"inputs\" is missing";
       e->location.file = def->filepath;
       e->recoverable = true;
-      errorList.addError(e);
+      errorList->addError(e);
     }
 
     if( def->pairs.find("outputs") != def->pairs.end() ) {
@@ -193,20 +246,30 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        if((it->first.find_first_of('[') != std::string::npos)
-            and (it->first.find_first_of(']') != std::string::npos))
-          net->addVectorOutput( it->first );
-        else
-          net->addOutput( it->first );
+        try {
+          if((it->first.find_first_of('[') != std::string::npos)
+              and (it->first.find_first_of(']') != std::string::npos))
+            net->addVectorOutput( it->first );
+          else
+            net->addOutput( it->first );
+        }
+        catch(GF2Error& err) {
+          BuildError * e = new BuildError();
+          e->name = "Duplicated input";
+          e->detail = "Network input \"" + it->first + "\" is declared multiple times";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+        }
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"outputs\" is missing";
       e->location.file = def->filepath;
       e->recoverable = true;
-      errorList.addError(e);
+      errorList->addError(e);
     }
 
     throw errorList;
@@ -217,15 +280,15 @@ namespace Builder {
     //for_each(component_nickname in def)
     //  net->addComponent
 
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
 
     if( def->pairs.find("components") == def->pairs.end() ) {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"components\" is missing";
       e->location.file = def->filepath;
       e->recoverable = false;
-      errorList.addError(e);
+      errorList->addError(e);
       throw errorList;
     }
     for(std::map<std::string, Definition*>::iterator it = def->pairs["components"]->pairs.begin();
@@ -233,12 +296,12 @@ namespace Builder {
         it++) {
 
       if(it->second->pairs.find("type") == it->second->pairs.end()) {
-        ParseError * e = new ParseError();
+        BuildError * e = new BuildError();
         e->name = "Field is missing";
         e->detail = "Component \"type\" field is missing";
         e->location.file = def->filepath;
         e->recoverable = false;
-        errorList.addError(e);
+        errorList->addError(e);
         throw errorList;
       }
 
@@ -256,8 +319,12 @@ namespace Builder {
         }
       }
       catch(GF2Error& e) {
-        GF2Error * err = new GF2Error(e);
-        errorList.addError(err);
+        BuildError * e = new BuildError();
+        e->name = "Unknown component type";
+        e->detail = "\"" + type +  "\" is not a known component type or include";
+        e->location.file = def->filepath;
+        e->recoverable = false;
+        errorList->addError(e);
         throw errorList;
       }
     }
@@ -266,7 +333,7 @@ namespace Builder {
   }
 
   void configureComponents(Network * net, Definition * def) {
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
 
     for(std::map<std::string, Definition*>::iterator it1 = def->pairs["components"]->pairs.begin();
         it1 != def->pairs["components"]->pairs.end();
@@ -277,14 +344,7 @@ namespace Builder {
         for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["config"]->pairs.begin();
             it2 != it1->second->pairs["config"]->pairs.end();
             it2++) {
-          try {
-            net->configureComponent( it1->first, it2->first, it2->second->value );
-          }
-          catch(const GF2Error& e) {
-            errorList.addError(e);
-            if(not errorList.recoverable())
-              throw;
-          }
+          net->configureComponent( it1->first, it2->first, it2->second->value );
         }
       }
     }
@@ -298,12 +358,12 @@ namespace Builder {
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Field is missing";
       e->detail = "\"config\" field is missing";
       e->location.file = def->filepath;
       e->recoverable = true;
-      errorList.addError(e);
+      errorList->addError(e);
     }
 
 
@@ -316,7 +376,7 @@ namespace Builder {
     //  for_each(input in component_inputs)
     //    connect the input to the thing
 
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
     LOG_VERBOSE << "Connecting outputs";
     if( def->pairs.find("outputs") != def->pairs.end() ) {
       //Connect any outputs
@@ -337,25 +397,44 @@ namespace Builder {
             try {
               net->connect(dest.first, dest.second, "outputs", ss.str());
             }
-            catch(const GF2Error& e) {
-              errorList.addError(e);
-              if(not errorList.recoverable())
-                throw errorList;
+            catch(const GF2Error& err) {
+              LOG_DEBUG;
+              BuildError * e = new BuildError();
+              e->name = "Connection Error";
+              e->detail = "Connecting  outputs." + ss.str() + " to " + dest.first + "." + dest.second;
+              e->detail += "<br>" + err.detail;
+              e->location.file = def->filepath;
+              e->recoverable = false;
+              errorList->addError(e);
+              throw errorList;
             }
           }
         }
         else {
           std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
-          net->connect(dest.first, dest.second, "outputs", it->first);
+          try {
+            net->connect(dest.first, dest.second, "outputs", it->first);
+          }
+          catch(const GF2Error& err) {
+            LOG_DEBUG;
+            BuildError * e = new BuildError();
+            e->name = "Connection Error";
+            e->detail = "Connecting  outputs." + it->first + " to " + dest.first + "." + dest.second;
+            e->detail += "<br>" + err.detail;
+            e->location.file = def->filepath;
+            e->recoverable = false;
+            errorList->addError(e);
+            throw errorList;
+          }
         }
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Field is missing";
       e->detail = "\"config\" field is missing";
       e->recoverable = true;
-      errorList.addError(e);
+      errorList->addError(e);
     }
 
     LOG_VERBOSE << "Connecting components";
@@ -385,10 +464,15 @@ namespace Builder {
           try {
             net->connect( source.first, pinOut, it1->first, pinIn );
           }
-          catch(const GF2Error& e) {
-            errorList.addError(e);
-            if(not errorList.recoverable())
-              throw errorList;
+          catch(const GF2Error& err) {
+            BuildError * e = new BuildError();
+            e->name = "Connection Error";
+            e->detail = "Connecting " + it1->first + "."  + pinIn + " to " + source.first + "." + source.second;
+            e->detail += "<br>" + err.detail;
+            e->location.file = def->filepath;
+            e->recoverable = false;
+            errorList->addError(e);
+            throw errorList;
           }
         }
       }
@@ -398,7 +482,7 @@ namespace Builder {
   }
 
   void createMonitorPoints(RootNetwork * rnet) {
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
     Definition * def = rnet->getDefinition();
 
     if(def->pairs.find("monitor") != def->pairs.end()) {
@@ -416,8 +500,8 @@ namespace Builder {
           rnet->getMonitor()->renamePoint(pointId, it->first);
         }
         catch(const GF2Error& e) {
-          errorList.addError(e);
-          if(not errorList.recoverable())
+          errorList->addError(e);
+          if(not errorList->recoverable())
             throw errorList;
         }
       }
@@ -427,7 +511,7 @@ namespace Builder {
   }
 
   void setInitialInputs(RootNetwork * rnet) {
-    ErrorList errorList;
+    ErrorList * errorList = new ErrorList();;
     Definition * def = rnet->getDefinition();
 
     if(def->pairs.find("inputs") != def->pairs.end()) {
@@ -436,10 +520,14 @@ namespace Builder {
           it++) {
         if((it->first.find_first_of('[') != std::string::npos)
             and (it->first.find_first_of(']') != std::string::npos)) {
-          // Handle vector input
+          //Handle vectors
+          std::string name = it->first.substr(0, it->first.find_first_of('['));
+          rnet->setDefaultVectorInput(name, (it->second->value=="true") );
         }
         else {
-          // Handle regular input
+          //Regular inputs
+          rnet->setInput(it->first, (it->second->value=="true") );
+          rnet->setDefaultInput(it->first, (it->second->value=="true") );
         }
       }
     }

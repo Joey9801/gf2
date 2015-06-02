@@ -31,9 +31,13 @@ RootNetwork::RootNetwork(Network * net)
   _time = 0;
   _rate = net->_rate;
   _async = net->_async;
+
+  errorList = net->errorList;
 }
 
-RootNetwork::~RootNetwork() {}
+RootNetwork::~RootNetwork() {
+  LOG_DEBUG;
+}
 
 void RootNetwork::step(void) {
   LOG_VERBOSE;
@@ -87,6 +91,38 @@ void RootNetwork::setInput(std::string inputName, bool value) {
   setInput(inputId, value);
   return;
 }
+void RootNetwork::setDefaultInput(unsigned int inputId, bool value) {
+  _defaultInputVals[inputId] = value;
+  return;
+}
+void RootNetwork::setDefaultInput(std::string inputName, bool value) {
+  if(_pinInMap.find(inputName) == _pinInMap.end()) {
+    // TODO raise an error
+    throw 1;
+  }
+  unsigned int inputId = _pinInMap[inputName];
+  setDefaultInput(inputId, value);
+  return;
+}
+
+void RootNetwork::setDefaultVectorInput(std::string signature, bool value) {
+
+  std::string inputName = signature.substr(0, signature.find_first_of('['));
+
+  if(not isInputVector(inputName))
+    return;
+
+  unsigned int size = _inputVectors[inputName];
+  std::stringstream ss;
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << inputName << "[" << i << "]";
+    setDefaultInput(ss.str(), value);
+  }
+
+  return;
+}
+
 bool RootNetwork::getInput(unsigned int inputId) {
   return _inputVals[inputId];
 }
@@ -173,5 +209,21 @@ void RootNetwork::removeMonitorPoint(std::vector<std::string>& signature) {
     }
   }
   Network::removeMonitorPoint(signature, 0);
+  return;
+}
+
+void RootNetwork::Reset()
+{
+  for(unsigned int i=2; i<_components.size(); i++){
+    _components[i]->Reset();
+  }
+
+  _nodesA.assign(_nodesA.size(), false);
+  _nodesB.assign(_nodesB.size(), false);
+
+  for(unsigned int i=0; i < _inputs.size(); i++)
+    setInput(i, _defaultInputVals[i]);
+
+  _time = 0;
   return;
 }

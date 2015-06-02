@@ -6,6 +6,7 @@
 #define PARSERERROR_H_
 
 #include <string>
+#include <sstream>
 
 /// Contains information about a parser error
 /*! Stores the error message associated with a particular parser error and a
@@ -23,6 +24,8 @@ class ParserError {
   unsigned long long int getLineNo();
    
   unsigned long long int getCharNo();
+
+  std::string formatError(void);
 
  private:
   std::string errorDesc;  ///<  The error message for this error

@@ -200,64 +200,71 @@ bool Evaluator::singleIdentifierProcessLexeme(
       if ((lexeme.getType() == LexemeType::SINGULARITY) && 
           (lexeme.getString().length() == 1)) {
         char singularityChar = lexeme.getString()[0];
-        if (isOpeningDictDelim(singularityChar) ||
-            isClosingDictDelim(singularityChar) ||
-            isDictSeparator(singularityChar)    ||
-            isPairSeparator(singularityChar)) {
-          // Generate the IDENTIFIER token for the previous lexeme
-          tokens.push_back(Token( TokenType::IDENTIFIER,
-                                  currentString,
-                                  currTokenStartFileLineNo,
-                                  currTokenStartFileCharNo));
-          currentString.clear();
-          // Set type to VALUE so that it can be tested for change
-          TokenType type = TokenType::VALUE;
-          if (isOpeningDictDelim(singularityChar)) {
-            type = TokenType::DICTDELIMOPEN;
-          } else {
-            if (isClosingDictDelim(singularityChar)) {
-              type = TokenType::DICTDELIMCLOSE;
+        if (isOpeningVectorBracket(singularityChar)) {
+          // If the lexeme is an opening vector bracket then append the lexeme
+          // to the current string and go to the IDENTIFIERVECTOROPEN state
+          currentState = EvaluatorState::IDENTIFIERVECTOROPEN;
+          currentString.append(lexeme.getString());
+        } else {
+          if (isOpeningDictDelim(singularityChar) ||
+              isClosingDictDelim(singularityChar) ||
+              isDictSeparator(singularityChar)    ||
+              isPairSeparator(singularityChar)) {
+            // Generate the IDENTIFIER token for the previous lexeme
+            tokens.push_back(Token( TokenType::IDENTIFIER,
+                                    currentString,
+                                    currTokenStartFileLineNo,
+                                    currTokenStartFileCharNo));
+            currentString.clear();
+            // Set type to VALUE so that it can be tested for change
+            TokenType type = TokenType::VALUE;
+            if (isOpeningDictDelim(singularityChar)) {
+              type = TokenType::DICTDELIMOPEN;
             } else {
-              if (isDictSeparator(singularityChar)) {
-                type = TokenType::DICTSEPARATOR;
+              if (isClosingDictDelim(singularityChar)) {
+                type = TokenType::DICTDELIMCLOSE;
               } else {
-                if (isPairSeparator(singularityChar)) {
-                  type = TokenType::PAIRSEPARATOR;
+                if (isDictSeparator(singularityChar)) {
+                  type = TokenType::DICTSEPARATOR;
+                } else {
+                  if (isPairSeparator(singularityChar)) {
+                    type = TokenType::PAIRSEPARATOR;
+                  }
                 }
               }
             }
-          }
-          // If type has been changed then create token, otherwise generate an
-          // error and abort evaluation
-          if (type == TokenType::VALUE) {
-            // Control should never reach here, but it is here for safety
-            // just in case
-            errors.push_back(ParserError( addEvaluatorErrorPrefix(
-                                              "A SINGULARITY lexeme with mismatched string and type was sent - aborting evaluation"),
-                                          lexeme.getStartLineNo(),
-                                          lexeme.getStartCharNo()));
-            return false;
+            // If type has been changed then create token, otherwise generate an
+            // error and abort evaluation
+            if (type == TokenType::VALUE) {
+              // Control should never reach here, but it is here for safety
+              // just in case
+              errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                                "A SINGULARITY lexeme with mismatched string and type was sent - aborting evaluation"),
+                                            lexeme.getStartLineNo(),
+                                            lexeme.getStartCharNo()));
+              return false;
+            } else {
+              tokens.push_back(Token( type,
+                                      lexeme.getString(),
+                                      lexeme.getStartLineNo(),
+                                      lexeme.getStartCharNo()));
+              currentState = EvaluatorState::IDLE;
+            }
           } else {
-            tokens.push_back(Token( type,
-                                    lexeme.getString(),
-                                    lexeme.getStartLineNo(),
-                                    lexeme.getStartCharNo()));
-            currentState = EvaluatorState::IDLE;
-          }
-        } else {
-          if (isMemberAccessOperator(singularityChar)) {
-            // If the lexeme is the member access operator then append it to
-            // the current string and go to the MEMBERACCESSEDIDENTIFIER state
-            currentString.append(lexeme.getString());
-            currentState = EvaluatorState::MEMBERACCESSEDIDENTIFIER;
-          } else {
-            // If the lexeme is any other singularity then generate an error
-            // and abort evaluation as the next state is undefined
-            errors.push_back(ParserError( addEvaluatorErrorPrefix(
-                                              "Unexpected character - possible mis-typed delimiter, separator, member access operator or identifier - aborting evaluation"),
-                                          lexeme.getStartLineNo(),
-                                          lexeme.getStartCharNo()));
-            return false;
+            if (isMemberAccessOperator(singularityChar)) {
+              // If the lexeme is the member access operator then append it to
+              // the current string and go to the MEMBERACCESSEDIDENTIFIER state
+              currentString.append(lexeme.getString());
+              currentState = EvaluatorState::MEMBERACCESSEDIDENTIFIER;
+            } else {
+              // If the lexeme is any other singularity then generate an error
+              // and abort evaluation as the next state is undefined
+              errors.push_back(ParserError( addEvaluatorErrorPrefix(
+                                                "Unexpected character - possible mis-typed delimiter, separator, member access operator or identifier - aborting evaluation"),
+                                            lexeme.getStartLineNo(),
+                                            lexeme.getStartCharNo()));
+              return false;
+            }
           }
         }
       } else {

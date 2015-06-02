@@ -30,6 +30,10 @@ bool isPairSeparator(const char ch);
 
 bool isMemberAccessOperator(const char ch);
 
+bool isOpeningVectorBracket(const char ch);
+
+bool isClosingVectorBracket(const char ch);
+
 bool isValidCharacter(const char ch);
 
 #endif // CHARCHECK_H_

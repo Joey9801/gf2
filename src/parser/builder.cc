@@ -2,7 +2,10 @@
 
 namespace Builder {
   Network * build(std::string filepath) {
-    Definition * def = Parser::parseDefinition(filepath);
+    Parser parser;
+    std::vector<ParserError> errors;
+
+    Definition * def = parser.parse(filepath, errors);
 
     Network * net = buildNetwork(def);
 

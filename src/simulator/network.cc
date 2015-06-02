@@ -22,7 +22,9 @@ Network::Network(void) :
   _componentNames["outputs"] = 1;
 }
 
-Network::~Network() {}
+Network::~Network() {
+  LOG_DEBUG;
+}
 
 //returns componentId
 unsigned int Network::addComponent(std::string type) {

@@ -8,7 +8,11 @@ namespace Parser {
     std::ifstream stream(filepath);
     if( not stream.good() ) {
       std::cerr << "failed to open file" << std::endl;
-      throw 1;
+      ErrorList * el = new ErrorList();
+      ParseError e;
+      e.name = "Failed to open file";
+      el->addError(e);
+      throw el;
     }
 
     char c;
@@ -19,7 +23,11 @@ namespace Parser {
     else {
       //Don't panic Pike
       std::cerr << "Initial { not found" << std::endl;
-      throw 1;
+      ErrorList * el = new ErrorList();
+      ParseError e;
+      e.name = "Initial { not found";
+      el->addError(e);
+      throw el;
     }
 
     return def;
@@ -44,7 +52,11 @@ namespace Parser {
       else {
         //Panic, it's all gone to shits
         std::cerr << "not a , or the end of a dict D:" << std::endl;
-        throw 1;
+        ErrorList * el = new ErrorList();
+        ParseError e;
+        e.name = "not a , or the end of a dict D:";
+        el->addError(e);
+        throw el;
       }
     }
     return def;
@@ -61,7 +73,11 @@ namespace Parser {
     if(c != ':') {
       //panic, everything's going wrong
       std::cerr << "no colon in a pair" << std::endl;
-      throw 1;
+      ErrorList * el = new ErrorList();
+      ParseError e;
+      e.name = "no colon in a pair";
+      el->addError(e);
+      throw el;
     }
 
     stream >> c;
@@ -90,7 +106,11 @@ namespace Parser {
         if( stream.eof() ) {
           //Panic, it's all gone to shits
           std::cerr << "Reached end of file while reading string" << std::endl;
-          throw 1;
+          ErrorList * el = new ErrorList();
+          ParseError e;
+          e.name = "Reached end of file while reading string";
+          el->addError(e);
+          throw el;
         }
       }
     }

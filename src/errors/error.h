@@ -39,6 +39,7 @@ class ErrorList {
     void addError(GF2Error * e);
     void addError(const GF2Error& e);
     void addList(const ErrorList& e);
+    void addList(ErrorList * e);
     bool recoverable(void);
 
     bool anyErrors(void);

@@ -9,6 +9,7 @@
 #include <cctype>
 
 #include "../structures/definition.h"
+#include "../errors/error.h"
 
 namespace Parser {
   const std::vector<char> delimiters = {'{', '}', ':', ','};

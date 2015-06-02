@@ -39,6 +39,13 @@ void ErrorList::addList(const ErrorList& e) {
   return;
 }
 
+void ErrorList::addList(ErrorList * e) {
+  _errors.insert(_errors.end(), e->_errors.begin(), e->_errors.end());
+  _recoverable = _recoverable & e->_recoverable;
+
+  return;
+}
+
 bool ErrorList::recoverable(void) {
   return _recoverable;
 }

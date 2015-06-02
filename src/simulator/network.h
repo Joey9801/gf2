@@ -22,7 +22,7 @@ class Network : public BaseComponent
   friend class RootNetwork;
   public:
     Network();
-    ~Network();
+    virtual ~Network();
 
     virtual void step(std::vector<bool>& a, std::vector<bool>& b);
 
@@ -102,7 +102,7 @@ class Network : public BaseComponent
 
     unsigned int numConnections;
 
-    ErrorList errorList;
+    ErrorList * errorList;
 
     virtual void Reset();
   protected:

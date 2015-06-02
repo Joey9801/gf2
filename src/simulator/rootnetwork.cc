@@ -31,9 +31,13 @@ RootNetwork::RootNetwork(Network * net)
   _time = 0;
   _rate = net->_rate;
   _async = net->_async;
+
+  errorList = net->errorList;
 }
 
-RootNetwork::~RootNetwork() {}
+RootNetwork::~RootNetwork() {
+  LOG_DEBUG;
+}
 
 void RootNetwork::step(void) {
   LOG_VERBOSE;

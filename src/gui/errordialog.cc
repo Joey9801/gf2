@@ -5,21 +5,7 @@
 ErrorDialog::ErrorDialog(wxWindow *parent, wxWindowID id, const wxString & title)
   : wxDialog(parent, id, title)
 {
-  _errorlist = new wxListView(this, -1);
-
-  // Add first column
-  wxListItem col0;
-  col0.SetId(0);
-  col0.SetText( _("Type") );
-  col0.SetWidth(100);
-  _errorlist->InsertColumn(0, col0);
-
-  // Add second column
-  wxListItem col1;
-  col1.SetId(1);
-  col1.SetText( _("Description") );
-  col1.SetWidth(100);
-  _errorlist->InsertColumn(1, col1);
+  _errorlist = new wxSimpleHtmlListBox(this, -1, wxDefaultPosition, wxSize(800, 200));
 
   wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
   sizer->Add(_errorlist, 1, wxEXPAND, 0);
@@ -27,17 +13,27 @@ ErrorDialog::ErrorDialog(wxWindow *parent, wxWindowID id, const wxString & title
   sizer->SetSizeHints(this);
 }
 
-void ErrorDialog::showErrorList(ErrorList *list)
+void ErrorDialog::showErrorList(void)
 {
-  if(list->anyErrors()){
-    std::vector<std::string> errors = list->formatErrors();
+  LOG_DEBUG;
+  if(_list->anyErrors()){
+    std::vector<std::string> errors = _list->formatErrors();
     for(std::vector<std::string>::size_type i = 0; i != errors.size(); i++) {
-      _errorlist->InsertItem(1, wxString(errors[i]));
+      _errorlist->Append(wxString(errors[i]));
     }
   }
 }
 
 void ErrorDialog::clearErrorList()
 {
-  _errorlist->DeleteAllItems();
+  _errorlist->Clear();
+}
+
+void ErrorDialog::setErrorList(ErrorList * list) {
+  _list = list;
+  return;
+}
+
+ErrorList * ErrorDialog::getErrorList(void) {
+  return _list;
 }

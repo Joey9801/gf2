@@ -130,3 +130,67 @@ SCENARIO("Check whether ParsePair works independently of ParseDict") {
     }
   }
 }
+
+/// Test whether ParseDict works as expected
+SCENARIO("Check whether ParseDict works") {
+  Parser parser;
+
+  std::vector<Token> tokens;
+  std::vector<ParserError> errors;
+  std::pair<std::string, Definition*> pair;
+  std::vector<Token>::iterator tokenItr;
+
+  // Test whether ParseDict works when the dict does not contain a pair
+  // which contains another dict
+  GIVEN("Dict does not contain a pair containing a dict") {
+    GIVEN("Dict contains only one pair") {
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier1", 1, 1));
+      tokens.push_back(Token(TokenType::PAIRSEPARATOR, ":", 1, 12));
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier2", 1, 13));
+      tokens.push_back(Token(TokenType::DICTDELIMCLOSE, "}", 1, 24));
+
+      tokenItr = tokens.begin();
+
+      THEN("ParseDict should return a pointer to a valid definition") {
+        Definition* definitionPtr = parser.parseDict(tokens, tokenItr, errors);
+
+        CHECK(errors.empty());
+        REQUIRE(definitionPtr != 0);
+        REQUIRE(definitionPtr->pairs.size() == 1);
+        REQUIRE(definitionPtr->pairs.at("identifier1") != 0);
+        CHECK(definitionPtr->pairs.at("identifier1")->value == "identifier2");
+        CHECK(definitionPtr->pairs.at("identifier1")->pairs.empty());
+        CHECK(definitionPtr->pairs.at("identifier1")->type == FieldType::Value);
+      }
+    }
+
+    GIVEN("Dict contains two pairs") {
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier1", 2, 1));
+      tokens.push_back(Token(TokenType::PAIRSEPARATOR, ":", 2, 12));
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier2", 2, 13));
+      tokens.push_back(Token(TokenType::DICTSEPARATOR, ",", 2, 24));
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier3", 3, 1));
+      tokens.push_back(Token(TokenType::PAIRSEPARATOR, ":", 3, 12));
+      tokens.push_back(Token(TokenType::IDENTIFIER, "identifier4", 3, 13));
+      tokens.push_back(Token(TokenType::DICTDELIMCLOSE, "}", 4, 1));
+
+      tokenItr = tokens.begin();
+
+      THEN("ParseDict should return a pointer to a valid definition") {
+        Definition* definitionPtr = parser.parseDict(tokens, tokenItr, errors);
+
+        CHECK(errors.empty());
+        REQUIRE(definitionPtr != 0);
+        REQUIRE(definitionPtr->pairs.size() == 2);
+        REQUIRE(definitionPtr->pairs.at("identifier1") != 0);
+        CHECK(definitionPtr->pairs.at("identifier1")->value == "identifier2");
+        CHECK(definitionPtr->pairs.at("identifier1")->pairs.empty());
+        CHECK(definitionPtr->pairs.at("identifier1")->type == FieldType::Value);
+        REQUIRE(definitionPtr->pairs.at("identifier3") != 0);
+        CHECK(definitionPtr->pairs.at("identifier3")->value == "identifier4");
+        CHECK(definitionPtr->pairs.at("identifier3")->pairs.empty());
+        CHECK(definitionPtr->pairs.at("identifier3")->type == FieldType::Value);
+      }
+    }
+  }
+}

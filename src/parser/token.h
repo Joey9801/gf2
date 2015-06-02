@@ -38,29 +38,30 @@ enum class TokenType : char {
 class Token {
  public:
   Token(const TokenType type, const std::string value,
-        const unsigned int startLineNo, const unsigned int startCharNo);
+        const unsigned long long int startLineNo,
+        const unsigned long long int startCharNo);
 
   std::string getValue();
 
   TokenType getType();
 
-  unsigned int getStartLineNo();
+  unsigned long long int getStartLineNo();
 
-  unsigned int getStartCharNo();
+  unsigned long long int getStartCharNo();
 
  private :
-  TokenType type;           ///<  The type of the token
+  TokenType type;                     ///<  The type of the token
 
-  std::string value;        ///<  The string of characters the token represents
-                            /*!<  Note that this is a value in the context of a
-                                  token in computer science, not as defined in
-                                  the circuit definition language (although the
-                                  two definitions are identical for an
-                                  identifier) */
+  std::string value;                  ///<  The string of characters the token represents
+                                      /*!<  Note that this is a value in the context of a
+                                            token in computer science, not as defined in
+                                            the circuit definition language (although the
+                                            two definitions are identical for an
+                                            identifier) */
 
-  unsigned int startLineNo; ///<  The line number where the token string starts in the source file
+  unsigned long long int startLineNo; ///<  The line number where the token string starts in the source file
 
-  unsigned int startCharNo; ///<  The number of the character on the line where the token string starts in the source file
+  unsigned long long int startCharNo; ///<  The number of the character on the line where the token string starts in the source file
 };
 
 #endif // TOKEN_H_

@@ -14,14 +14,15 @@ class ParserError {
  public:
   ParserError(const std::string errorDesc);
 
-  ParserError(const std::string errorDesc, const unsigned int lineNo,
-              const unsigned int charNo);
+  ParserError(const std::string errorDesc,
+              const unsigned long long int lineNo,
+              const unsigned long long int charNo);
 
   std::string getErrorDescription();
 
-  unsigned int getLineNo();
+  unsigned long long int getLineNo();
    
-  unsigned int getCharNo();
+  unsigned long long int getCharNo();
 
  private:
   std::string errorDesc;  ///<  The error message for this error

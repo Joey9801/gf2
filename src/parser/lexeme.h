@@ -34,24 +34,25 @@ enum class LexemeType : char {
 class Lexeme {
  public:
   Lexeme( const LexemeType type, const std::string charString,
-          const unsigned int startLineNo, const unsigned int startCharNo);
+          const unsigned long long int startLineNo,
+          const unsigned long long int startCharNo);
 
   std::string getString();
 
   LexemeType getType();
 
-  unsigned int getStartLineNo();
+  unsigned long long int getStartLineNo();
 
-  unsigned int getStartCharNo();
+  unsigned long long int getStartCharNo();
 
  private :
-  LexemeType type;          ///<  The type of the lexeme
+  LexemeType type;                    ///<  The type of the lexeme
 
-  std::string charString;   ///<  The string of characters the lexeme represents
+  std::string charString;             ///<  The string of characters the lexeme represents
 
-  unsigned int startLineNo; ///<  The line number where the lexeme string starts in the source file
+  unsigned long long int startLineNo; ///<  The line number where the lexeme string starts in the source file
 
-  unsigned int startCharNo; ///<  The number of the character on the line where the lexeme string starts in the source file
+  unsigned long long int startCharNo; ///<  The number of the character on the line where the lexeme string starts in the source file
 };
 
 #endif // LEXEME_H_

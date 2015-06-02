@@ -115,9 +115,9 @@ class Evaluator {
 
    std::string currentString;             ///<  The string of characters currently being extracted
 
-   unsigned int currTokenStartFileLineNo; ///<  The number of the source file line from which the first character of the current token came
+   unsigned long long int currTokenStartFileLineNo; ///<  The number of the source file line from which the first character of the current token came
 
-   unsigned int currTokenStartFileCharNo; ///<  The number (on the line it came from) of the first character of the current token
+   unsigned long long int currTokenStartFileCharNo; ///<  The number (on the line it came from) of the first character of the current token
 };
 
 #endif // EVALUATOR_H_

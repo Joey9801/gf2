@@ -41,23 +41,12 @@ bool MyApp::OnInit()
     plog::init(plog::debug, &consoleAppender);
 
     if ( _lang == wxLANGUAGE_UNKNOWN )
-    {
-        int lng = wxGetSingleChoiceIndex
-                  (
-                    _("Please choose language:"),
-                    _("Language"),
-                    WXSIZEOF(langNames),
-                    langNames
-                  );
-        _lang = lng == -1 ? wxLANGUAGE_DEFAULT : langIds[lng];
-    }
+        _lang = wxLANGUAGE_DEFAULT;
 
     // don't use wxLOCALE_LOAD_DEFAULT flag so that Init() doesn't return
     // false just because it failed to load wxstd catalog
-    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) )
-    {
+    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) ){
         wxLogWarning(_("This language is not supported by the system."));
-
         // continue nevertheless
     }
 
@@ -91,8 +80,14 @@ bool MyApp::OnInit()
     }
 #endif
 
+    //Initialise the logger
+    static plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
+    plog::init(plog::debug, &consoleAppender);
+
     // Create the main frame window
     MyFrame *frame = new MyFrame(_locale);
+
+    frame->SetMinSize( wxSize(800, 600) );
 
     // Show the frame
     frame->Show(true);
@@ -207,8 +202,8 @@ void MyFrame::OnAbout(wxCommandEvent& event) {
   wxMessageBox(
 
 _("This is a logic simulator developed for project GF2 at CUED by\n\
-           Joe Roberts, Duncan Barber and Daniel Potter"),
-
+           Joe Roberts, Duncan Barber and Daniel Potter\n\n\n")
+      + wxString::FromUTF8("\u0647\u0630\u0627 \u0647\u0648 \u0645\u062d\u0627\u0643\u0627\u0629 \u0627\u0644\u0645\u0646\u0637\u0642 \u0648\u0636\u0639\u062a \u0644\u0644\u0645\u0634\u0631\u0648\u0639 GF2 \u0641\u064a \u0645\u0644\u0642\u0646 \u062c\u0648 \u0631\u0648\u0628\u0631\u062a\u0633\u060c \u062f\u0646\u0643\u0627\u0646 \u0628\u0627\u0631\u0628\u0631 \u0648\u062f\u0627\u0646\u064a\u0627\u0644 \u0628\u0648\u062a\u0631"),
       _("About this program"), wxOK | wxICON_INFORMATION );
 
   return;
@@ -286,6 +281,7 @@ void MyFrame::ShowErrors(void) {
 
   return;
 }
+
 void MyFrame::OnToggleMonitor(wxCommandEvent &event)
 {
   _outputplot->refresh();

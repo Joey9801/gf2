@@ -36,23 +36,39 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
   char a  =  ' '; char *b = &a; char **tmp1 = &b;
   int tmp2 = 0; glutInit(&tmp2, tmp1);
 
-  _canvasscroller = new wxScrolledWindow(this, -1);
+  _canvasscroller = new wxScrolledWindow(this, -1,
+      wxDefaultPosition, wxDefaultSize,
+      wxVSCROLL);
   _plotcanvas = new PlotCanvas(_canvasscroller, -1);
   wxBoxSizer *scrolledsizer = new wxBoxSizer(wxVERTICAL);
   scrolledsizer->Add(_plotcanvas, 1,wxEXPAND,0);
+
   _canvasscroller->SetSizer(scrolledsizer);
   _canvasscroller->SetScrollRate(10, 10);
   _canvasscroller->SetAutoLayout(true);
 
+  _canvasscrollbar = new wxScrollBar(this, -1);
+
+  wxBoxSizer *canvassizer = new wxBoxSizer(wxVERTICAL);
+  canvassizer->Add(_canvasscroller, 1,wxEXPAND,0);
+  canvassizer->Add(_canvasscrollbar, 0,wxEXPAND,0);
+
   wxBoxSizer *opsizer = new wxBoxSizer(wxHORIZONTAL);
   opsizer->Add(_simulationControl, 0,wxEXPAND,0);
-  opsizer->Add(_canvasscroller, 1,wxEXPAND,0);
+  opsizer->Add(canvassizer, 1,wxEXPAND,0);
   SetSizer(opsizer);
 
   Bind(wxEVT_BUTTON, &OutputPlot::OnRunButton, this, ID_RunSim);
   Bind(wxEVT_BUTTON, &OutputPlot::OnPauseButton, this, ID_PauseSim);
   Bind(wxEVT_BUTTON, &OutputPlot::OnStopButton, this, ID_StopSim);
   Bind(wxEVT_BUTTON, &OutputPlot::OnSkipButton, this, ID_SkipSim);
+  _plotcanvas->Bind(wxEVT_MOUSEWHEEL, &OutputPlot::OnMousewheel, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_THUMBTRACK, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_PAGEUP, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_PAGEDOWN, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_LINEUP, &OutputPlot::OnScroll, this);
+  _canvasscrollbar->Bind(wxEVT_SCROLL_LINEDOWN, &OutputPlot::OnScroll, this);
+  bitwidth = 32.0;
 
   _liveSimulationTimer = new wxTimer(this, -1);
   Bind(wxEVT_TIMER, &OutputPlot::OnLiveSimulationStep, this);
@@ -75,7 +91,22 @@ void OutputPlot::setNetwork(RootNetwork * n) {
 }
 
 void OutputPlot::refresh(void) {
-  _plotcanvas->Render();
+  LOG_DEBUG << GetSize().x;
+  LOG_DEBUG << _canvasscrollbar->GetRange();
+  LOG_DEBUG << _monitor->maxTime*bitwidth;
+  LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
+
+  _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
+      _plotcanvas->GetSize().x / bitwidth,
+      (_monitor->maxTime+1),
+      GetSize().x / bitwidth);
+  /*
+  _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
+      _plotcanvas->GetSize().x,
+      (_monitor->maxTime+1)*bitwidth,
+      GetSize().x);
+      */
+  _plotcanvas->Render(_canvasscrollbar->GetThumbPosition(), bitwidth);
   return;
 }
 
@@ -94,7 +125,8 @@ void OutputPlot::OnLiveSimulationStep(wxTimerEvent& event)
   _network->step();
 
   refresh();
-  _canvasscroller->Scroll(_canvasscroller->GetClientSize().x, -1);
+  //_canvasscrollbar->SetThumbPosition(_canvasscrollbar->GetRange()-_canvasscrollbar->GetThumbSize());
+  _canvasscrollbar->SetThumbPosition(_canvasscrollbar->GetRange());
 
   return;
 }
@@ -121,10 +153,29 @@ void OutputPlot::OnSkipButton(wxCommandEvent& event)
     _network->step();
 
   refresh();
-  _canvasscroller->Scroll(_canvasscroller->GetClientSize().x, -1);
+  //_canvasscroller->Scroll(_canvasscroller->GetClientSize().x, -1);
 
   return;
 }
+
+void OutputPlot::OnScroll(wxScrollEvent& event) {
+  refresh();
+}
+
+void OutputPlot::OnMousewheel(wxMouseEvent& event) {
+  if (event.GetWheelRotation()>0.0) {
+    bitwidth += 5;
+  }
+  else if (event.GetWheelRotation()<0.0) {
+    bitwidth -= 5.0;
+  }
+  if (bitwidth<1.0) {
+    bitwidth = 1.0;
+  }
+  refresh();
+}
+
+//***********************************************************************************//
 
 //PlotCanvas Implementation
 int wxglcanvas_attrib_list[5] = {WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0};
@@ -138,19 +189,23 @@ PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
 
   Bind(wxEVT_SIZE, &PlotCanvas::OnSize, this);
   Bind(wxEVT_PAINT, &PlotCanvas::OnPaint, this);
-  Bind(wxEVT_MOUSEWHEEL, &PlotCanvas::OnMousewheel, this);
 
-  bitwidth = 32.0;
   rowheight = 50.0;
-  xzero = 200.0;
+  xzero = 0.0;
   yzero  = 20.0;
+  _currentxpos = 0;
+  _currentbitwidth = 32.0;
 }
 
-void PlotCanvas::Render()
+void PlotCanvas::Render(unsigned int xpos, float bitwidth)
 {
+  LOG_DEBUG << GetSize().x;
+  _currentxpos = xpos;
+  _currentbitwidth = bitwidth;
+
   std::vector<unsigned int> ids = _monitor->getPoints();
 
-  SetMinSize(wxSize(xzero + _monitor->maxTime * bitwidth, yzero + rowheight * ids.size()));
+  SetMinSize(wxSize(-1 , yzero + rowheight * ids.size()));
   SendSizeEventToParent();
 
   SetCurrent(*context);
@@ -160,18 +215,17 @@ void PlotCanvas::Render()
   }
   glClear(GL_COLOR_BUFFER_BIT);
 
-
-  drawAxis();
-
   for(unsigned int i=0; i<ids.size(); i++)
-    drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]));
+    drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]), _currentxpos, _currentbitwidth);
+
+  drawAxis(xpos, bitwidth);
 
   // We've been drawing to the back buffer, flush the graphics pipeline and swap the back buffer to the front
   glFlush();
   SwapBuffers();
 }
 
-void PlotCanvas::drawAxis(void) {
+void PlotCanvas::drawAxis(unsigned int xpos, float bitwidth) {
   //draw axis line
   glColor3f(0.0, 0.0, 0.0);//axis colour
     glBegin(GL_LINE_STRIP);
@@ -185,7 +239,8 @@ void PlotCanvas::drawAxis(void) {
     glVertex2f(GetSize().x-5.0, yzero*0.5);
   glEnd();
   //draw tickmarks
-  for(float x = xzero; x<GetSize().x-15.0; x+=bitwidth){
+  float tickspacing = (bitwidth > 10 ? bitwidth : bitwidth * 10);
+  for(float x = xzero + tickspacing - ((xpos * (int)bitwidth)%(int)tickspacing); x<GetSize().x-15.0; x+=tickspacing){
     glBegin(GL_LINE_STRIP);
       glVertex2f(x, yzero*0.7);
       glVertex2f(x, yzero*0.3);
@@ -194,12 +249,51 @@ void PlotCanvas::drawAxis(void) {
   return;
 }
 
+bool isIndexGreater(std::pair<unsigned int, bool> target, std::pair<unsigned int, bool> datapoint)
+{
+  return (target.first > datapoint.first);
+}
+
 void PlotCanvas::drawPlot(
     unsigned int num,
     const wxString& label,
-    const std::vector<std::pair<unsigned int, bool> >& data)
+    const std::vector<std::pair<unsigned int, bool> >& data,
+    unsigned int xpos, float bitwidth)
 {
   float base = yzero + (num * rowheight);
+
+  //Find which range of datapoints that should be visible
+  std::vector<std::pair<unsigned int, bool> > target;
+  std::pair<unsigned int, bool> targetpair(xpos, false);
+  target.push_back(targetpair);
+
+  std::vector<std::pair<unsigned int, bool> >::const_iterator it;
+  it = find_first_of(data.begin(), data.end(),
+      target.begin(), target.end(),
+      isIndexGreater);
+
+  target[0].first = xpos + GetSize().x/bitwidth;
+  std::vector<std::pair<unsigned int, bool> >::const_iterator endofvisible;
+  endofvisible = find_first_of(data.begin(), data.end(),
+      target.begin(), target.end(),
+      isIndexGreater);
+
+  if (it != data.begin()) it--;
+  if (endofvisible != data.end()) endofvisible++;
+
+  //draw actual plot traces
+  glColor3f(0.0, 1.0, 0.0);//plot colour
+  glBegin(GL_LINE_STRIP);
+  for (; it != endofvisible; it++) {
+    float y = (*it).second ? (rowheight*0.8) : 0;
+    float x = ((int)(*it).first - (int)xpos) * bitwidth;
+    x = x < 0 ? 0 : x;
+    x = x > GetSize().x ? GetSize().x : x;
+    glVertex2f(x, base + y);
+    //LOG_DEBUG << x;
+    //LOG_DEBUG << base + y;
+  }
+  glEnd();
 
   //write labels, wrap line if longer than 18 chars
   //if there is not enough vertical space, label is truncated
@@ -207,21 +301,20 @@ void PlotCanvas::drawPlot(
   for (unsigned int i = 0.0; label.Len()>18*i and rowheight*0.6>i*17.0; i++) {
     glRasterPos2f(10, base + rowheight*0.6-17.0*i);//label pos
     wxString plotlabel = label.Mid(i*18, 18);//truncate label to fit
+
+    //draw background for label
+    glColor3f(1.0, 1.0, 1.0);//label background colour
+    glBegin(GL_QUADS);
+      glVertex2f(10, base+rowheight*0.6-17.0*i);
+      glVertex2f(10, base+rowheight*0.6-17.0*((int)i-1));
+      glVertex2f(10+plotlabel.Len()*9.0, base+rowheight*0.6-17.0*((int)i-1));
+      glVertex2f(10+plotlabel.Len()*9.0, base+rowheight*0.6-17.0*i);
+    glEnd();
+
     //write label
     for (unsigned int j = 0; j < plotlabel.Len(); j++)
       glutBitmapCharacter(GLUT_BITMAP_9_BY_15, plotlabel[j]);
   }
-
-  //draw actual plot traces
-  glColor3f(0.0, 1.0, 0.0);//plot colour
-  glBegin(GL_LINE_STRIP);
-  for (unsigned int i = 0; i<data.size(); i++) {
-
-    float y = data[i].second ? (rowheight*0.8) : 0;
-
-    glVertex2f(xzero + data[i].first * bitwidth, base + y);
-  }
-  glEnd();
   return;
 }
 
@@ -246,26 +339,11 @@ void PlotCanvas::InitGL()
 void PlotCanvas::OnPaint(wxPaintEvent& event) {
   // required for correct refreshing under MS windows
   wxPaintDC dc(this);
-  Render();
+  Render(_currentxpos, _currentbitwidth);
 }
 
 // Event handler for when the canvas is resized
 void PlotCanvas::OnSize(wxSizeEvent& event) {
   // this will force the viewport and projection matrices to be reconfigured on the next paint
   init = false;
-}
-
-void PlotCanvas::OnMousewheel(wxMouseEvent& event) {
-  LOG_DEBUG;
-  if (event.GetWheelRotation()>0.0) {
-    bitwidth += 5;
-  }
-  else if (event.GetWheelRotation()<0.0) {
-    bitwidth -= 5.0;
-  }
-  if (bitwidth<1.0) {
-    bitwidth = 1.0;
-  }
-  init = false;
-  Render();
 }

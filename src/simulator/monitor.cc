@@ -127,4 +127,5 @@ void Monitor::clearAllData(){
       it++){
     it->second->log.clear();
   }
+  maxTime = 0;
 }

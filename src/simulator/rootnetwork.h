@@ -15,7 +15,7 @@ class RootNetwork : public Network
 {
   public:
     RootNetwork(Network * net);
-    ~RootNetwork();
+    virtual ~RootNetwork();
 
     using Network::step;
     void step(void);

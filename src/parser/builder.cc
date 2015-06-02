@@ -48,6 +48,19 @@ namespace Builder {
     Parser parser;
     std::vector<ParserError> errors;
 
+    static unsigned int depth = 0;
+    depth++;
+    if(depth > 100) {
+      BuildError * e = new BuildError();
+      e->name = "BuildError";
+      e->detail = "Include depth limit (100) reached. Have you accidentally included a file in itself?";
+      e->recoverable = false;
+      e->location.file = filepath;
+      errorList->addError(e);
+      throw errorList;
+    }
+
+
     try {
       def = parser.parse(filepath, errors);
       if(errors.size() > 0) {
@@ -91,6 +104,7 @@ namespace Builder {
       throw;
     }
 
+    depth--;
     return net;
   }
 
@@ -199,11 +213,23 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
           it != def->pairs["inputs"]->pairs.end();
           it++) {
-        if((it->first.find_first_of('[') != std::string::npos)
-            and (it->first.find_first_of(']') != std::string::npos))
-          net->addVectorInput( it->first );
-        else
-          net->addInput( it->first );
+        try {
+          if((it->first.find_first_of('[') != std::string::npos)
+              and (it->first.find_first_of(']') != std::string::npos))
+            net->addVectorInput( it->first );
+          else
+            net->addInput( it->first );
+        }
+        catch(GF2Error& err) {
+          LOG_DEBUG;
+          BuildError * e = new BuildError();
+          e->name = "Duplicated input";
+          e->detail = "Network input \"" + it->first + "\" is declared multiple times";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+        }
+
       }
     }
     else {
@@ -220,11 +246,21 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
-        if((it->first.find_first_of('[') != std::string::npos)
-            and (it->first.find_first_of(']') != std::string::npos))
-          net->addVectorOutput( it->first );
-        else
-          net->addOutput( it->first );
+        try {
+          if((it->first.find_first_of('[') != std::string::npos)
+              and (it->first.find_first_of(']') != std::string::npos))
+            net->addVectorOutput( it->first );
+          else
+            net->addOutput( it->first );
+        }
+        catch(GF2Error& err) {
+          BuildError * e = new BuildError();
+          e->name = "Duplicated input";
+          e->detail = "Network input \"" + it->first + "\" is declared multiple times";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+        }
       }
     }
     else {
@@ -283,8 +319,12 @@ namespace Builder {
         }
       }
       catch(GF2Error& e) {
-        GF2Error * err = new GF2Error(e);
-        errorList->addError(err);
+        BuildError * e = new BuildError();
+        e->name = "Unknown component type";
+        e->detail = "\"" + type +  "\" is not a known component type or include";
+        e->location.file = def->filepath;
+        e->recoverable = false;
+        errorList->addError(e);
         throw errorList;
       }
     }
@@ -304,14 +344,7 @@ namespace Builder {
         for(std::map<std::string, Definition*>::iterator it2 = it1->second->pairs["config"]->pairs.begin();
             it2 != it1->second->pairs["config"]->pairs.end();
             it2++) {
-          try {
-            net->configureComponent( it1->first, it2->first, it2->second->value );
-          }
-          catch(const GF2Error& e) {
-            errorList->addError(e);
-            if(not errorList->recoverable())
-              throw;
-          }
+          net->configureComponent( it1->first, it2->first, it2->second->value );
         }
       }
     }
@@ -364,16 +397,35 @@ namespace Builder {
             try {
               net->connect(dest.first, dest.second, "outputs", ss.str());
             }
-            catch(const GF2Error& e) {
+            catch(const GF2Error& err) {
+              LOG_DEBUG;
+              BuildError * e = new BuildError();
+              e->name = "Connection Error";
+              e->detail = "Connecting  outputs." + ss.str() + " to " + dest.first + "." + dest.second;
+              e->detail += "<br>" + err.detail;
+              e->location.file = def->filepath;
+              e->recoverable = false;
               errorList->addError(e);
-              if(not errorList->recoverable())
-                throw errorList;
+              throw errorList;
             }
           }
         }
         else {
           std::pair<std::string, std::string> dest = Helpers::separateDotted( it->second->value );
-          net->connect(dest.first, dest.second, "outputs", it->first);
+          try {
+            net->connect(dest.first, dest.second, "outputs", it->first);
+          }
+          catch(const GF2Error& err) {
+            LOG_DEBUG;
+            BuildError * e = new BuildError();
+            e->name = "Connection Error";
+            e->detail = "Connecting  outputs." + it->first + " to " + dest.first + "." + dest.second;
+            e->detail += "<br>" + err.detail;
+            e->location.file = def->filepath;
+            e->recoverable = false;
+            errorList->addError(e);
+            throw errorList;
+          }
         }
       }
     }
@@ -412,10 +464,15 @@ namespace Builder {
           try {
             net->connect( source.first, pinOut, it1->first, pinIn );
           }
-          catch(const GF2Error& e) {
+          catch(const GF2Error& err) {
+            BuildError * e = new BuildError();
+            e->name = "Connection Error";
+            e->detail = "Connecting " + it1->first + "."  + pinIn + " to " + source.first + "." + source.second;
+            e->detail += "<br>" + err.detail;
+            e->location.file = def->filepath;
+            e->recoverable = false;
             errorList->addError(e);
-            if(not errorList->recoverable())
-              throw errorList;
+            throw errorList;
           }
         }
       }
@@ -463,10 +520,14 @@ namespace Builder {
           it++) {
         if((it->first.find_first_of('[') != std::string::npos)
             and (it->first.find_first_of(']') != std::string::npos)) {
-          // Handle vector input
+          //Handle vectors
+          std::string name = it->first.substr(0, it->first.find_first_of('['));
+          rnet->setDefaultVectorInput(name, (it->second->value=="true") );
         }
         else {
-          // Handle regular input
+          //Regular inputs
+          rnet->setInput(it->first, (it->second->value=="true") );
+          rnet->setDefaultInput(it->first, (it->second->value=="true") );
         }
       }
     }

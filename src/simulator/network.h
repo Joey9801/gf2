@@ -41,11 +41,6 @@ class Network : public BaseComponent
     unsigned int constNode(unsigned int constVal);
     unsigned int constNode(std::string constVal);
 
-    bool isInputVector(unsigned int inputId);
-    bool isInputVector(std::string inputName);
-    bool isOutputVector(unsigned int outputId);
-    bool isOutputVector(std::string outputName);
-
     unsigned int addInput(void);
     unsigned int addInput(std::string);
     unsigned int addVectorInput(std::string);
@@ -105,6 +100,7 @@ class Network : public BaseComponent
     ErrorList * errorList;
 
     virtual void Reset();
+
   protected:
     std::map<std::string, unsigned int> _componentNames;
     std::vector<BaseComponent*> _components;

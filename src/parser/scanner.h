@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 
 #include "parsererror.h"
 #include "lexeme.h"

@@ -58,6 +58,7 @@ class BaseComponent {
     virtual BaseComponent * clone(void);
  
     virtual void Reset(){};
+
   protected:
     std::string _name;
 

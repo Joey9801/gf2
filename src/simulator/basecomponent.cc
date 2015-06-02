@@ -30,7 +30,7 @@ void BaseComponent::renameInput(std::string oldName, std::string newName) {
   if(_pinInMap.find(oldName) == _pinInMap.end()) {
     GF2Error e = GF2Error();
     e.name = "Unknown component name";
-    e.detail = "\"" + oldName + "\" is not a known component";
+    e.detail = "\"" + oldName + "\" is not a known component type";
     e.recoverable = false;
 
     throw e;
@@ -45,6 +45,10 @@ void BaseComponent::renameInput(std::string oldName, std::string newName) {
 
 void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
   std::string oldName;
+  if(_pinInMap.find(newName) != _pinInMap.end()) {
+    GF2Error e = GF2Error();
+    throw e;
+  }
   for(pin_map::iterator it = _pinInMap.begin();
       it != _pinInMap.end();
       it++) {
@@ -81,6 +85,10 @@ void BaseComponent::renameOutput(std::string oldName, std::string newName) {
 
 void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
   std::string oldName;
+  if(_pinOutMap.find(newName) != _pinOutMap.end()) {
+    GF2Error e = GF2Error();
+    throw e;
+  }
   for(pin_map::iterator it = _pinOutMap.begin();
       it != _pinOutMap.end();
       it++) {
@@ -90,7 +98,8 @@ void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
 
   LOG_VERBOSE << "outputId: " << outputId << ", newName: \"" << newName << "\"";
 
-  _pinOutMap.erase(oldName);
+  if(!oldName.empty())
+      _pinOutMap.erase(oldName);
   _pinOutMap[newName] = outputId;
 
   return;
@@ -102,7 +111,7 @@ unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
     e.name = "Invalid output pin ID";
     std::stringstream ss;
     ss << pinOut;
-    e.detail = "\"" + ss.str() + "\" is not an output id of this " + _name;
+    e.detail = "\"" + ss.str() + "\" is not a valid output";
     e.recoverable = false;
 
     throw e;

@@ -45,9 +45,11 @@ namespace Builder {
     ErrorList * errorList = new ErrorList();;
     Network * net;
     Definition * def;
+    Parser parser;
+    std::vector<ParserError> errors;
 
     try {
-      def = Parser::parseDefinition(filepath);
+      def = parser.parse(filepath, errors);
     }
     catch(ErrorList * e) {
       throw;

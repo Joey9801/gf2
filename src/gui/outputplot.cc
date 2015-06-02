@@ -203,10 +203,10 @@ void PlotCanvas::Render(unsigned int xpos, float bitwidth)
   }
   glClear(GL_COLOR_BUFFER_BIT);
 
-  drawAxis(xpos, bitwidth);
-
   for(unsigned int i=0; i<ids.size(); i++)
     drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]), _currentxpos, _currentbitwidth);
+
+  drawAxis(xpos, bitwidth);
 
   // We've been drawing to the back buffer, flush the graphics pipeline and swap the back buffer to the front
   glFlush();
@@ -249,21 +249,7 @@ void PlotCanvas::drawPlot(
 {
   float base = yzero + (num * rowheight);
 
-  //write labels, wrap line if longer than 18 chars
-  //if there is not enough vertical space, label is truncated
-  glColor3f(0.0, 0.0, 1.0);
-  for (unsigned int i = 0.0; label.Len()>18*i and rowheight*0.6>i*17.0; i++) {
-    glRasterPos2f(10, base + rowheight*0.6-17.0*i);//label pos
-    wxString plotlabel = label.Mid(i*18, 18);//truncate label to fit
-    //write label
-    for (unsigned int j = 0; j < plotlabel.Len(); j++)
-      glutBitmapCharacter(GLUT_BITMAP_9_BY_15, plotlabel[j]);
-  }
-
-  //draw actual plot traces
-  glColor3f(0.0, 1.0, 0.0);//plot colour
-  glBegin(GL_LINE_STRIP);
-  
+  //Find which range of datapoints that should be visible
   std::vector<std::pair<unsigned int, bool> > target;
   std::pair<unsigned int, bool> targetpair(xpos, false);
   target.push_back(targetpair);
@@ -282,6 +268,9 @@ void PlotCanvas::drawPlot(
   if (it != data.begin()) it--;
   if (endofvisible != data.end()) endofvisible++;
 
+  //draw actual plot traces
+  glColor3f(0.0, 1.0, 0.0);//plot colour
+  glBegin(GL_LINE_STRIP);
   for (; it != endofvisible; it++) {
     float y = (*it).second ? (rowheight*0.8) : 0;
     float x = ((int)(*it).first - (int)xpos) * bitwidth;
@@ -292,6 +281,27 @@ void PlotCanvas::drawPlot(
     //LOG_DEBUG << base + y;
   }
   glEnd();
+
+  //write labels, wrap line if longer than 18 chars
+  //if there is not enough vertical space, label is truncated
+  glColor3f(0.0, 0.0, 1.0);
+  for (unsigned int i = 0.0; label.Len()>18*i and rowheight*0.6>i*17.0; i++) {
+    glRasterPos2f(10, base + rowheight*0.6-17.0*i);//label pos
+    wxString plotlabel = label.Mid(i*18, 18);//truncate label to fit
+
+    //draw background for label
+    glColor3f(1.0, 1.0, 1.0);//label background colour
+    glBegin(GL_QUADS);
+      glVertex2f(10, base+rowheight*0.6-17.0*i);
+      glVertex2f(10, base+rowheight*0.6-17.0*((int)i-1));
+      glVertex2f(10+plotlabel.Len()*9.0, base+rowheight*0.6-17.0*((int)i-1));
+      glVertex2f(10+plotlabel.Len()*9.0, base+rowheight*0.6-17.0*i);
+    glEnd();
+
+    //write label
+    for (unsigned int j = 0; j < plotlabel.Len(); j++)
+      glutBitmapCharacter(GLUT_BITMAP_9_BY_15, plotlabel[j]);
+  }
   return;
 }
 

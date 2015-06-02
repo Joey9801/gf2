@@ -38,23 +38,12 @@ bool MyApp::OnInit()
         return false;
 
     if ( _lang == wxLANGUAGE_UNKNOWN )
-    {
-        int lng = wxGetSingleChoiceIndex
-                  (
-                    _("Please choose language:"),
-                    _("Language"),
-                    WXSIZEOF(langNames),
-                    langNames
-                  );
-        _lang = lng == -1 ? wxLANGUAGE_DEFAULT : langIds[lng];
-    }
+        _lang = wxLANGUAGE_DEFAULT;
 
     // don't use wxLOCALE_LOAD_DEFAULT flag so that Init() doesn't return
     // false just because it failed to load wxstd catalog
-    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) )
-    {
+    if ( !_locale.Init(_lang, wxLOCALE_DONT_LOAD_DEFAULT) ){
         wxLogWarning(_("This language is not supported by the system."));
-
         // continue nevertheless
     }
 

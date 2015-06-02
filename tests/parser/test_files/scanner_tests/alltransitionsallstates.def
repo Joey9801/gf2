@@ -1,0 +1,11 @@
+/*This file covers all states and transitions but is not a syntactically valid definition file, though the scanner should not give any errors ** */
+ 	
+{description :"All states, all transitions test",
+  "file with spaces.def" : file_with_spaces
+  inputs:{
+    /*These are inputs*/
+    clock : false/*This input is a clock*/
+  }
+}
+
+/ //""/;/identifier""

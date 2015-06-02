@@ -31,8 +31,8 @@ SCENARIO("Evaluate all transitions out of all states") {
     // Already in the IDLE state
 
     // Set up line and char numbers for next lexeme insertion
-    const unsigned int lineNo = 1;
-    const unsigned int charNo = 1;
+    const unsigned long long int lineNo = 1;
+    const unsigned long long int charNo = 1;
 
     // Transition out of state with IDENTIFIER lexeme
     WHEN("Transition out of state with identifier lexeme") {
@@ -206,8 +206,8 @@ SCENARIO("Evaluate all transitions out of all states") {
     lexemes.push_back(Lexeme(LexemeType::IDENTIFIER, "identifier", 1, 1));
 
     // Set up line and char numbers for next lexeme insertion
-    const unsigned int lineNo = 1;
-    const unsigned int charNo = 11;
+    const unsigned long long int lineNo = 1;
+    const unsigned long long int charNo = 11;
 
     // Transition out of state with IDENTIFIER lexeme
     WHEN("Transition out of state with identifier lexeme") {
@@ -235,8 +235,8 @@ SCENARIO("Evaluate all transitions out of all states") {
         REQUIRE(tokens.size() == 1);
         CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
-        CHECK(tokens[0].getStartLineNo() == 1);
-        CHECK(tokens[0].getStartCharNo() == 1);
+        CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+        CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
       }
     }
 
@@ -251,8 +251,8 @@ SCENARIO("Evaluate all transitions out of all states") {
         REQUIRE(tokens.size() == 1);
         CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
-        CHECK(tokens[0].getStartLineNo() == 1);
-        CHECK(tokens[0].getStartCharNo() == 1);
+        CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+        CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
       }
     }
 
@@ -267,8 +267,8 @@ SCENARIO("Evaluate all transitions out of all states") {
         REQUIRE(tokens.size() == 2);
         CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
         CHECK(tokens[0].getValue() == "identifier");
-        CHECK(tokens[0].getStartLineNo() == 1);
-        CHECK(tokens[0].getStartCharNo() == 1);
+        CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+        CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
         CHECK(tokens[1].getType() == TokenType::STRING);
         CHECK(tokens[1].getValue() == "a string");
         CHECK(tokens[1].getStartLineNo() == lineNo);
@@ -289,8 +289,8 @@ SCENARIO("Evaluate all transitions out of all states") {
           REQUIRE(tokens.size() == 2);
           CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
-          CHECK(tokens[0].getStartLineNo() == 1);
-          CHECK(tokens[0].getStartCharNo() == 1);
+          CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+          CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
           CHECK(tokens[1].getType() == TokenType::DICTDELIMOPEN);
           CHECK(tokens[1].getValue() == "{");
           CHECK(tokens[1].getStartLineNo() == lineNo);
@@ -309,8 +309,8 @@ SCENARIO("Evaluate all transitions out of all states") {
           REQUIRE(tokens.size() == 2);
           CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
-          CHECK(tokens[0].getStartLineNo() == 1);
-          CHECK(tokens[0].getStartCharNo() == 1);
+          CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+          CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
           CHECK(tokens[1].getType() == TokenType::DICTDELIMCLOSE);
           CHECK(tokens[1].getValue() == "}");
           CHECK(tokens[1].getStartLineNo() == lineNo);
@@ -329,8 +329,8 @@ SCENARIO("Evaluate all transitions out of all states") {
           REQUIRE(tokens.size() == 2);
           CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
-          CHECK(tokens[0].getStartLineNo() == 1);
-          CHECK(tokens[0].getStartCharNo() == 1);
+          CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+          CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
           CHECK(tokens[1].getType() == TokenType::DICTSEPARATOR);
           CHECK(tokens[1].getValue() == ",");
           CHECK(tokens[1].getStartLineNo() == lineNo);
@@ -349,8 +349,8 @@ SCENARIO("Evaluate all transitions out of all states") {
           REQUIRE(tokens.size() == 2);
           CHECK(tokens[0].getType() == TokenType::IDENTIFIER);
           CHECK(tokens[0].getValue() == "identifier");
-          CHECK(tokens[0].getStartLineNo() == 1);
-          CHECK(tokens[0].getStartCharNo() == 1);
+          CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+          CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
           CHECK(tokens[1].getType() == TokenType::PAIRSEPARATOR);
           CHECK(tokens[1].getValue() == ":");
           CHECK(tokens[1].getStartLineNo() == lineNo);
@@ -367,8 +367,8 @@ SCENARIO("Evaluate all transitions out of all states") {
           REQUIRE(errors.size() == 1);
           CHECK(errors[0].getErrorDescription() ==
             "EVALUATOR ERROR: Premature end of file - expected identifier after member access operator");
-          CHECK(errors[0].getLineNo() == 0);
-          CHECK(errors[0].getCharNo() == 0);
+          CHECK(errors[0].getLineNo() == (unsigned long long int)0);
+          CHECK(errors[0].getCharNo() == (unsigned long long int)0);
           CHECK(tokens.empty());
         }
       }
@@ -411,8 +411,8 @@ SCENARIO("Evaluate all transitions out of all states") {
     lexemes.push_back(Lexeme(LexemeType::SINGULARITY, ".", 1, 11));
 
     // Set up line and char numbers for next lexeme insertion
-    const unsigned int lineNo = 1;
-    const unsigned int charNo = 12;
+    const unsigned long long int lineNo = 1;
+    const unsigned long long int charNo = 12;
 
     // Transition out of state with IDENTIFIER lexeme
     WHEN("Transition out of state with identifier lexeme") {
@@ -425,8 +425,8 @@ SCENARIO("Evaluate all transitions out of all states") {
         REQUIRE(tokens.size() == 1);
         CHECK(tokens[0].getType() == TokenType::VALUE);
         CHECK(tokens[0].getValue() == "identifier.identifier");
-        CHECK(tokens[0].getStartLineNo() == 1);
-        CHECK(tokens[0].getStartCharNo() == 1);
+        CHECK(tokens[0].getStartLineNo() == (unsigned long long int)1);
+        CHECK(tokens[0].getStartCharNo() == (unsigned long long int)1);
       }
     }
 

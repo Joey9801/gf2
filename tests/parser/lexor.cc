@@ -18,8 +18,8 @@ SCENARIO("Try to lex a non-existent file") {
     REQUIRE(errors.size() == 1);
     CHECK(errors[0].getErrorDescription() ==
         "SCANNER ERROR: File open operation failed - aborted scanning");
-    CHECK(errors[0].getLineNo() == 0);
-    CHECK(errors[0].getCharNo() == 0);
+    CHECK(errors[0].getLineNo() == (unsigned long long int)0);
+    CHECK(errors[0].getCharNo() == (unsigned long long int)0);
 
     CHECK(tokens.empty());
   }
@@ -60,113 +60,113 @@ SCENARIO("Lex file covering all errorless transitions") {
 
   CHECK(tokens[ 0].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[ 0].getValue() == "These");
-  CHECK(tokens[ 0].getStartLineNo() == 5);
-  CHECK(tokens[ 0].getStartCharNo() == 1);
+  CHECK(tokens[ 0].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 0].getStartCharNo() == (unsigned long long int)1);
 
   CHECK(tokens[ 1].getType() == TokenType::VALUE);
   CHECK(tokens[ 1].getValue() == "identifier.lexemes");
-  CHECK(tokens[ 1].getStartLineNo() == 5);
-  CHECK(tokens[ 1].getStartCharNo() == 7);
+  CHECK(tokens[ 1].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 1].getStartCharNo() == (unsigned long long int)7);
 
   CHECK(tokens[ 2].getType() == TokenType::DICTDELIMOPEN);
   CHECK(tokens[ 2].getValue() == "{");
-  CHECK(tokens[ 2].getStartLineNo() == 5);
-  CHECK(tokens[ 2].getStartCharNo() == 26);
+  CHECK(tokens[ 2].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 2].getStartCharNo() == (unsigned long long int)26);
 
   CHECK(tokens[ 3].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[ 3].getValue() == "should");
-  CHECK(tokens[ 3].getStartLineNo() == 5);
-  CHECK(tokens[ 3].getStartCharNo() == 27);
+  CHECK(tokens[ 3].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 3].getStartCharNo() == (unsigned long long int)27);
 
   CHECK(tokens[ 4].getType() == TokenType::DICTDELIMCLOSE);
   CHECK(tokens[ 4].getValue() == "}");
-  CHECK(tokens[ 4].getStartLineNo() == 5);
-  CHECK(tokens[ 4].getStartCharNo() == 33);
+  CHECK(tokens[ 4].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 4].getStartCharNo() == (unsigned long long int)33);
 
   CHECK(tokens[ 5].getType() == TokenType::STRING);
   CHECK(tokens[ 5].getValue() == "make it through");
-  CHECK(tokens[ 5].getStartLineNo() == 5);
-  CHECK(tokens[ 5].getStartCharNo() == 35);
+  CHECK(tokens[ 5].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 5].getStartCharNo() == (unsigned long long int)35);
 
   CHECK(tokens[ 6].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[ 6].getValue() == "to");
-  CHECK(tokens[ 6].getStartLineNo() == 5);
-  CHECK(tokens[ 6].getStartCharNo() == 53);
+  CHECK(tokens[ 6].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 6].getStartCharNo() == (unsigned long long int)53);
 
   CHECK(tokens[ 7].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[ 7].getValue() == "the");
-  CHECK(tokens[ 7].getStartLineNo() == 5);
-  CHECK(tokens[ 7].getStartCharNo() == 56);
+  CHECK(tokens[ 7].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 7].getStartCharNo() == (unsigned long long int)56);
 
   CHECK(tokens[ 8].getType() == TokenType::STRING);
   CHECK(tokens[ 8].getValue() == "evaluator");
-  CHECK(tokens[ 8].getStartLineNo() == 5);
-  CHECK(tokens[ 8].getStartCharNo() == 59);
+  CHECK(tokens[ 8].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 8].getStartCharNo() == (unsigned long long int)59);
 
   CHECK(tokens[ 9].getType() == TokenType::VALUE);
   CHECK(tokens[ 9].getValue() == "class.successfully");
-  CHECK(tokens[ 9].getStartLineNo() == 5);
-  CHECK(tokens[ 9].getStartCharNo() == 71);
+  CHECK(tokens[ 9].getStartLineNo() == (unsigned long long int)5);
+  CHECK(tokens[ 9].getStartCharNo() == (unsigned long long int)71);
 
   CHECK(tokens[10].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[10].getValue() == "identifier");
-  CHECK(tokens[10].getStartLineNo() == 9);
-  CHECK(tokens[10].getStartCharNo() == 1);
+  CHECK(tokens[10].getStartLineNo() == (unsigned long long int)9);
+  CHECK(tokens[10].getStartCharNo() == (unsigned long long int)1);
 
   CHECK(tokens[11].getType() == TokenType::DICTDELIMOPEN);
   CHECK(tokens[11].getValue() == "{");
-  CHECK(tokens[11].getStartLineNo() == 10);
-  CHECK(tokens[11].getStartCharNo() == 1);
+  CHECK(tokens[11].getStartLineNo() == (unsigned long long int)10);
+  CHECK(tokens[11].getStartCharNo() == (unsigned long long int)1);
 
   CHECK(tokens[12].getType() == TokenType::STRING);
   CHECK(tokens[12].getValue() == "string after singularity test");
-  CHECK(tokens[12].getStartLineNo() == 10);
-  CHECK(tokens[12].getStartCharNo() == 2);
+  CHECK(tokens[12].getStartLineNo() == (unsigned long long int)10);
+  CHECK(tokens[12].getStartCharNo() == (unsigned long long int)2);
 
   CHECK(tokens[13].getType() == TokenType::DICTDELIMCLOSE);
   CHECK(tokens[13].getValue() == "}");
-  CHECK(tokens[13].getStartLineNo() == 10);
-  CHECK(tokens[13].getStartCharNo() == 33);
+  CHECK(tokens[13].getStartLineNo() == (unsigned long long int)10);
+  CHECK(tokens[13].getStartCharNo() == (unsigned long long int)33);
 
   CHECK(tokens[14].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[14].getValue() == "final");
-  CHECK(tokens[14].getStartLineNo() == 11);
-  CHECK(tokens[14].getStartCharNo() == 1);
+  CHECK(tokens[14].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[14].getStartCharNo() == (unsigned long long int)1);
 
   CHECK(tokens[15].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[15].getValue() == "test");
-  CHECK(tokens[15].getStartLineNo() == 11);
-  CHECK(tokens[15].getStartCharNo() == 7);
+  CHECK(tokens[15].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[15].getStartCharNo() == (unsigned long long int)7);
 
   CHECK(tokens[16].getType() == TokenType::PAIRSEPARATOR);
   CHECK(tokens[16].getValue() == ":");
-  CHECK(tokens[16].getStartLineNo() == 11);
-  CHECK(tokens[16].getStartCharNo() == 11);
+  CHECK(tokens[16].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[16].getStartCharNo() == (unsigned long long int)11);
 
   CHECK(tokens[17].getType() == TokenType::DICTSEPARATOR);
   CHECK(tokens[17].getValue() == ",");
-  CHECK(tokens[17].getStartLineNo() == 11);
-  CHECK(tokens[17].getStartCharNo() == 12);
+  CHECK(tokens[17].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[17].getStartCharNo() == (unsigned long long int)12);
 
   CHECK(tokens[18].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[18].getValue() == "singularity");
-  CHECK(tokens[18].getStartLineNo() == 11);
-  CHECK(tokens[18].getStartCharNo() == 13);
+  CHECK(tokens[18].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[18].getStartCharNo() == (unsigned long long int)13);
 
   CHECK(tokens[19].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[19].getValue() == "followed");
-  CHECK(tokens[19].getStartLineNo() == 11);
-  CHECK(tokens[19].getStartCharNo() == 25);
+  CHECK(tokens[19].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[19].getStartCharNo() == (unsigned long long int)25);
 
   CHECK(tokens[20].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[20].getValue() == "by");
-  CHECK(tokens[20].getStartLineNo() == 11);
-  CHECK(tokens[20].getStartCharNo() == 34);
+  CHECK(tokens[20].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[20].getStartCharNo() == (unsigned long long int)34);
 
   CHECK(tokens[21].getType() == TokenType::IDENTIFIER);
   CHECK(tokens[21].getValue() == "singularity");
-  CHECK(tokens[21].getStartLineNo() == 11);
-  CHECK(tokens[21].getStartCharNo() == 37);
+  CHECK(tokens[21].getStartLineNo() == (unsigned long long int)11);
+  CHECK(tokens[21].getStartCharNo() == (unsigned long long int)37);
 }
 
 /// Lex files to generate all possible scanner errors
@@ -187,8 +187,8 @@ SCENARIO("Lex files to generate all scanner errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: Invalid character in file - aborted scanning");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 58);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)58);
 
       CHECK(tokens.empty());
     }
@@ -208,8 +208,8 @@ SCENARIO("Lex files to generate all scanner errors") {
       // comment
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: Invalid character in file - aborted scanning");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 75);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)75);
 
       CHECK(tokens.empty());
     }
@@ -229,8 +229,8 @@ SCENARIO("Lex files to generate all scanner errors") {
       // string
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: Invalid character in file - aborted scanning");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 72);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)72);
 
       CHECK(tokens.empty());
     }
@@ -247,8 +247,8 @@ SCENARIO("Lex files to generate all scanner errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: Comment unterminated by end of file");
-      CHECK(errors[0].getLineNo() == 2);
-      CHECK(errors[0].getCharNo() == 1);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)2);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)1);
 
       CHECK(tokens.empty());
     }
@@ -265,8 +265,8 @@ SCENARIO("Lex files to generate all scanner errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: String unterminated by end of file");
-      CHECK(errors[0].getLineNo() == 2);
-      CHECK(errors[0].getCharNo() == 1);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)2);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)1);
 
       CHECK(tokens.empty());
     }
@@ -292,8 +292,8 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 1);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)1);
 
       CHECK(tokens.empty());
     }
@@ -310,8 +310,8 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 6);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)6);
 
       CHECK(tokens.empty());
     }
@@ -329,8 +329,8 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 6);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)6);
 
       CHECK(tokens.empty());
     }
@@ -347,8 +347,8 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 6);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)6);
 
       CHECK(tokens.empty());
     }
@@ -365,8 +365,8 @@ SCENARIO("Lex files which cover scanner FSM transitions which produce evaluator 
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
         "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 6);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)6);
 
       CHECK(tokens.empty());
     }
@@ -391,8 +391,8 @@ SCENARIO("Lex files which will cover all evaluator errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
         "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter or separator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 30);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)30);
 
       CHECK(tokens.empty());
     }
@@ -409,8 +409,8 @@ SCENARIO("Lex files which will cover all evaluator errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
         "EVALUATOR ERROR: Unexpected character - possible mis-typed delimiter, separator, member access operator or identifier - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 11);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)11);
 
       CHECK(tokens.empty());
     }
@@ -427,8 +427,8 @@ SCENARIO("Lex files which will cover all evaluator errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
         "EVALUATOR ERROR: Expected identifier after member access operator - aborting evaluation");
-      CHECK(errors[0].getLineNo() == 1);
-      CHECK(errors[0].getCharNo() == 12);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)1);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)12);
 
       CHECK(tokens.empty());
     }
@@ -444,8 +444,8 @@ SCENARIO("Lex files which will cover all evaluator errors") {
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
         "EVALUATOR ERROR: Premature end of file - expected identifier after member access operator");
-      CHECK(errors[0].getLineNo() == 0);
-      CHECK(errors[0].getCharNo() == 0);
+      CHECK(errors[0].getLineNo() == (unsigned long long int)0);
+      CHECK(errors[0].getCharNo() == (unsigned long long int)0);
 
       CHECK(tokens.empty());
     }

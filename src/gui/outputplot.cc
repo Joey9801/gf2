@@ -91,10 +91,10 @@ void OutputPlot::setNetwork(RootNetwork * n) {
 }
 
 void OutputPlot::refresh(void) {
-  LOG_DEBUG << GetSize().x;
-  LOG_DEBUG << _canvasscrollbar->GetRange();
-  LOG_DEBUG << _monitor->maxTime*bitwidth;
-  LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
+  // LOG_DEBUG << GetSize().x;
+  // LOG_DEBUG << _canvasscrollbar->GetRange();
+  // LOG_DEBUG << _monitor->maxTime*bitwidth;
+  // LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
 
   _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
       _plotcanvas->GetSize().x / bitwidth,
@@ -199,7 +199,7 @@ PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
 
 void PlotCanvas::Render(unsigned int xpos, float bitwidth)
 {
-  LOG_DEBUG << GetSize().x;
+  // LOG_DEBUG << GetSize().x;
   _currentxpos = xpos;
   _currentbitwidth = bitwidth;
 

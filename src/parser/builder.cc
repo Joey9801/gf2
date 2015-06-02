@@ -191,15 +191,26 @@ namespace Builder {
     //for_each(include in def)
     //  includes[include_nickname] = build(include_path)
 
+    ErrorList * errorList = new ErrorList();
+
     if( def->pairs.find("includes") != def->pairs.end() ) {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["includes"]->pairs.begin();
           it != def->pairs["includes"]->pairs.end();
           it++) {
-        includes[it->second->value] = build(it->first);
+        try {
+          includes[it->second->value] = build(it->first);
+        }
+        catch(ErrorList * e) {
+          errorList->addList(e);
+          if(not errorList->recoverable())
+            throw errorList;
+        }
+
+        errorList->addList(includes[it->second->value]->errorList);
       }
     }
 
-    return;
+    throw errorList;
   }
 
   void addIO(Network * net, Definition * def) {
@@ -433,6 +444,7 @@ namespace Builder {
       BuildError * e = new BuildError();
       e->name = "Field is missing";
       e->detail = "\"config\" field is missing";
+      e->location.file = def->filepath;
       e->recoverable = true;
       errorList->addError(e);
     }

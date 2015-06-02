@@ -12,6 +12,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <utility>
+
+#include <plog/Log.h>
 
 #include "../simulator/monitor.h"
 
@@ -19,7 +22,6 @@ class MyGLCanvas: public wxGLCanvas
 {
   public:
     MyGLCanvas(wxWindow *parent, wxWindowID id); // constructor
-    std::map<wxString, unsigned int> _monitortraces;
     void Render(); // function to draw canvas contents
     void setMonitor(Monitor * m);
 
@@ -32,7 +34,7 @@ class MyGLCanvas: public wxGLCanvas
     void OnMousewheel(wxMouseEvent& event); // event handler for when mousewheel zooming
 
     void drawAxis();
-    void drawPlot(unsigned int num, const wxString& label, const std::vector<bool>& data);
+    void drawPlot(unsigned int num, const wxString& label, const std::vector<std::pair<unsigned int, bool> >& data);
 
     float xzero, yzero;
     float rowheight, bitwidth;

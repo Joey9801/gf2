@@ -1,0 +1,44 @@
+{
+    includes : {
+        example_defs/4bit-synch-counter.def : counter,
+        example_defs/4bit-carry-adder.def : ripple-adder,
+        example_defs/4bit-lookahead-adder.def : lookahead-adder
+    },
+    components : {
+        clock : {
+            type : siggen,
+            config : {
+                data : 01,
+                period : 10
+            }
+        },
+        counter1 : {
+            type : includes.counter,
+            inputs : {
+                clock : clock
+            }
+        },
+        counter2 : {
+            type : includes.counter,
+            inputs : {
+                clock : counter1.count[3]
+            }
+        },
+        ripple : {
+            type : includes.ripple-adder,
+            inputs : {
+                a[] : counter1.count[],
+                b[] : counter2.count[],
+                carry : const.false
+            }
+        },
+        lookahead : {
+            type : includes.lookahead-adder,
+            inputs : {
+                a[] : counter1.count[],
+                b[] : counter2.count[],
+                carry : const.false
+            }
+        }
+    }
+}

@@ -28,12 +28,13 @@ BaseComponent::~BaseComponent(void)
 
 void BaseComponent::renameInput(std::string oldName, std::string newName) {
   if(_pinInMap.find(oldName) == _pinInMap.end()) {
-    //TODO raise an error
-    throw 1;
-    return;
-  }
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + oldName + "\" is not a known component";
+    e.recoverable = false;
 
-  LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
+    throw e;
+  }
 
   unsigned int index = _pinInMap[oldName];
   _pinInMap.erase(oldName);
@@ -51,8 +52,6 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
       oldName = it->first;
   }
 
-  LOG_VERBOSE << "inputId: " << inputId << ", newName: \"" << newName << "\"";
-
   if(!oldName.empty())
     _pinInMap.erase(oldName);
 
@@ -63,9 +62,12 @@ void BaseComponent::renameInput(unsigned int inputId, std::string newName) {
 
 void BaseComponent::renameOutput(std::string oldName, std::string newName) {
   if(_pinOutMap.find(oldName) == _pinOutMap.end()) {
-    //TODO raise an error
-    throw 1;
-    return;
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + oldName + "\" is not a known component";
+    e.recoverable = false;
+
+    throw e;
   }
 
   LOG_VERBOSE << "oldName: \"" << oldName << "\", newName: \"" << newName << "\"";
@@ -95,17 +97,62 @@ void BaseComponent::renameOutput(unsigned int outputId, std::string newName) {
 }
 
 unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
+  if(pinOut >= _outputs.size()) {
+    GF2Error e = GF2Error();
+    e.name = "Invalid output pin ID";
+    std::stringstream ss;
+    ss << pinOut;
+    e.detail = "\"" + ss.str() + "\" is not an output id of this " + _name;
+    e.recoverable = false;
+
+    throw e;
+  }
   return _outputs[pinOut];
 }
 
-unsigned int BaseComponent::getOutputNode(std::string  name) {
-  if(_pinOutMap.find(name) == _pinOutMap.end()){
-    //TODO raise an error
-    throw 1;
-    return 0;
+unsigned int BaseComponent::getOutputNode(std::string name) {
+  if( (name == std::string("")) and (_outputs.size() == 1) ) {
+    return _outputs[0];
+  }
+  else if(_pinOutMap.find(name) == _pinOutMap.end()){
+    GF2Error e = GF2Error();
+    e.name = "Invalid output pin name";
+    e.detail = "\"" + name + "\" is not an output name of this " + _name;
+    e.recoverable = false;
+
+    throw e;
   }
   unsigned int pinOut = _pinOutMap[name];
   return getOutputNode(pinOut);
+}
+
+std::vector<unsigned int> BaseComponent::getOutputVectorNodes(unsigned int pinIn) {
+  LOG_ERROR << "How did you even get this function to call?!";
+  throw 1;
+}
+std::vector<unsigned int> BaseComponent::getOutputVectorNodes(std::string name) {
+  if( not isOutputVector(name) ) {
+    GF2Error e = GF2Error();
+    e.name = "Bad vector name";
+    e.detail = "\"" + name + "\" is not an output vector";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  std::vector<unsigned int> nodes;
+  unsigned int size = _outputVectors[name];
+  nodes.reserve(size);
+
+  std::stringstream ss;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    nodes.push_back(getOutputNode(ss.str()));
+  }
+
+  return nodes;
 }
 
 unsigned int BaseComponent::numOutputs(void) {
@@ -118,12 +165,44 @@ unsigned int BaseComponent::getInputNode(unsigned int pinIn) {
 
 unsigned int BaseComponent::getInputNode(std::string  name) {
   if(_pinInMap.find(name) == _pinInMap.end()){
-    //TODO raise an error
-    throw 1;
-    return 0;
+    GF2Error e = GF2Error();
+    e.name = "Bad input name";
+    e.detail = "\"" + name + "\" is not an input name";
+    e.recoverable = false;
+
+    throw e;
   }
   unsigned int pinIn = _pinInMap[name];
   return getInputNode(pinIn);
+}
+
+std::vector<unsigned int> BaseComponent::getInputVectorNodes(unsigned int pinIn) {
+  LOG_ERROR << "How did you even get this function to call?!";
+  throw 1;
+}
+std::vector<unsigned int> BaseComponent::getInputVectorNodes(std::string name) {
+  if( not isInputVector(name) ) {
+    GF2Error e = GF2Error();
+    e.name = "Bad input vector";
+    e.detail = "\"" + name + "\" is not an input vector";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  std::vector<unsigned int> nodes;
+  unsigned int size = _inputVectors[name];
+  nodes.reserve(size);
+
+  std::stringstream ss;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    nodes.push_back(getInputNode(ss.str()));
+  }
+
+  return nodes;
 }
 
 unsigned int BaseComponent::numInputs(void) {
@@ -137,9 +216,12 @@ void BaseComponent::connectOutput(unsigned int outputId, unsigned int node) {
 
 void BaseComponent::connectOutput(std::string name, unsigned int node) {
   if(_pinOutMap.find(name) == _pinOutMap.end()) {
-    //TODO raise an error
-    throw 1;
-    return;
+    GF2Error e = GF2Error();
+    e.name = "Bad output name";
+    e.detail = "\"" + name + "\" is not an valid output name";
+    e.recoverable = false;
+
+    throw e;
   }
   unsigned int index = _pinOutMap[name];
   connectOutput(index, node);
@@ -154,20 +236,58 @@ void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
     //TODO raise an error
     throw 1;
-    return;
   }
 
   unsigned int index = _pinInMap[name];
   connectInput(index, node);
 }
 
+void BaseComponent::connectVectorInput(unsigned int inputId, std::vector<unsigned int> nodes) {
+  LOG_ERROR << "How did you even get this function to call?!";
+  throw 1;
+}
+void BaseComponent::connectVectorInput(std::string name, std::vector<unsigned int> nodes) {
+  if( nodes.size() != _inputVectors[name] ) {
+    GF2Error e = GF2Error();
+    e.name = "Bad vector connection";
+    e.detail = "Tried to conenct mismatched vector sizes";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  unsigned int size = nodes.size();
+  std::stringstream ss;
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    connectInput(ss.str(), nodes[i]);
+  }
+  return;
+}
+
+bool BaseComponent::isInputVector(unsigned int inputId) {
+  // ID always references a specific IO
+  return false;
+}
+bool BaseComponent::isOutputVector(unsigned int outputId) {
+  // ID always references a specific IO
+  return false;
+}
+bool BaseComponent::isInputVector(std::string inputName) {
+  return (_inputVectors.find(inputName) != _inputVectors.end());
+}
+bool BaseComponent::isOutputVector(std::string outputName) {
+  return (_outputVectors.find(outputName) != _outputVectors.end());
+}
+
 std::string BaseComponent::getName(void) {
   return _name;
 }
 
-NodeTreeBase * BaseComponent::getNodeTree(void) {
+NodeTree * BaseComponent::getNodeTree(void) {
   LOG_VERBOSE << "_name = " << _name;
-  NodeTreeBase * n = new NodeTreeGate();
+  NodeTree * n = new NodeTree(NodeType::Gate);
 
   n->name = _name;
 
@@ -192,6 +312,8 @@ BaseComponent * BaseComponent::clone(void) {
   c->_outputs = _outputs;
   c->_pinInMap = _pinInMap;
   c->_pinOutMap = _pinOutMap;
+  c->_inputVectors = _inputVectors;
+  c->_outputVectors = _outputVectors;
 
   return c;
 }

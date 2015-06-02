@@ -5,11 +5,12 @@
 #include <string>
 #include <wx/treebase.h>
 
-enum class NodeType { Base, Network, Gate };
+#include <plog/Log.h>
 
-struct NodeTreeBase : public wxTreeItemData {
-  NodeTreeBase() {type = NodeType::Base;}
-  NodeTreeBase(NodeType node_type) {type = node_type;}
+enum class NodeType { Network, Gate };
+
+struct NodeTree : public wxTreeItemData {
+  NodeTree(NodeType node_type);
 
   NodeType type;
 
@@ -26,18 +27,11 @@ struct NodeTreeBase : public wxTreeItemData {
   std::vector<std::string> inputNames;
   std::vector<std::string> outputNames;
 
-  std::vector<NodeTreeBase*> children;
-};
+  NodeTree * parent;
+  std::vector<NodeTree*> children;
 
-struct NodeTreeNetwork : public NodeTreeBase {
-  NodeTreeNetwork() : NodeTreeBase(NodeType::Network) {}
-};
-
-struct NodeTreeGate : public NodeTreeBase {
-  NodeTreeGate() : NodeTreeBase(NodeType::Gate) {}
-  private:
-    //Gate cannot have children
-    std::vector<NodeTreeBase*> children;
+  std::vector<std::string> getOutputSignature(unsigned int outputId);
+  std::vector<std::string> getOutputSignature(std::string outputName);
 };
 
 #endif

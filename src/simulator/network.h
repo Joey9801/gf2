@@ -11,16 +11,20 @@
 #include "dummyio.h"
 #include "componentconstructors.h"
 #include "monitor.h"
+#include "../structures/definition.h"
+#include "../errors/error.h"
 
+class RootNetwork;
 extern constructor_map componentConstructor;
 
 class Network : public BaseComponent
 {
+  friend class RootNetwork;
   public:
     Network();
     ~Network();
 
-    void step(std::vector<bool>& a, std::vector<bool>& b);
+    virtual void step(std::vector<bool>& a, std::vector<bool>& b);
 
     unsigned int addComponent(std::string type);
     unsigned int addComponent(std::string type, std::string name);
@@ -34,11 +38,20 @@ class Network : public BaseComponent
     void renameComponent(unsigned int id, std::string newName);
     unsigned int findComponent(unsigned int componentId);
     unsigned int findComponent(std::string componentName);
+    unsigned int constNode(unsigned int constVal);
+    unsigned int constNode(std::string constVal);
+
+    bool isInputVector(unsigned int inputId);
+    bool isInputVector(std::string inputName);
+    bool isOutputVector(unsigned int outputId);
+    bool isOutputVector(std::string outputName);
 
     unsigned int addInput(void);
     unsigned int addInput(std::string);
+    unsigned int addVectorInput(std::string);
     unsigned int addOutput(void);
     unsigned int addOutput(std::string);
+    unsigned int addVectorOutput(std::string);
 
     // Connecting two components
     // Annoying that templates must be defined in the header, but whatever
@@ -50,20 +63,46 @@ class Network : public BaseComponent
         unsigned int idOut = findComponent(componentOut);
         unsigned int idIn = findComponent(componentIn);
 
-        unsigned int node = _components[idOut]->getOutputNode(pinOut);
-        _components[idIn]->connectInput(pinIn, node);
+        if( idOut == (compl 0u) ) {
+          //Magic number for const
+          unsigned int node = constNode(pinOut);
+          _components[idIn]->connectInput(pinIn, node);
+        }
+        else if(_components[idOut]->isOutputVector(pinOut)
+            and _components[idIn]->isInputVector(pinIn) ) {
+          std::vector<unsigned int> nodes = _components[idOut]->getOutputVectorNodes(pinOut);
+          _components[idIn]->connectVectorInput(pinIn, nodes);
+        }
+        else {
+          unsigned int node = _components[idOut]->getOutputNode(pinOut);
+          _components[idIn]->connectInput(pinIn, node);
+        }
+
+        numConnections++;
         return;
       }
 
     unsigned int countComponents(void);
 
     void setMonitor(Monitor * m);
+    Monitor * getMonitor(void);
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
-    void removeMonitorPoint(unsigned int pointId);
+    unsigned int addMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
 
-    NodeTreeBase * getNodeTree(void);
+    void removeMonitorPoint(std::vector<std::string>& signature);
+    void removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth);
+
+    void configure(std::string key, std::string value);
+
+    virtual NodeTree * getNodeTree(void);
+    Definition * getDefinition(void);
+    void setDefinition(Definition * def);
 
     BaseComponent * clone(void);
+
+    unsigned int numConnections;
+
+    ErrorList errorList;
 
   protected:
     std::map<std::string, unsigned int> _componentNames;
@@ -77,29 +116,15 @@ class Network : public BaseComponent
 
     Monitor * _monitor;
 
+    Definition * _definition;
+
     std::map<unsigned int, unsigned int> _monitorPoints;
+
+    unsigned int _time;
+    unsigned int _rate;
+    bool _async;
+
 };
 
-// Special type of network which can operate independantly from anything else
-// Should only be used as the Root of the whole network
-class RootNetwork : public Network
-{
-  public:
-    RootNetwork();
-    ~RootNetwork();
-
-    using Network::step;
-    void step(void);
-
-    unsigned int addInput(void);
-    unsigned int addInput(std::string);
-    unsigned int addOutput(void);
-    unsigned int addOutput(std::string);
-
-    void setInput(unsigned int inputId, bool value);
-    void setInput(std::string inputName, bool value);
-    bool getOutput(unsigned int outputId);
-    bool getOutput(std::string outputName);
-};
 
 #endif

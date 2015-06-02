@@ -1,26 +1,17 @@
 {
-    inputs: {
-        foo : false,
-        bar : false
-    },
-    outputs : {
-        abc : gate1.out,
-        def : gate2.out
+    includes : {
+        tests/parser/test_files/test3.def : signals
     },
     components : {
-        gate1 : {
+        and12 : {
             type : and,
             inputs : {
-                i1 : inputs.foo,
-                i2 : inputs.bar
+                i1 : signals.sig1,
+                i2 : signals.sig2
             }
         },
-        gate2 : {
-            type : nand,
-            inputs : {
-                i1 : inputs.foo,
-                i2 : inputs.bar
-            }
+        signals : {
+            type : includes.signals
         }
     }
 }

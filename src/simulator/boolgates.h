@@ -13,6 +13,7 @@ class BaseBoolgate : public BaseComponent {
     virtual ~BaseBoolgate() {}
 
     void step(std::vector<bool>& a, std::vector<bool>& b);
+    void connectInput(std::string inputName, unsigned int node);
     void connectInput(unsigned int inputId, unsigned int node);
 
   protected:
@@ -24,7 +25,7 @@ class BaseBoolgate : public BaseComponent {
 class XorGate : public BaseComponent {
   public:
     XorGate();
-    
+
     void step(std::vector<bool>& a, std::vector<bool>& b);
 };
 

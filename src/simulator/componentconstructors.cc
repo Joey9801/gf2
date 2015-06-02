@@ -6,7 +6,9 @@ constructor_map componentConstructor = {
   {"or",      &createComponent<OrGate>},
   {"nor",     &createComponent<NorGate>},
   {"xor",     &createComponent<XorGate>},
-  {"dtpye",   &createComponent<DType>},
+  {"dtype",   &createComponent<DType>},
+  {"jk",      &createComponent<JK>},
   {"siggen",  &createComponent<SignalGenerator>},
-  {"dummyio",  &createComponent<DummyIO>}
+  {"clock",   &createComponent<Clock>},
+  {"dummyio", &createComponent<DummyIO>}
 };

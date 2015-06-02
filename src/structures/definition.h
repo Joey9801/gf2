@@ -14,6 +14,7 @@ struct Definition {
   ~Definition();
 
   FieldType type;
+  std::string filepath;
 
   std::map<std::string, Definition*> pairs;
   std::string value;

@@ -19,11 +19,6 @@ OutputPlot::OutputPlot(wxWindow *parent, wxWindowID id)
 
 }
 
-void OutputPlot::AddPlotTrace(std::string label, unsigned int pointId) {
-  _plotcanvas->_monitortraces[wxString(label)] = pointId;
-  _plotcanvas->Render();
-}
-
 void OutputPlot::setMonitor(Monitor * m) {
   _monitor = m;
   _plotcanvas -> setMonitor(m);
@@ -52,7 +47,7 @@ MyGLCanvas::MyGLCanvas(wxWindow *parent, wxWindowID id) :
   Bind(wxEVT_MOUSEWHEEL, &MyGLCanvas::OnMousewheel, this);
 
   bitwidth = 30.0;
-  xzero = 100.0;
+  xzero = 200.0;
   yzero  = 20.0;
 }
 
@@ -66,18 +61,13 @@ void MyGLCanvas::Render()
   glClear(GL_COLOR_BUFFER_BIT);
 
   rowheight = 50;
-  SetMinSize(wxSize(-1, -1));
+  SetMinSize(wxSize(_monitor->maxTime*bitwidth, -1));
 
   drawAxis();
 
-  unsigned int i = 0;
-  for(std::map<wxString, unsigned int>::iterator it=_monitortraces.begin();
-      it!=_monitortraces.end();
-      it++) {
-    std::vector<bool> data = _monitor->getLog(it->second);
-    drawPlot(i, it->first, data);
-    i++;
-  }
+  std::vector<unsigned int> ids = _monitor->getPoints();
+  for(unsigned int i=0; i<ids.size(); i++)
+    drawPlot(i, _monitor->getNickname(ids[i]), _monitor->getLog(ids[i]));
 
   // We've been drawing to the back buffer, flush the graphics pipeline and swap the back buffer to the front
   glFlush();
@@ -110,16 +100,16 @@ void MyGLCanvas::drawAxis(void) {
 void MyGLCanvas::drawPlot(
     unsigned int num,
     const wxString& label,
-    const std::vector<bool>& data)
+    const std::vector<std::pair<unsigned int, bool> >& data)
 {
   float base = yzero + (num * rowheight);
 
-  //write labels, wrap line if longer than 9 chars
+  //write labels, wrap line if longer than 18 chars
   //if there is not enough vertical space, label is truncated
   glColor3f(0.0, 0.0, 1.0);
-  for (unsigned int i = 0.0; label.Len()>9*i and rowheight*0.6>i*17.0; i++) {
+  for (unsigned int i = 0.0; label.Len()>18*i and rowheight*0.6>i*17.0; i++) {
     glRasterPos2f(10, base + rowheight*0.6-17.0*i);//label pos
-    wxString plotlabel = label.Mid(i*9, 9);//truncate label to fit
+    wxString plotlabel = label.Mid(i*18, 18);//truncate label to fit
     //write label
     for (unsigned int j = 0; j < plotlabel.Len(); j++)
       glutBitmapCharacter(GLUT_BITMAP_9_BY_15, plotlabel[j]);
@@ -130,10 +120,9 @@ void MyGLCanvas::drawPlot(
   glBegin(GL_LINE_STRIP);
   for (unsigned int i = 0; i<data.size(); i++) {
 
-    float y = data[i] ? (rowheight*0.8) : 0;
+    float y = data[i].second ? (rowheight*0.8) : 0;
 
-    glVertex2f(xzero + i*bitwidth, base + y);
-    glVertex2f(xzero + (i+1)*bitwidth, base + y);
+    glVertex2f(xzero + data[i].first * bitwidth, base + y);
   }
   glEnd();
   return;

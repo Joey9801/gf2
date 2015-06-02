@@ -1,0 +1,53 @@
+{
+    inputs: {
+        b[4]: false, 
+        carry: false, 
+        a[4]: false
+    }, 
+    components: {
+        adder2: {
+            inputs: {
+                a: inputs.a[2], 
+                b: inputs.b[2], 
+                c_in: adder1.c_out
+            }, 
+            type: includes.adder
+        }, 
+        adder3: {
+            inputs: {
+                a: inputs.a[3], 
+                b: inputs.b[3], 
+                c_in: adder2.c_out
+            }, 
+            type: includes.adder
+        }, 
+        adder0: {
+            inputs: {
+                a: inputs.a[0], 
+                b: inputs.b[0], 
+                c_in: inputs.carry
+            }, 
+            type: includes.adder
+        }, 
+        adder1: {
+            inputs: {
+                a: inputs.a[1], 
+                b: inputs.b[1], 
+                c_in: adder0.c_out
+            }, 
+            type: includes.adder
+        }
+    }, 
+    outputs: {
+        carry : adder3.c_out, 
+        out[4] : {
+            1 : adder1.s,
+            0 : adder0.s,
+            3 : adder3.s,
+            2 : adder2.s
+        }
+    }, 
+    includes: {
+        example_defs/full_adder.def: adder
+    }
+}

@@ -1,10 +1,12 @@
 #include "network.h"
 
 Network::Network(void) :
-  BaseComponent("Network", 0, 0)
+  BaseComponent("Network", 0, 0),
+  numConnections(0),
+  _time(0),
+  _rate(1),
+  _async(false)
 {
-  LOG_DEBUG;
-
   //Make room for the const values
   _nodesA.resize(2);
   _nodesB.resize(2);
@@ -25,12 +27,13 @@ Network::~Network() {}
 //returns componentId
 unsigned int Network::addComponent(std::string type) {
   if(componentConstructor.find(type) == componentConstructor.end()) {
-    //TODO report an error
-    throw 1;
-    return 0;
-  }
+    GF2Error e = GF2Error();
+    e.name = "Unknown component type";
+    e.detail = "\"" + type + "\" is not a known component";
+    e.recoverable = false;
 
-  LOG_DEBUG << "type: " << type;
+    throw e;
+  }
 
   unsigned int componentId = _components.size();
   BaseComponent * c = componentConstructor[type]();
@@ -38,6 +41,7 @@ unsigned int Network::addComponent(std::string type) {
     c->connectOutput(i, _nodesA.size()+i);
 
   _components.push_back(c);
+
   _nodesA.resize(_nodesA.size() + c->numOutputs(), false);
   _nodesB.resize(_nodesA.size());
 
@@ -49,9 +53,6 @@ unsigned int Network::addComponent(std::string type, std::string name) {
   return componentId;
 }
 unsigned int Network::addComponent(BaseComponent * c) {
-
-  LOG_DEBUG;
-
   unsigned int componentId = _components.size();
   for(unsigned int i=0; i<c->numOutputs(); i++)
     c->connectOutput(i, _nodesA.size()+i);
@@ -69,7 +70,6 @@ unsigned int Network::addComponent(BaseComponent * c, std::string name) {
 }
 
 void Network::configureComponent(std::string name, std::string key, std::string value) {
-  LOG_DEBUG;
   unsigned int componentId = findComponent(name);
   BaseComponent * c = _components[componentId];
   c->configure(key, value);
@@ -84,9 +84,12 @@ void Network::configureComponent(unsigned int componentId, std::string key, std:
 
 void Network::renameComponent(std::string oldName, std::string newName) {
   if(_componentNames.find(oldName) == _componentNames.end()) {
-    //TODO raise some sort of error
-    throw 1;
-    return;
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + oldName + "\" is not a known component name";
+    e.recoverable = false;
+
+    throw e;
   }
 
   LOG_VERBOSE << "oldName: " << oldName << ", newName: " << newName;
@@ -120,16 +123,30 @@ unsigned int Network::findComponent(unsigned int componentId) {
 unsigned int Network::findComponent(std::string componentName) {
   if(_componentNames.find(componentName) == _componentNames.end()) {
     //TODO raise some sort of error
-    throw 1;
-    return ~0;
+    if(componentName == "const")
+      return compl 0;
+
+    GF2Error e = GF2Error();
+    e.name = "Unknown component name";
+    e.detail = "\"" + componentName + "\" is not a known component name";
+    e.recoverable = false;
+
+    throw e;
   }
   unsigned int componentId = _componentNames[componentName];
   return componentId;
 }
 
+unsigned int Network::constNode(unsigned int constVal) {
+  return (constVal==1) ? 1 : 0;
+}
+unsigned int Network::constNode(std::string constVal) {
+  return (constVal=="true") ? 1 : 0;
+}
+
 //Returns the inputId
 unsigned int Network::addInput(void) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int inputId = _inputs.size();
   _inputs.push_back(0);
@@ -142,7 +159,7 @@ unsigned int Network::addInput(void) {
   return inputId;
 }
 unsigned int Network::addInput(std::string name) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int id = addInput();
   renameInput(id, name);
@@ -151,7 +168,7 @@ unsigned int Network::addInput(std::string name) {
 }
 
 unsigned int Network::addOutput(void) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int outputId = _outputs.size();
   _outputs.push_back(0);
@@ -160,12 +177,77 @@ unsigned int Network::addOutput(void) {
   return outputId;
 }
 unsigned int Network::addOutput(std::string name) {
-  LOG_DEBUG;
+  LOG_VERBOSE;
 
   unsigned int id = addOutput();
   renameOutput(id, name);
   _outputDummy->renameInput(id, name);
   return id;
+}
+
+unsigned int Network::addVectorInput(std::string signature) {
+  // Creates a vector input from a string in the form "name[num]"
+  // Returns the inputId of the first one
+  if((signature.find_first_of('[') == std::string::npos)
+  or (signature.find_first_of(']') == std::string::npos)) {
+    GF2Error e = GF2Error();
+    e.name = "Invalid vector definition";
+    e.detail = "\"" + signature + "\" is not a valid input vector definition";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  std::string name = signature.substr(0, signature.find_first_of('['));
+
+  unsigned int size;
+  std::stringstream ss;
+  ss.str(signature.substr(signature.find_first_of('[')+1, signature.find_first_of(']')));
+  ss >> size;
+
+  _inputVectors[name] = size;
+  _inputDummy->_inputVectors[name] = size;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    addInput(ss.str());
+  }
+  ss.str("");
+  ss << name << "[0]";
+  return _pinInMap[ss.str()];
+}
+unsigned int Network::addVectorOutput(std::string signature) {
+  // Creates a vector output from a string in the form "name[num]"
+  // Returns the outputId of the first one
+  if((signature.find_first_of('[') == std::string::npos)
+  or (signature.find_first_of(']') == std::string::npos)) {
+    GF2Error e = GF2Error();
+    e.name = "Invalid vector definition";
+    e.detail = "\"" + signature + "\" is not a valid output vector definition";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  std::string name = signature.substr(0, signature.find_first_of('['));
+
+  unsigned int size;
+  std::stringstream ss;
+  ss.str(signature.substr(signature.find_first_of('[')+1, signature.find_first_of(']')));
+  ss >> size;
+
+  _outputVectors[name] = size;
+  _outputDummy->_outputVectors[name] = size;
+
+  for(unsigned int i=0; i<size; i++) {
+    ss.str("");
+    ss << name << "[" << i << "]";
+    addOutput(ss.str());
+  }
+  ss.str("");
+  ss << name << "[0]";
+  return _pinOutMap[ss.str()];
 }
 
 void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
@@ -177,12 +259,22 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   _nodesA[0] = false;
   _nodesA[1] = true;
 
-  for(std::vector<BaseComponent*>::iterator c = _components.begin();
-        c != _components.end();
-        c++)
-    (*c)->step(_nodesA, _nodesB);
+  for(unsigned int i=0; i<_rate; i++) {
+    if(_async) {
+      for(std::vector<BaseComponent*>::iterator c = _components.begin();
+          c != _components.end();
+          c++)
+        (*c)->step(_nodesA, _nodesA);
+    }
+    else {
+      for(std::vector<BaseComponent*>::iterator c = _components.begin();
+          c != _components.end();
+          c++)
+        (*c)->step(_nodesA, _nodesB);
 
-  _nodesA.swap(_nodesB);
+      _nodesA.swap(_nodesB);
+    }
+  }
 
   _nodesA[0] = false;
   _nodesA[1] = true;
@@ -192,7 +284,9 @@ void Network::step(std::vector<bool>& a, std::vector<bool>& b) {
   for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
       it != _monitorPoints.end();
       it++)
-    _monitor->setValue( it->first, _nodesA[it->second]);
+    _monitor->setValue( it->first, _time, _nodesA[it->second]);
+
+  _time++;
 
   return;
 }
@@ -204,26 +298,53 @@ unsigned int Network::countComponents(void) {
 
 void Network::setMonitor(Monitor * m) {
   _monitor = m;
+  for(std::vector<BaseComponent*>::iterator it = _components.begin();
+      it != _components.end();
+      it++) {
+    Network * net = dynamic_cast<Network*>(*it);
+    if(net)
+      net->setMonitor(m);
+  }
   return;
+}
+Monitor * Network::getMonitor(void) {
+  return _monitor;
 }
 
 unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
+  return addMonitorPoint(signature, 0);
+}
+
+unsigned int Network::addMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
   if(not _monitor) {
-    // TODO raise an error - monitor not set
-  }
-  if(signature.size() < 2) {
-    // TODO raise an error - not enough information in the signature
-    return 0;
+    LOG_ERROR << "Cannot set monitor point without Monitor object";
+    throw 1;
   }
 
-  unsigned int componentId = findComponent(signature.back());
+  unsigned int remaining = signature.size() - depth;
+  if(remaining < 2) {
+    GF2Error e = GF2Error();
+    e.name = "Cannot add monitor point";
+
+    std::stringstream ss;
+    for(unsigned int i=signature.size()-1; i>0; i++)
+      ss << signature[i] << ".";
+    ss << signature[0];
+
+    e.detail = "\"" + ss.str() + "\" is not a valid monitor point signature";
+    e.recoverable = false;
+
+    throw e;
+  }
+
+  unsigned int componentId = findComponent(signature[remaining-1]);
   BaseComponent * c = _components[componentId];
   unsigned int pointId = 0;
 
-  if(signature.size() == 2) {
+  if(remaining == 2) {
     // This is the network containing the node to monitor
     unsigned int node = c->getOutputNode(signature.front());
-    pointId = _monitor->addMonitorPoint();
+    pointId = _monitor->addPoint(signature);
 
     _monitorPoints[pointId] = node;
   }
@@ -231,44 +352,109 @@ unsigned int Network::addMonitorPoint(std::vector<std::string>& signature) {
     //Attempt to cast the component as a Network
     Network * net = dynamic_cast<Network*>(c);
     if(not net) {
-      //TODO raise an error, the component in the signature wasn't a network
-      return 0;
+      GF2Error e = GF2Error();
+      e.name = "Cannot add monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "\"" + ss.str() + "\" is not a valid monitor point signature";
+      e.recoverable = false;
+
+      throw e;
     }
-    signature.pop_back();
-    pointId = net->addMonitorPoint(signature);
+    pointId = net->addMonitorPoint(signature, depth+1);
   }
 
   return pointId;
 }
 
-void Network::removeMonitorPoint(unsigned int pointId) {
-  if(_monitorPoints.find(pointId) == _monitorPoints.end()) {
-    //TODO raise an error
-    return;
-  }
-  _monitorPoints.erase(pointId);
-  // We can't currently remove the logged data in the monitor
-  // since it's stored as a simple vector, so removing it
-  // would change the indicies of other points
+void Network::removeMonitorPoint(std::vector<std::string>& signature) {
+  removeMonitorPoint(signature, 0);
   return;
 }
 
-NodeTreeBase * Network::getNodeTree(void) {
-  NodeTreeBase * n = new NodeTreeNetwork();
+void Network::removeMonitorPoint(std::vector<std::string>& signature, unsigned int depth) {
+  if(not _monitor) {
+    // TODO raise an error - monitor not set
+    LOG_ERROR << "Cannot set monitor point without Monitor object";
+    throw 1;
+  }
+
+  unsigned int remaining = signature.size() - depth;
+  if(remaining < 2) {
+      GF2Error e = GF2Error();
+      e.name = "Cannot remove monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "Signature \"" + ss.str() + "\" is not not found in monitor point lists";
+      e.recoverable = false;
+
+      throw e;
+  }
+
+  unsigned int componentId = findComponent(signature[remaining-1]);
+  BaseComponent * c = _components[componentId];
+
+  if(remaining == 2) {
+    // This is the network containing the node to monitor
+    unsigned int pointId = _monitor->findPoint(signature);
+    _monitor->removePoint(signature);
+    _monitorPoints.erase(pointId);
+  }
+  else {
+    //Attempt to cast the component as a Network
+    Network * net = dynamic_cast<Network*>(c);
+    if(not net) {
+      GF2Error e = GF2Error();
+      e.name = "Cannot remove monitor point";
+
+      std::stringstream ss;
+      for(unsigned int i=signature.size()-1; i>0; i++)
+        ss << signature[i] << ".";
+      ss << signature[0];
+
+      e.detail = "Signature \"" + ss.str() + "\" is not not found in monitor point lists";
+      e.recoverable = false;
+
+      throw e;
+    }
+    net->removeMonitorPoint(signature, depth+1);
+  }
+
+  return;
+}
+
+void Network::configure(std::string key, std::string value) {
+  if(key=="rate") {
+    std::istringstream( value ) >> _rate;
+  }
+  else if(key=="simulation")
+    _async = (value=="async");
+
+  return;
+}
+
+NodeTree * Network::getNodeTree(void) {
+  NodeTree * n = new NodeTree(NodeType::Network);
 
   n->name = _name;
 
-  //Start at 2 to  avoid including the DummyIO objects
-  for(unsigned int i=2; i<_components.size(); i++)
+  for(unsigned int i=0; i<_components.size(); i++) {
     n->children.push_back( _components[i]->getNodeTree() );
+    n->children.back()->parent = n;
+  }
 
   for(pin_map::iterator it = _componentNames.begin();
       it != _componentNames.end();
       it ++) {
-    //Sim, avoid including the DummyIO objects
-    //Ordering of the map is not as added, so if statement needed in every loop
-    if( it->second > 1 )
-      n->children[(*it).second-2]->nickname = (*it).first;
+    n->children[(*it).second]->nickname = (*it).first;
   }
 
   n->inputNodes = _inputs;
@@ -278,24 +464,27 @@ NodeTreeBase * Network::getNodeTree(void) {
   for(pin_map::iterator it=_pinInMap.begin(); it != _pinInMap.end(); it++)
     n->inputNames[(*it).second] = (*it).first;
 
-  n->outputNames.resize(_pinInMap.size());
+  n->outputNames.resize(_pinOutMap.size());
   for(pin_map::iterator it=_pinOutMap.begin(); it != _pinOutMap.end(); it++)
     n->outputNames[(*it).second] = (*it).first;
 
   return n;
 }
 
+Definition * Network::getDefinition(void) {
+  return _definition;
+}
+
+void Network::setDefinition(Definition * def) {
+  _definition = def;
+  return;
+}
+
 BaseComponent * Network::clone(void) {
   Network * n = new Network();
 
-  n->_components.clear();
-  for(std::vector<BaseComponent*>::iterator it = _components.begin();
-      it != _components.end();
-      it++)
-    n->_components.push_back( (*it)->clone() );
-
-  n->_inputDummy = (DummyIO*)n->_components[0];
-  n->_outputDummy = (DummyIO*)n->_components[1];
+  for(unsigned int i=2; i<_components.size(); i++)
+    n->_components.push_back( _components[i]->clone() );
 
   n->_componentNames = _componentNames;
 
@@ -304,90 +493,18 @@ BaseComponent * Network::clone(void) {
 
   n->_inputs = _inputs;
   n->_outputs = _outputs;
+  n->_inputVectors = _inputVectors;
+  n->_outputVectors = _outputVectors;
+
+  n->_pinInMap = _pinInMap;
+  n->_pinOutMap = _pinOutMap;
+  n->_inputDummy = (DummyIO*)_inputDummy->clone();
+  n->_outputDummy = (DummyIO*)_outputDummy->clone();
+  n->_components[0] = (BaseComponent*)n->_inputDummy;
+  n->_components[1] = (BaseComponent*)n->_outputDummy;
 
   // Give it the monitor object, but don't copy over the monitor points
   n->_monitor = _monitor;
 
   return (BaseComponent*)n;
-}
-
-RootNetwork::RootNetwork(void)
-  : Network()
-{
-}
-
-RootNetwork::~RootNetwork() {}
-
-void RootNetwork::step(void) {
-  _nodesA[0] = false;
-  _nodesA[1] = true;
-
-  for(std::vector<BaseComponent*>::iterator c = _components.begin();
-        c != _components.end();
-        c++)
-    (*c)->step(_nodesA, _nodesB);
-
-  _nodesA.swap(_nodesB);
-
-  _nodesA[0] = false;
-  _nodesA[1] = true;
-
-  for(std::map<unsigned int, unsigned int>::iterator it = _monitorPoints.begin();
-      it != _monitorPoints.end();
-      it++)
-    _monitor->setValue( it->first, _nodesA[it->second]);
-}
-
-
-unsigned int RootNetwork::addInput(void) {
-  unsigned int inputId = _inputs.size();
-  _inputs.push_back(_nodesA.size());
-  _nodesA.push_back(false);
-  _nodesB.push_back(false);
-  return inputId;
-}
-unsigned int RootNetwork::addInput(std::string name) {
-  unsigned int inputId = addInput();
-  renameInput(inputId, name);
-  return inputId;
-}
-unsigned int RootNetwork::addOutput(void) {
-  unsigned int outputId = _outputs.size();
-  _outputs.push_back(0);
-  return outputId;
-}
-unsigned int RootNetwork::addOutput(std::string name) {
-  unsigned int outputId = addOutput();
-  renameOutput(outputId, name);
-  return outputId;
-}
-
-void RootNetwork::setInput(unsigned int inputId, bool value) {
-  unsigned int node = _inputs[inputId];
-  _nodesA[node] = value;
-  return;
-}
-void RootNetwork::setInput(std::string inputName, bool value) {
-  if(_pinInMap.find(inputName) == _pinInMap.end()) {
-    // TODO raise an error
-    throw 1;
-    return;
-  }
-  unsigned int inputId = _pinInMap[inputName];
-  setInput(inputId, value);
-  return;
-}
-
-bool RootNetwork::getOutput(unsigned int outputId) {
-  unsigned int node = _outputs[outputId];
-  return _nodesA[node];
-}
-bool RootNetwork::getOutput(std::string outputName) {
-  if(_pinOutMap.find(outputName) == _pinOutMap.end() ) {
-    // TODO raise an error
-    throw 1;
-    return false;
-  }
-  unsigned int outputId = _pinOutMap[outputName];
-  return getOutput(outputId);
 }

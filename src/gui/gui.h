@@ -86,6 +86,7 @@ class MyFrame: public wxFrame
     OutputPlot *_outputplot;
 
     wxString CurrentNetfilePath; // The Path to the network file we have open
+    void LoadNetwork();
 
     void OnLoadNetwork(wxCommandEvent& event);
     void OnShowErrors(wxCommandEvent& event);

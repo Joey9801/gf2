@@ -22,7 +22,7 @@ class Network : public BaseComponent
   friend class RootNetwork;
   public:
     Network();
-    ~Network();
+    virtual ~Network();
 
     virtual void step(std::vector<bool>& a, std::vector<bool>& b);
 

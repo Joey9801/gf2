@@ -104,17 +104,17 @@ class Scanner {
 
   void startNewLexeme();
 
-  ScannerState currentState;              ///<  The current state of the scanner state machine
+  ScannerState currentState;                        ///<  The current state of the scanner state machine
 
-  std::string currentString;              ///<  The string of characters currently being extracted
+  std::string currentString;                        ///<  The string of characters currently being extracted
 
-  unsigned int currentFileLine;           ///<  The number of the source file line from which the most recent character was scanned
+  unsigned long long int currentFileLine;           ///<  The number of the source file line from which the most recent character was scanned
 
-  unsigned int currentLineChar;           ///<  The number (on the line) of the most recently scanned character
+  unsigned long long int currentLineChar;           ///<  The number (on the line) of the most recently scanned character
 
-  unsigned int currLexemeStartFileLineNo; ///<  The number of the source file line from which the first character of the current lexeme was scanned
+  unsigned long long int currLexemeStartFileLineNo; ///<  The number of the source file line from which the first character of the current lexeme was scanned
 
-  unsigned int currLexemeStartFileCharNo; ///<  The number (on the line it was scanned from) of the first character of the current lexeme
+  unsigned long long int currLexemeStartFileCharNo; ///<  The number (on the line it was scanned from) of the first character of the current lexeme
 };
 
 #endif // SCANNER_H_

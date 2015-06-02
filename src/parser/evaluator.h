@@ -23,10 +23,31 @@ enum class EvaluatorState : char {
                                     identifier lexeme has been read in, but it
                                     is not yet known whether this is the value
                                     in its entirety */
-  MEMBERACCESSEDIDENTIFIER    /*!<  The "member accessed identifier" state -
+  MEMBERACCESSEDIDENTIFIER,   /*!<  The "member accessed identifier" state -
                                     a single identifier was immediately
                                     followed by a . character, so a second
                                     identifier is expected immediately */
+  VALUE,                      /*!<  The "value" state - the previous lexeme
+                                    potentially completed a value token but
+                                    there could still be a vector opening
+                                    bracket to come */
+  VALUEVECTOROPEN,            /*!<  The "value vector open" state - the previous
+                                    lexeme was a vector opening bracket and came
+                                    after a potentially complete value token */
+  VALUEVECTORNUMBERED,        /*!<  The "value vector numbered" state - the
+                                    previous lexeme was an identifier which
+                                    represents a number and came after a value
+                                    token with a vector opening bracket on the
+                                    end */
+  IDENTIFIERVECTOROPEN,       /*!<  The "identifier vector open" state - the
+                                    previous lexeme was a vector opening bracket
+                                    and came after a potentially complete
+                                    identifier token */
+  IDENTIFIERVECTORNUMBERED    /*!<  The "identifier vector numbered" state - the
+                                    previous lexeme was an identifier which
+                                    represents a number and came after an
+                                    identifier token with a vector opening
+                                    bracket on the end */
 };
 
 /// Circuit definition file evaluator class
@@ -59,10 +80,36 @@ class Evaluator {
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens);
 
+   bool valueProcessLexeme( Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool valueVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool valueVectorNumberedProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool identifierVectorOpenProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
+   bool identifierVectorNumberedProcessLexeme(
+                            Lexeme& lexeme,
+                            std::vector<ParserError>& errors,
+                            std::vector<Token>& tokens);
+
    void processEndOfLexemes(std::vector<ParserError>& errors,
                             std::vector<Token>& tokens);
 
    void resetToStartState();
+
+   bool isValidVectorNumber(std::string str);
 
    std::string addEvaluatorErrorPrefix(std::string errorMessage);
 
@@ -70,9 +117,9 @@ class Evaluator {
 
    std::string currentString;             ///<  The string of characters currently being extracted
 
-   unsigned int currTokenStartFileLineNo; ///<  The number of the source file line from which the first character of the current token came
+   unsigned long long int currTokenStartFileLineNo; ///<  The number of the source file line from which the first character of the current token came
 
-   unsigned int currTokenStartFileCharNo; ///<  The number (on the line it came from) of the first character of the current token
+   unsigned long long int currTokenStartFileCharNo; ///<  The number (on the line it came from) of the first character of the current token
 };
 
 #endif // EVALUATOR_H_

@@ -2,6 +2,7 @@
 #include "charcheck.h"
 
 #include <fstream>
+#include <limits>
 
 /// Constructor for the Scanner class
 Scanner::Scanner() : currentState(ScannerState::START) {
@@ -29,6 +30,24 @@ bool Scanner::scan( const std::string filename,
       if (character == '\n') {
         currentFileLine++;
         currentLineChar = 0;
+      }
+      if (currentLineChar == std::numeric_limits<unsigned long long int>::max()) {
+        // If we are unable to count any higher on this line then abort and
+        // return an error
+        aborted = true;
+        errors.push_back(ParserError( addScannerErrorPrefix(
+                                          "Could not scan whole line as it was too long - aborted scanning"),
+                                      currentFileLine,
+                                      currentLineChar));
+      }
+      if (currentFileLine == std::numeric_limits<unsigned long long int>::max()) {
+        // If we are unable to count any more lines then abort and return
+        // an error
+        aborted = true;
+        errors.push_back(ParserError( addScannerErrorPrefix(
+                                          "Could not scan whole file as it had too many lines - aborted scanning"),
+                                      currentFileLine,
+                                      currentLineChar));
       }
     }
     if (!aborted) {

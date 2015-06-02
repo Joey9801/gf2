@@ -301,3 +301,47 @@ SCENARIO("Check that only \"member access operators\" pass \"member access opera
     currentChar++;
   } while (currentChar != 0);
 }
+
+/// Check that only characters defined as "vector opening brackets" pass the
+/// "vector opening bracket" check
+SCENARIO("Check that only \"vector opening brackets\" pass \"vector opening bracket\" character check") {
+  char currentChar = 0;
+  do {
+    char result = 0;
+    if (currentChar == '[')
+    {
+      result = isOpeningVectorBracket(currentChar) ? 1 : 0;
+    }
+    else
+    {
+      result = isOpeningVectorBracket(currentChar) ? 0 : 1;
+    }
+    // The slightly odd way of testing here ensures that the value of the
+    // character that has failed will be displayed if a test fails
+    result *= currentChar;
+    CHECK(int(result) == int(currentChar));
+    currentChar++;
+  } while (currentChar != 0);
+}
+
+/// Check that only characters defined as "vector closing brackets" pass the
+/// "vector closing bracket" check
+SCENARIO("Check that only \"vector closing brackets\" pass \"vector closing bracket\" character check") {
+  char currentChar = 0;
+  do {
+    char result = 0;
+    if (currentChar == ']')
+    {
+      result = isClosingVectorBracket(currentChar) ? 1 : 0;
+    }
+    else
+    {
+      result = isClosingVectorBracket(currentChar) ? 0 : 1;
+    }
+    // The slightly odd way of testing here ensures that the value of the
+    // character that has failed will be displayed if a test fails
+    result *= currentChar;
+    CHECK(int(result) == int(currentChar));
+    currentChar++;
+  } while (currentChar != 0);
+}

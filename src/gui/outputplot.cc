@@ -93,7 +93,7 @@ void OutputPlot::refresh(void) {
   LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
   _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
       GetSize().x,
-      _monitor->maxTime*bitwidth,
+      (_monitor->maxTime+1)*bitwidth,
       GetSize().x);
   _plotcanvas->Render(_canvasscrollbar->GetThumbPosition() / bitwidth, bitwidth);
   return;

@@ -16,6 +16,7 @@ bool Scanner::scan( const std::string filename,
   // Clear the vector of lexemes to prevent mixing old and new lexemes
   lexemes.clear();
 
+  // Try to open the file, and make sure it is open before using it
   std::ifstream inf;
   char character;
   inf.open(filename);

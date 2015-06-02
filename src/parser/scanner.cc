@@ -2,6 +2,7 @@
 #include "charcheck.h"
 
 #include <fstream>
+#include <limits>
 
 /// Constructor for the Scanner class
 Scanner::Scanner() : currentState(ScannerState::START) {

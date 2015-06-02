@@ -62,6 +62,16 @@ bool isMemberAccessOperator(const char ch) {
   return ch == '.';
 }
 
+/// Check whether the given character is a valid vector opening bracket
+bool isOpeningVectorBracket(const char ch) {
+  return ch == '[';
+}
+
+/// Check whether the given character is a valid vector closing bracket
+bool isClosingVectorBracket(const char ch) {
+  return ch == ']';
+}
+
 /// Check whether the given character is any valid character in the language
 bool isValidCharacter(const char ch) {
   return  isStringChar(ch)          ||
@@ -70,5 +80,7 @@ bool isValidCharacter(const char ch) {
           isClosingDictDelim(ch)    ||
           isDictSeparator(ch)       ||
           isPairSeparator(ch)       ||
+          isClosingVectorBracket(ch)||
+          isOpeningVectorBracket(ch)||
           isMemberAccessOperator(ch);
 }

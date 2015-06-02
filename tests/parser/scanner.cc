@@ -145,23 +145,23 @@ SCENARIO("Create files with each character input in the IDLE state and run the s
     if (isValidCharacter(character)) {
       if (char(character) == '"') {
         // The string delimiter starts a string lexeme, which will be
-        // unterminated at the end of the file giving 1 error and 2 lexemes
+        // unterminated at the end of the file giving 1 error and 0 lexemes
         REQUIRE(errors.size() == 1);
         CHECK(errors[0].getErrorDescription() ==
             "SCANNER ERROR: String unterminated by end of file");
-        CHECK(lexemes.size() == 2);
+        CHECK(lexemes.empty());
       } else {
         // All other characters should give 0 errors and 3 lexemes
         CHECK(errors.empty());
         CHECK(lexemes.size() == 3);
       }
     } else {
-      // All invalid characters should give 1 error and 2 lexemes before this
+      // All invalid characters should give 1 error and 0 lexemes after this
       // error is produced and scanning aborted
       REQUIRE(errors.size() == 1);
       CHECK(errors[0].getErrorDescription() ==
           "SCANNER ERROR: Invalid character in file - aborted scanning");
-      CHECK(lexemes.size() == 2);
+      CHECK(lexemes.empty());
     }
   }
 }
@@ -185,11 +185,11 @@ SCENARIO("Create files with each character input in the IDENTIFIERPROCESSING sta
     if (isValidCharacter(character)) {
       if (char(character) == '"') {
         // The string delimiter starts a string lexeme, which will be
-        // unterminated at the end of the file giving 1 error and 1 lexemes
+        // unterminated at the end of the file giving 1 error and 0 lexemes
         REQUIRE(errors.size() == 1);
         CHECK(errors[0].getErrorDescription() ==
             "SCANNER ERROR: String unterminated by end of file");
-        CHECK(lexemes.size() == 1);
+        CHECK(lexemes.empty());
       } else {
         CHECK(errors.empty());
         if (isCharacterChar(character)) {
@@ -233,17 +233,18 @@ SCENARIO("Create files with each character input in the STRINGPROCESSING state a
         if (char(character) == '"') {
           // The string delimiter closes the string lexeme, and then the
           // post-string string delimiter starts another string lexeme, which
-          // will be unterminated at the end of the file giving 1 error and 1
-          // lexeme
+          // will be unterminated at the end of the file giving 1 error and 0
+          // lexemes
           REQUIRE(errors.size() == 1);
           CHECK(errors[0].getErrorDescription() ==
               "SCANNER ERROR: String unterminated by end of file");
+          CHECK(lexemes.empty());
         } else {
           // All other valid string characters will become part of the string
           // lexeme, and hence should give 0 errors and 1 lexeme
           CHECK(errors.empty());
+          CHECK(lexemes.size() == 1);
         }
-        CHECK(lexemes.size() == 1);
       } else {
         // Invalid string characters should give 1 error and 0 lexemes
         REQUIRE(errors.size() == 1);
@@ -318,11 +319,11 @@ SCENARIO("Create files with each character input in the WHITESPACEPROCESSING sta
     if (isValidCharacter(character)) {
       if (char(character) == '"') {
         // The string delimiter starts a string lexeme, which will be
-        // unterminated at the end of the file giving 1 error and 1 lexemes
+        // unterminated at the end of the file giving 1 error and 0 lexemes
         REQUIRE(errors.size() == 1);
         CHECK(errors[0].getErrorDescription() ==
             "SCANNER ERROR: String unterminated by end of file");
-        CHECK(lexemes.size() == 1);
+        CHECK(lexemes.empty());
       } else {
         CHECK(errors.empty());
         if (isWhitespaceChar(character)) {
@@ -372,11 +373,11 @@ SCENARIO("Create files with each character input in the POTENTIALBEGINCOMMENT st
       } else {
         if (char(character) == '"') {
           // The string delimiter starts a string lexeme, which will be
-          // unterminated at the end of the file giving 1 error and 1 lexemes
+          // unterminated at the end of the file giving 1 error and 0 lexemes
           REQUIRE(errors.size() == 1);
           CHECK(errors[0].getErrorDescription() ==
               "SCANNER ERROR: String unterminated by end of file");
-          CHECK(lexemes.size() == 1);
+          CHECK(lexemes.empty());
         } else {
           // All other valid characters should give 0 errors and 2 lexemes
           CHECK(errors.empty());
@@ -966,8 +967,6 @@ SCENARIO("Test that the scanner works correctly when the file ends in any state"
   }
 
   WHEN("State at end of file is IDENTIFIERPROCESSING") {
-    CHECK(errors.empty());
-    REQUIRE(lexemes.empty());
     scanner.scan( "tests/parser/test_files/scanner_tests/endoffileallstates/eofidentifierprocessing.def",
                   errors,
                   lexemes);

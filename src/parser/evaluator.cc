@@ -12,6 +12,9 @@ bool Evaluator::evaluate( std::vector<Lexeme>& lexemes,
                           std::vector<ParserError>& errors,
                           std::vector<Token>& tokens) {
   resetToStartState();
+  // Clear the vector of tokens to prevent mixing old and new tokens
+  tokens.clear();
+
   bool aborted = false;
   for ( std::vector<Lexeme>::iterator lexeme = lexemes.begin();
         (lexeme != lexemes.end() && !aborted);
@@ -23,6 +26,13 @@ bool Evaluator::evaluate( std::vector<Lexeme>& lexemes,
     // Process the end of the vector of lexemes
     processEndOfLexemes(errors, tokens);
   }
+
+  // If there are errors then clear the vector of tokens to prevent use of
+  // a half-complete vector
+  if (!errors.empty()) {
+    tokens.clear();
+  }
+
   return errors.empty();
 }
 

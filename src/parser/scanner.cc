@@ -13,6 +13,9 @@ bool Scanner::scan( const std::string filename,
                     std::vector<ParserError>& errors,
                     std::vector<Lexeme>& lexemes) {
   resetToStartState();
+  // Clear the vector of lexemes to prevent mixing old and new lexemes
+  lexemes.clear();
+
   std::ifstream inf;
   char character;
   inf.open(filename);
@@ -38,6 +41,13 @@ bool Scanner::scan( const std::string filename,
     errors.push_back(ParserError( addScannerErrorPrefix(
                                       "File open operation failed - aborted scanning")));
   }
+
+  // If there are errors then clear the vector of lexemes to prevent use of
+  // a half-complete vector
+  if (!errors.empty()) {
+    lexemes.clear();
+  }
+
   return errors.empty();
 }
 

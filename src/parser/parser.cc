@@ -47,6 +47,14 @@ Definition* Parser::parse(const std::string filename,
     }
   }
 
+  // If there are errors then delete the invalid definition and return a pointer
+  // to a new, empty Definition object to prevent attempts to access broken
+  // information
+  if (!errors.empty()) {
+    delete def;
+    def = new Definition;
+  }
+
   return def;
 }
 

@@ -310,7 +310,17 @@ bool Evaluator::valueProcessLexeme(
                             Lexeme& lexeme,
                             std::vector<ParserError>& errors,
                             std::vector<Token>& tokens) {
-  return false;
+  // If it is anything else then generate the VALUE token and move to the
+  // IDLE state, then re-input this lexeme (This is a shortcut, as other
+  // than the opening vector bracket this state should respond identically
+  // to the IDLE state)
+  tokens.push_back(Token( TokenType::VALUE,
+                          currentString,
+                          currTokenStartFileLineNo,
+                          currTokenStartFileCharNo));
+  currentString.clear();
+  currentState = EvaluatorState::IDLE;
+  return idleProcessLexeme(lexeme, errors, tokens);
 }
 
 bool Evaluator::valueVectorOpenProcessLexeme(

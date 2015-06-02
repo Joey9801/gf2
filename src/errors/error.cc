@@ -8,8 +8,8 @@ std::string GF2Error::formatError(void) {
   return name + ": " + detail;
 }
 
-std::string ParseError::formatError(void) {
-  return name + ": " + detail + " in file " + location.file;
+std::string BuildError::formatError(void) {
+  return name + ": " + detail + "<br>    In file " + location.file + "<br>";
 }
 
 ErrorList::ErrorList() :

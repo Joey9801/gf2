@@ -37,3 +37,14 @@ unsigned int ParserError::getLineNo() {
 unsigned int ParserError::getCharNo() {
   return charNo;
 }
+
+std::string ParserError::formatError(void) {
+  std::stringstream formatted("");
+
+  formatted << "(Line " << lineNo;
+  formatted << ", char " << charNo << "): ";
+
+  formatted << errorDesc;
+
+  return formatted.str();
+}

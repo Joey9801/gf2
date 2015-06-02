@@ -50,9 +50,22 @@ namespace Builder {
 
     try {
       def = parser.parse(filepath, errors);
-    }
-    catch(ErrorList * e) {
-      throw;
+      if(errors.size() > 0) {
+        for(std::vector<ParserError>::iterator it = errors.begin();
+            it != errors.end();
+            it++) {
+          ParseError * e = new ParseError();
+          e->name = "ParseError";
+          e->detail = it->formatError();
+          e->location.file = filepath;
+          e->location.line = it->getLineNo();
+          e->location.column = it->getCharNo();
+          e->recoverable = false;
+
+          errorList->addError(e);
+        }
+        throw errorList;
+      }
     }
     catch(...) {
       LOG_ERROR << "Parsing \"" << filepath << "\" caused an unrecoverable error";
@@ -194,7 +207,7 @@ namespace Builder {
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"inputs\" is missing";
       e->location.file = def->filepath;
@@ -215,7 +228,7 @@ namespace Builder {
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"outputs\" is missing";
       e->location.file = def->filepath;
@@ -234,7 +247,7 @@ namespace Builder {
     ErrorList * errorList = new ErrorList();;
 
     if( def->pairs.find("components") == def->pairs.end() ) {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Missing root node";
       e->detail = "\"components\" is missing";
       e->location.file = def->filepath;
@@ -247,7 +260,7 @@ namespace Builder {
         it++) {
 
       if(it->second->pairs.find("type") == it->second->pairs.end()) {
-        ParseError * e = new ParseError();
+        BuildError * e = new BuildError();
         e->name = "Field is missing";
         e->detail = "Component \"type\" field is missing";
         e->location.file = def->filepath;
@@ -312,7 +325,7 @@ namespace Builder {
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Field is missing";
       e->detail = "\"config\" field is missing";
       e->location.file = def->filepath;
@@ -365,7 +378,7 @@ namespace Builder {
       }
     }
     else {
-      ParseError * e = new ParseError();
+      BuildError * e = new BuildError();
       e->name = "Field is missing";
       e->detail = "\"config\" field is missing";
       e->recoverable = true;

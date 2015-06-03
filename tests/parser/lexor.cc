@@ -59,7 +59,7 @@ SCENARIO("Lex file covering all errorless transitions") {
   REQUIRE(tokens.size() == 22);
 
   CHECK(tokens[ 0].getType() == TokenType::IDENTIFIER);
-  CHECK(tokens[ 0].getValue() == "These");
+  CHECK(tokens[ 0].getValue() == "these");
   CHECK(tokens[ 0].getStartLineNo() == (unsigned long long int)5);
   CHECK(tokens[ 0].getStartCharNo() == (unsigned long long int)1);
 

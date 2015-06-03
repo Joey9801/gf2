@@ -244,11 +244,9 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     _outputplot->setMonitor(_monitor);
     _outputplot->setNetwork(_network);
 
-    LOG_DEBUG << "About to load the network view";
     _netview->loadNetwork(_network->getNodeTree());
     _compview->selectComponent(_network->getNodeTree());
 
-    LOG_DEBUG << "About to enable the simulation toolbar";
     _outputplot->EnableToolbar(true);
   }
 

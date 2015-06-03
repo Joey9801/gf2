@@ -1,0 +1,15 @@
+{
+  outputs : {
+    y : and1
+  },
+  components : {
+    and1 : {
+      type : or,
+      inputs : {
+        i1 : and1,
+        i2 : and1,
+        anotherinput : and1
+      }
+    }
+  }
+}

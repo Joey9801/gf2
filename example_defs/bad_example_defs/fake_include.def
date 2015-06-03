@@ -1,0 +1,10 @@
+{
+    includes : {
+        "this_doesnt_exist.def" : foo
+    },
+    components : {
+        c1 : {
+            type : includes.foo
+        }
+    }
+}

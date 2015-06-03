@@ -1,0 +1,7 @@
+{
+    components : {
+        c1 : {
+            type : includes.foo
+        }
+    }
+}

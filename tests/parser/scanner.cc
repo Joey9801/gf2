@@ -508,7 +508,7 @@ SCENARIO("Try to scan file containing empty comments") {
   }
 
   CHECK(lexemes[ 0].getString() == "/**/");
-  CHECK(lexemes[ 2].getString() == "Check");
+  CHECK(lexemes[ 2].getString() == "check");
   CHECK(lexemes[ 4].getString() == "that");
   CHECK(lexemes[ 6].getString() == "blank");
   CHECK(lexemes[ 8].getString() == "comments");
@@ -550,7 +550,7 @@ SCENARIO("Try to scan a valid definition which covers as many transitions and st
   CHECK(errors.empty());
   REQUIRE(lexemes.size() == 31);
 
-  CHECK(lexemes[ 0].getString() == "/*This file attempts to cover as many states and transitions as possible using a syntactically valid definition file ** */");
+  CHECK(lexemes[ 0].getString() == "/*this file attempts to cover as many states and transitions as possible using a syntactically valid definition file ** */");
   CHECK(lexemes[ 0].getType() == LexemeType::COMMENT);
   CHECK(lexemes[ 0].getStartLineNo() == (unsigned long long int)1);
   CHECK(lexemes[ 0].getStartCharNo() == (unsigned long long int)1);
@@ -580,7 +580,7 @@ SCENARIO("Try to scan a valid definition which covers as many transitions and st
   CHECK(lexemes[ 5].getStartLineNo() == (unsigned long long int)3);
   CHECK(lexemes[ 5].getStartCharNo() == (unsigned long long int)14);
   
-  CHECK(lexemes[ 6].getString() == "All states, all transitions test");
+  CHECK(lexemes[ 6].getString() == "all states, all transitions test");
   CHECK(lexemes[ 6].getType() == LexemeType::STRING);
   CHECK(lexemes[ 6].getStartLineNo() == (unsigned long long int)3);
   CHECK(lexemes[ 6].getStartCharNo() == (unsigned long long int)15);
@@ -645,7 +645,7 @@ SCENARIO("Try to scan a valid definition which covers as many transitions and st
   CHECK(lexemes[18].getStartLineNo() == (unsigned long long int)5);
   CHECK(lexemes[18].getStartCharNo() == (unsigned long long int)11);
 
-  CHECK(lexemes[19].getString() == "/*These are inputs*/");
+  CHECK(lexemes[19].getString() == "/*these are inputs*/");
   CHECK(lexemes[19].getType() == LexemeType::COMMENT);
   CHECK(lexemes[19].getStartLineNo() == (unsigned long long int)6);
   CHECK(lexemes[19].getStartCharNo() == (unsigned long long int)5);
@@ -680,7 +680,7 @@ SCENARIO("Try to scan a valid definition which covers as many transitions and st
   CHECK(lexemes[25].getStartLineNo() == (unsigned long long int)7);
   CHECK(lexemes[25].getStartCharNo() == (unsigned long long int)13);
 
-  CHECK(lexemes[26].getString() == "/*This input is a clock*/");
+  CHECK(lexemes[26].getString() == "/*this input is a clock*/");
   CHECK(lexemes[26].getType() == LexemeType::COMMENT);
   CHECK(lexemes[26].getStartLineNo() == (unsigned long long int)7);
   CHECK(lexemes[26].getStartCharNo() == (unsigned long long int)18);
@@ -722,7 +722,7 @@ SCENARIO("Try to scan an invalid definition which covers all transitions and sta
   CHECK(errors.empty());
   REQUIRE(lexemes.size() == 42);
 
-  CHECK(lexemes[0].getString() == "/*This file covers all states and transitions but is not a syntactically valid definition file, though the scanner should not give any errors ** */");
+  CHECK(lexemes[0].getString() == "/*this file covers all states and transitions but is not a syntactically valid definition file, though the scanner should not give any errors ** */");
   CHECK(lexemes[0].getType() == LexemeType::COMMENT);
   CHECK(lexemes[0].getStartLineNo() == (unsigned long long int)1);
   CHECK(lexemes[0].getStartCharNo() == (unsigned long long int)1);
@@ -752,7 +752,7 @@ SCENARIO("Try to scan an invalid definition which covers all transitions and sta
   CHECK(lexemes[5].getStartLineNo() == (unsigned long long int)3);
   CHECK(lexemes[5].getStartCharNo() == (unsigned long long int)14);
 
-  CHECK(lexemes[6].getString() == "All states, all transitions test");
+  CHECK(lexemes[6].getString() == "all states, all transitions test");
   CHECK(lexemes[6].getType() == LexemeType::STRING);
   CHECK(lexemes[6].getStartLineNo() == (unsigned long long int)3);
   CHECK(lexemes[6].getStartCharNo() == (unsigned long long int)15);
@@ -817,7 +817,7 @@ SCENARIO("Try to scan an invalid definition which covers all transitions and sta
   CHECK(lexemes[18].getStartLineNo() == (unsigned long long int)5);
   CHECK(lexemes[18].getStartCharNo() == (unsigned long long int)11);
 
-  CHECK(lexemes[19].getString() == "/*These are inputs*/");
+  CHECK(lexemes[19].getString() == "/*these are inputs*/");
   CHECK(lexemes[19].getType() == LexemeType::COMMENT);
   CHECK(lexemes[19].getStartLineNo() == (unsigned long long int)6);
   CHECK(lexemes[19].getStartCharNo() == (unsigned long long int)5);
@@ -852,7 +852,7 @@ SCENARIO("Try to scan an invalid definition which covers all transitions and sta
   CHECK(lexemes[25].getStartLineNo() == (unsigned long long int)7);
   CHECK(lexemes[25].getStartCharNo() == (unsigned long long int)13);
 
-  CHECK(lexemes[26].getString() == "/*This input is a clock*/");
+  CHECK(lexemes[26].getString() == "/*this input is a clock*/");
   CHECK(lexemes[26].getType() == LexemeType::COMMENT);
   CHECK(lexemes[26].getStartLineNo() == (unsigned long long int)7);
   CHECK(lexemes[26].getStartCharNo() == (unsigned long long int)18);

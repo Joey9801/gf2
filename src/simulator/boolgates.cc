@@ -20,6 +20,12 @@ void BaseBoolgate::connectInput(std::string inputName, unsigned int node) {
     e.detail = "\"" + inputName + "\" is not an valid input name";
     e.recoverable = false;
     throw e;
+  }else if(inputId > 10000) {
+    GF2Error e = GF2Error();
+    e.name = "Too many inputs";
+    e.detail = "Boolean gates with more than 10000 inputs are not supported";
+    e.recoverable = false;
+    throw e;
   }
 
   // Names are 1 based in the spec, but our vectors are 0 based

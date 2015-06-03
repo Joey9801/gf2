@@ -1,0 +1,20 @@
+{
+    includes : {
+        "example_defs/4bit-synch-counter.def" : counter
+    },
+    components : {
+        clock : {
+            type : siggen,
+            config : {
+                data : 01,
+                period : 10
+            }
+        },
+        counter1 : {
+            type : includes.counter,
+            inputs : {
+                clooooock : clock
+            }
+        }
+    }
+}

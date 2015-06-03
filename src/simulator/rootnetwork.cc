@@ -15,6 +15,7 @@ RootNetwork::RootNetwork(Network * net)
 
   _inputs = net->_inputDummy->_outputs;
   _inputVals = std::vector<bool>(_inputs.size(), false);
+  _defaultInputVals = std::vector<bool>(_inputs.size(), false);
   _outputs = net->_outputDummy->_inputs;
   _inputVectors = net->_inputVectors;
   _outputVectors = net->_outputVectors;

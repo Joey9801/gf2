@@ -1,6 +1,8 @@
 #include "builder.h"
 
 namespace Builder {
+  std::string reservedNames[] = {"const", "inputs", "outputs", "true", "false"};
+
   RootNetwork * buildRoot(std::string filepath) {
     Network * net = new Network();
     try {
@@ -224,6 +226,17 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["inputs"]->pairs.begin();
           it != def->pairs["inputs"]->pairs.end();
           it++) {
+
+        std::string * p;
+        if((p = std::find(reservedNames, reservedNames+5, it->first)) != reservedNames+5) {
+          BuildError * e = new BuildError();
+          e->name = "Reserved word used as name";
+          e->detail = "Reserved word \""+*p+"\" cannot be used as input name";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+          throw errorList;
+        }
         try {
           if((it->first.find_first_of('[') != std::string::npos)
               and (it->first.find_first_of(']') != std::string::npos))
@@ -257,6 +270,16 @@ namespace Builder {
       for(std::map<std::string, Definition*>::iterator it = def->pairs["outputs"]->pairs.begin();
           it != def->pairs["outputs"]->pairs.end();
           it++) {
+        std::string * p;
+        if((p = std::find(reservedNames, reservedNames+5, it->first)) != reservedNames+5) {
+          BuildError * e = new BuildError();
+          e->name = "Reserved word used as name";
+          e->detail = "Reserved word \""+*p+"\" cannot be used as output name";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+          throw errorList;
+        }
         try {
           if((it->first.find_first_of('[') != std::string::npos)
               and (it->first.find_first_of(']') != std::string::npos))
@@ -316,6 +339,17 @@ namespace Builder {
         throw errorList;
       }
 
+      std::string * p;
+      if((p = std::find(reservedNames, reservedNames+5, it->first)) != reservedNames+5) {
+        BuildError * e = new BuildError();
+        e->name = "Reserved word used as name";
+        e->detail = "Reserved word \""+*p+"\" cannot be used as component name";
+        e->location.file = def->filepath;
+        e->recoverable = false;
+        errorList->addError(e);
+        throw errorList;
+      }
+      
       std::string name = it->first;
       std::string type = it->second->pairs["type"]->value;
 

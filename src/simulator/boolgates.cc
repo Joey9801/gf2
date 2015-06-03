@@ -8,11 +8,19 @@ BaseBoolgate::BaseBoolgate(std::string name) :
 
 void BaseBoolgate::connectInput(std::string inputName, unsigned int node) {
   std::istringstream ss(inputName);
-  char dump;
-  ss >> dump;
+  char leadingchar;
+  ss >> leadingchar;
 
   unsigned int inputId;
   ss >> inputId;
+
+  if(leadingchar != 'i' or ss.fail()) {
+    GF2Error e = GF2Error();
+    e.name = "Bad input name";
+    e.detail = "\"" + inputName + "\" is not an valid input name";
+    e.recoverable = false;
+    throw e;
+  }
 
   // Names are 1 based in the spec, but our vectors are 0 based
   inputId -= 1;

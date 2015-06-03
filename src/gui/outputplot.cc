@@ -91,10 +91,10 @@ void OutputPlot::setNetwork(RootNetwork * n) {
 }
 
 void OutputPlot::refresh(void) {
-  LOG_DEBUG << GetSize().x;
-  LOG_DEBUG << _canvasscrollbar->GetRange();
-  LOG_DEBUG << _monitor->maxTime*bitwidth;
-  LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
+  // LOG_DEBUG << GetSize().x;
+  // LOG_DEBUG << _canvasscrollbar->GetRange();
+  // LOG_DEBUG << _monitor->maxTime*bitwidth;
+  // LOG_DEBUG << _canvasscrollbar->GetThumbPosition();
 
   _canvasscrollbar->SetScrollbar(_canvasscrollbar->GetThumbPosition(),
       _plotcanvas->GetSize().x / bitwidth,
@@ -148,7 +148,7 @@ void OutputPlot::OnStopButton(wxCommandEvent& event)
 void OutputPlot::OnSkipButton(wxCommandEvent& event)
 {
   long numberofsteps = wxGetNumberFromUser(_("Enter number of steps to simulate:"),
-      _("Steps"), _("Setup Simulation"), 10, 1, 10000);
+      _("Steps"), _("Setup Simulation"), 10, 1, 2147483647); //Minimum max size for long
   for(unsigned int i=0; i<numberofsteps; i++)
     _network->step();
 
@@ -199,7 +199,7 @@ PlotCanvas::PlotCanvas(wxWindow *parent, wxWindowID id) :
 
 void PlotCanvas::Render(unsigned int xpos, float bitwidth)
 {
-  LOG_DEBUG << GetSize().x;
+  // LOG_DEBUG << GetSize().x;
   _currentxpos = xpos;
   _currentbitwidth = bitwidth;
 
@@ -337,7 +337,6 @@ void PlotCanvas::InitGL()
 
 // Event handler for when the canvas is exposed
 void PlotCanvas::OnPaint(wxPaintEvent& event) {
-  LOG_DEBUG;
   // required for correct refreshing under MS windows
   wxPaintDC dc(this);
   Render(_currentxpos, _currentbitwidth);
@@ -345,7 +344,6 @@ void PlotCanvas::OnPaint(wxPaintEvent& event) {
 
 // Event handler for when the canvas is resized
 void PlotCanvas::OnSize(wxSizeEvent& event) {
-  LOG_DEBUG;
   // this will force the viewport and projection matrices to be reconfigured on the next paint
   init = false;
 }

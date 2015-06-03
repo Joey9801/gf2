@@ -1,0 +1,9 @@
+/*This file attempts to cover as many states and transitions as possible using a syntactically valid definition file ** */
+ 	
+{description :"All states, all transitions test",
+  "file with spaces.def" : file_with_spaces
+  inputs:{
+    /*These are inputs*/
+    clock : false/*This input is a clock*/
+  }
+}

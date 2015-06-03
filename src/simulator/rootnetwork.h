@@ -22,6 +22,10 @@ class RootNetwork : public Network
 
     void setInput(unsigned int inputId, bool value);
     void setInput(std::string inputName, bool value);
+    void setDefaultInput(unsigned int inputId, bool value);
+    void setDefaultInput(std::string inputName, bool value);
+    void setDefaultVectorInput(std::string inputName, bool value);
+
     bool getInput(unsigned int inputId);
     bool getInput(std::string inputName);
 
@@ -33,8 +37,11 @@ class RootNetwork : public Network
     unsigned int addMonitorPoint(std::vector<std::string>& signature);
     void removeMonitorPoint(std::vector<std::string>& signature);
 
+    void Reset(void);
+
   private:
     std::vector<bool> _inputVals;
+    std::vector<bool> _defaultInputVals;
 };
 
 #endif

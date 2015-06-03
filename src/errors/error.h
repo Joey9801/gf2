@@ -26,11 +26,14 @@ class GF2Error {
 
 };
 
-class ParseError : public GF2Error {
+class BuildError : public GF2Error {
   public:
     Location location;
 
     std::string formatError(void);
+};
+
+class ParseError : public BuildError {
 };
 
 class ErrorList {
@@ -39,6 +42,7 @@ class ErrorList {
     void addError(GF2Error * e);
     void addError(const GF2Error& e);
     void addList(const ErrorList& e);
+    void addList(ErrorList * e);
     bool recoverable(void);
 
     bool anyErrors(void);

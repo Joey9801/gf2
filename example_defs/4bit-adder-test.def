@@ -1,8 +1,8 @@
 {
     includes : {
-        example_defs/4bit-synch-counter.def : counter,
-        example_defs/4bit-carry-adder.def : ripple-adder,
-        example_defs/4bit-lookahead-adder.def : lookahead-adder
+        "example_defs/4bit-synch-counter.def" : counter,
+        "example_defs/4bit-carry-adder.def" : ripple_adder,
+        "example_defs/4bit-lookahead-adder.def" : lookahead_adder
     },
     components : {
         clock : {
@@ -25,7 +25,7 @@
             }
         },
         ripple : {
-            type : includes.ripple-adder,
+            type : includes.ripple_adder,
             inputs : {
                 a[] : counter1.count[],
                 b[] : counter2.count[],
@@ -33,7 +33,7 @@
             }
         },
         lookahead : {
-            type : includes.lookahead-adder,
+            type : includes.lookahead_adder,
             inputs : {
                 a[] : counter1.count[],
                 b[] : counter2.count[],

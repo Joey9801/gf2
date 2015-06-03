@@ -353,24 +353,34 @@ namespace Builder {
       std::string name = it->first;
       std::string type = it->second->pairs["type"]->value;
 
-      try {
-        if(type.find_first_of('.') != std::string::npos) {
-          std::pair<std::string, std::string> value = Helpers::separateDotted(type);
-          if( value.first == "includes" )
-            net->addComponent(includes[value.second]->clone(), name);
-        }
-        else {
-          net->addComponent(type, name);
+      if(type.find_first_of('.') != std::string::npos) {
+        std::pair<std::string, std::string> value = Helpers::separateDotted(type);
+        if( value.first == "includes" ) {
+          if(includes.find(value.second) == includes.end()) {
+            BuildError * e = new BuildError();
+            e->name = "Unknown component type";
+            e->detail = "\"" + type +  "\" is not a known include";
+            e->location.file = def->filepath;
+            e->recoverable = false;
+            errorList->addError(e);
+            throw errorList;
+          }
+          net->addComponent(includes[value.second]->clone(), name);
         }
       }
-      catch(GF2Error& e) {
-        BuildError * e = new BuildError();
-        e->name = "Unknown component type";
-        e->detail = "\"" + type +  "\" is not a known component type or include";
-        e->location.file = def->filepath;
-        e->recoverable = false;
-        errorList->addError(e);
-        throw errorList;
+      else {
+        try {
+          net->addComponent(type, name);
+        }
+        catch(GF2Error& e) {
+          BuildError * e = new BuildError();
+          e->name = "Unknown component type";
+          e->detail = "\"" + type +  "\" is not a known component type";
+          e->location.file = def->filepath;
+          e->recoverable = false;
+          errorList->addError(e);
+          throw errorList;
+        }
       }
     }
 

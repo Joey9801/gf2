@@ -26,6 +26,8 @@ bool Scanner::scan( const std::string filename,
     // Repeatedly process characters until the end of the file
     while (!(inf.get(character) == 0) && !aborted) {
       currentLineChar++;
+      // Make all letters lowercase, as this is required by the builder
+      character = (char)tolower(character);
       aborted = !processCharacter(character, errors, lexemes);
       if (character == '\n') {
         currentFileLine++;

@@ -120,15 +120,23 @@ unsigned int BaseComponent::getOutputNode(unsigned int pinOut) {
 }
 
 unsigned int BaseComponent::getOutputNode(std::string name) {
-  if( (name == std::string("")) and (_outputs.size() == 1) ) {
-    return _outputs[0];
+  if( name == std::string("")) {
+    if( _outputs.size() == 1 ) {
+      return _outputs[0];
+    }
+    if( _outputs.size() != 1) {
+      GF2Error e = GF2Error();
+      e.name = "Invalid output reference";
+      e.detail = "Cannot not name output where there are more than one to choose from";
+      e.recoverable = false;
+      throw e;
+    }
   }
   else if(_pinOutMap.find(name) == _pinOutMap.end()){
     GF2Error e = GF2Error();
     e.name = "Invalid output pin name";
-    e.detail = "\"" + name + "\" is not an output name of this " + _name;
+    e.detail = "\"" + name + "\" is not valid output";
     e.recoverable = false;
-
     throw e;
   }
   unsigned int pinOut = _pinOutMap[name];
@@ -243,8 +251,11 @@ void BaseComponent::connectInput(unsigned int inputId, unsigned int node) {
 
 void BaseComponent::connectInput(std::string name, unsigned int node) {
   if(_pinInMap.find(name) == _pinInMap.end()) {
-    //TODO raise an error
-    throw 1;
+    GF2Error e = GF2Error();
+    e.name = "Bad input name";
+    e.detail = "\"" + name + "\" is not an valid input name";
+    e.recoverable = false;
+    throw e;
   }
 
   unsigned int index = _pinInMap[name];

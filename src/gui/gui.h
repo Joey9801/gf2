@@ -79,6 +79,7 @@ class MyFrame: public wxFrame
     ComponentView *_compview;
     OutputPlot *_outputplot;
 
+    wxMenuItem * showErrorButton;
     wxString CurrentNetfilePath; // The Path to the network file we have open
     void LoadNetwork();
 

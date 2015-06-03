@@ -119,7 +119,8 @@ MyFrame::MyFrame(wxLocale& locale)
   menuFile->Append(wxID_EXIT);
 
   wxMenu *menuHelp = new wxMenu;
-  menuHelp->Append(ID_ShowErrors, _("Show &Errors\tCtrl-E"), _("Show all errors"));
+  showErrorButton = menuHelp->Append(ID_ShowErrors, _("Show &Errors\tCtrl-E"), _("Show all errors"));
+  showErrorButton->Enable(false);
   menuFile->AppendSeparator();
   menuHelp->Append(wxID_ABOUT);
 
@@ -223,6 +224,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     catch(ErrorList * e) {
       LOG_DEBUG << "Caught an errorlist pointer from the network builder";
       _errorList = e;
+      showErrorButton->Enable(true);
       ShowErrors();
       return;
     }
@@ -232,6 +234,7 @@ void MyFrame::OnLoadNetwork(wxCommandEvent& event) {
     }
     LOG_INFO << "Network built successfully";
     _errorList = net->errorList;
+    showErrorButton->Enable(true);
 
     delete _network;
     delete _monitor;

@@ -15,16 +15,24 @@ class SignalGenerator : public BaseComponent
 
     void step(std::vector<bool>& a, std::vector<bool>& b);
 
-    void configure(std::string key, std::string value);
+    virtual void configure(std::string key, std::string value);
 
     BaseComponent * clone(void);
 
-  private:
+    virtual void Reset();
+  protected:
     unsigned int _period;
     std::vector<bool> _data;
 
     unsigned int _count;
     std::vector<bool>::iterator _it;
+};
+
+class Clock : public SignalGenerator
+{
+  public:
+    Clock();
+    virtual void configure(std::string key, std::string value);
 };
 
 #endif

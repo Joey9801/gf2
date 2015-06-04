@@ -1,0 +1,1756 @@
+commit e61ff0508a763bd5e8b756aed7114fe8671a66a0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Thu May 28 22:24:25 2015 +0100
+
+    Error class and basic handling in the builder
+    
+    Basic error classes added. Builder now throws on unrecoverable errors, otherwise prints them to a log and keeps the ErrorList in the network object.
+
+60	0	src/errors/error.cc
+52	0	src/errors/error.h
+198	77	src/parser/builder.cc
+1	0	src/parser/builder.h
+3	0	src/simulator/network.h
+1	0	src/structures/definition.h
+ 6 files changed, 315 insertions(+), 77 deletions(-)
+
+commit c01bd5fb26ceddaff05d7cf613e77e1c4abadb3c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 22:47:40 2015 +0100
+
+    Builder now applies definition monitor points
+
+1	1	src/gui/gui.cc
+22	0	src/parser/builder.cc
+2	0	src/parser/builder.h
+4	1	src/simulator/network.cc
+2	1	src/simulator/network.h
+ 5 files changed, 31 insertions(+), 3 deletions(-)
+
+commit 83571ab21f3019ebaf72d70ba760c64a41c64280
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 21:58:16 2015 +0100
+
+    Tidied up a lot of Log messages
+
+0	3	src/gui/componentview.cc
+9	11	src/gui/networkview.cc
+7	7	src/parser/builder.cc
+2	13	src/simulator/rootnetwork.cc
+ 4 files changed, 18 insertions(+), 34 deletions(-)
+
+commit 0211ff3a35721072b7fe6bc8cec02d03ab9a8210
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 20:54:29 2015 +0100
+
+    Added clock component
+
+1	0	src/simulator/componentconstructors.cc
+13	0	src/simulator/signalgenerator.cc
+9	2	src/simulator/signalgenerator.h
+ 3 files changed, 23 insertions(+), 2 deletions(-)
+
+commit 7bc05565978f07232cef9b7869633aba31895be3
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 20:26:30 2015 +0100
+
+    Adjustment to the new monitor logging method
+    
+    Fixed minor bug where the graph would only be drawn up to the last transition, ignoring any trailing constant value.
+
+0	1	src/gui/outputplot.cc
+7	6	src/simulator/monitor.cc
+2	0	src/simulator/monitor.h
+ 3 files changed, 9 insertions(+), 7 deletions(-)
+
+commit 49d52e5841fb1bb88142c4e442f2aaf75e7ea6fc
+Merge: 0bcae17 edf30e8
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 20:12:18 2015 +0100
+
+    Merge branch 'joe' of github.com:Joey9801/gf2 into joe
+    
+    Conflicts:
+    	example_defs/4bit-adder-test.def
+
+commit edf30e805d261c180eab3a7b151698738cf7b063
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 20:10:06 2015 +0100
+
+    RootNetwork type
+    
+    Split off the root network class into its own file.
+    Adjusted the builder to return a RootNetwork.
+    Fixed some of the many things wrong with the root network type.
+
+13	11	src/gui/componentview.cc
+3	3	src/gui/componentview.h
+7	5	src/gui/gui.cc
+2	2	src/gui/gui.h
+7	1	src/gui/networkview.cc
+9	0	src/parser/builder.cc
+3	0	src/parser/builder.h
+2	0	src/simulator/dummyio.h
+9	84	src/simulator/network.cc
+9	23	src/simulator/network.h
+174	0	src/simulator/rootnetwork.cc
+39	0	src/simulator/rootnetwork.h
+ 12 files changed, 277 insertions(+), 129 deletions(-)
+
+commit d665687c1a4f0403aee58285625a2542fa7d8e7e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 13:43:13 2015 +0100
+
+    Compare the ripple to the lookahead in the adder test
+
+12	3	example_defs/4bit-adder-test.def
+1	0	example_defs/4bit-lookahead-adder.def
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+commit 0bcae17e331af84668a65ac73369c2f009db2066
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 13:43:13 2015 +0100
+
+    Compare the ripple to the lookahead in the adder test
+
+12	3	example_defs/4bit-adder-test.def
+1	0	example_defs/4bit-lookahead-adder.def
+ 2 files changed, 13 insertions(+), 3 deletions(-)
+
+commit 5280adf2e713c4bc9c36a65bc15be26691e90fd0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 13:03:24 2015 +0100
+
+    Monitor performance increase
+    
+    Now only logs when the data changes - Means that each stretch of unchanging data only has two log points to store/draw.
+
+1	1	src/gui/outputplot.cc
+16	7	src/simulator/monitor.cc
+4	2	src/simulator/monitor.h
+ 3 files changed, 21 insertions(+), 10 deletions(-)
+
+commit 0dd46e121178344585ae85d640cf83304eefb2ff
+Merge: 4d917cf 4cf286b
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 12:37:19 2015 +0100
+
+    Merge branch 'dan' into joe
+
+commit 4d917cfaa72a7e938af5d9785b58e3e08643479c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 10:58:14 2015 +0100
+
+    Network config block support in builder
+
+10	0	src/parser/builder.cc
+ 1 file changed, 10 insertions(+)
+
+commit 14da6c7e776780b89ef2633f7c611e5c85839417
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 10:52:15 2015 +0100
+
+    Network configuration options
+    
+    Added config options to Network for rate and simulation type
+
+28	6	src/simulator/network.cc
+4	0	src/simulator/network.h
+ 2 files changed, 32 insertions(+), 6 deletions(-)
+
+commit f323f0fb6ab1f2636a3c31ef574683458bc11f3b
+Merge: 6c9b617 0bcfb36
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 10:09:36 2015 +0100
+
+    Merge branch 'gui' into dan
+
+commit 0bcfb36c5002778330e521285b299428ce35f094
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 10:02:55 2015 +0100
+
+    dummyio appear in the nodetree
+
+2	6	src/simulator/network.cc
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+commit 76a1a25632b40bbc5c2ddd59c9f26fcbb0d03949
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 09:59:27 2015 +0100
+
+    functions to remove a monitor point
+
+0	15	src/simulator/monitor.cc
+15	4	src/simulator/monitor.h
+42	0	src/simulator/network.cc
+3	0	src/simulator/network.h
+ 4 files changed, 60 insertions(+), 19 deletions(-)
+
+commit 7dfc64841b7337c593348aaa0c67ffba5fdf761e
+Merge: 8807044 a14f1f6
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 09:25:50 2015 +0100
+
+    Merge branch 'joe' into gui
+    
+    Conflicts:
+    	src/simulator/network.h
+    
+    Closes #17
+
+commit a14f1f68fbfe6e258af0c57ca6409a55cd427ea0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 26 09:22:55 2015 +0100
+
+    Small changes to compile on cued machines
+
+1	0	src/simulator/monitor.h
+1	1	src/simulator/network.h
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+commit 7974320f2e1d8f8121feea33cfa194bff919d0fa
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 25 23:21:15 2015 +0100
+
+    More complex example defs
+    
+    Some scripts to generate arbitrary width synchronous counters, ripple adders and carry-lookahead adders.
+    Note that the filesizes for the synchronous counter lookahead adder gets very large with large sizes (500kb for a 64-bit carry-lookahead adder), so minifying the files is a good idea. The last couple of lines of the scripts support this already.
+
+1	0	.gitattributes
+1	0	example_defs/32bit-ripple-adder.def
+1	0	example_defs/32bit-synch-counter.def
+35	0	example_defs/4bit-adder-test.def
+53	0	example_defs/4bit-carry-adder.def
+0	61	example_defs/4bit-counter.def
+68	0	example_defs/4bit-synch-counter.def
+20	0	example_defs/64bit-counter-test.def
+1	0	example_defs/64bit-lookahead-adder.def
+1	0	example_defs/64bit-synch-counter.def
+0	29	example_defs/main.def
+59	0	tools/makeCounter.py
+119	0	tools/makeLookaheadAdder.py
+54	0	tools/makeRippleAdder.py
+ 14 files changed, 413 insertions(+), 90 deletions(-)
+
+commit 41e3693113b87ef133ac6e54a707bc974c227b0a
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 25 23:18:45 2015 +0100
+
+    More LOG_(DEBUG/ERROR) messages
+
+25	2	src/parser/builder.cc
+2	2	src/simulator/basecomponent.cc
+2	7	src/simulator/network.cc
+4	0	src/simulator/network.h
+ 4 files changed, 33 insertions(+), 11 deletions(-)
+
+commit 6f6fafb0522674ae52a7b129585c6b65933b5e5e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 20:33:40 2015 +0100
+
+    Initial I/O vector implementation
+    
+    Largely untested implementation of IO vectors, as suggested in #17. Example definitions updated to use this.
+    
+    Network inputs can be defined as an n-length vector like so:
+        inputs : {
+            vec[8] : false
+        }
+    
+    Network outputs can be defined as an n-length vector like so:
+        outputs : {
+            vec[4] : {
+                0 : dest.pin,
+                1 : dest.pin,
+                2 : dest.pin,
+                3 : dest.pin
+            }
+        }
+    
+    Two vectors of the same length can be connected together in a connections block like so:
+        vec1[] : vec2[]
+    
+    Individual elements of a vector can be accessed like C style arrays, vec[2] references the third element in the array.
+    No support currently for connecting a vector network output to a vector of a component, must define each connection individually as in the above example.
+
+6	4	example_defs/4bit-counter.def
+3	3	example_defs/main.def
+41	6	src/parser/builder.cc
+89	0	src/simulator/basecomponent.cc
+16	1	src/simulator/basecomponent.h
+0	1	src/simulator/dummyio.cc
+4	0	src/simulator/dummyio.h
+63	4	src/simulator/network.cc
+13	0	src/simulator/network.h
+ 9 files changed, 235 insertions(+), 19 deletions(-)
+
+commit 897d706559ef183492bb848c3bb15930cad379e3
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 14:04:03 2015 +0100
+
+    Support for leaving out the output name when only one output exists
+
+5	5	example_defs/4bit-counter.def
+6	6	example_defs/full_adder.def
+1	1	example_defs/main.def
+10	2	src/parser/builder.cc
+4	3	src/simulator/basecomponent.cc
+6	19	tests/parser/test_files/test2.def
+16	7	tests/parser/test_files/test3.def
+ 7 files changed, 48 insertions(+), 43 deletions(-)
+
+commit a39339d8b7a1bda619f7bf269414a087f3da2a39
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:47:10 2015 +0100
+
+    Working 4-bit counter + full adder example defs
+
+59	0	example_defs/4bit-counter.def
+48	0	example_defs/full_adder.def
+29	0	example_defs/main.def
+ 3 files changed, 136 insertions(+)
+
+commit 9a5aa425efb890257ab43b18ef988bdb16550d84
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:46:18 2015 +0100
+
+    Native JK flipflop
+
+1	0	src/simulator/componentconstructors.cc
+41	0	src/simulator/flipflops.cc
+11	0	src/simulator/flipflops.h
+ 3 files changed, 53 insertions(+)
+
+commit 365b97596897e7884fdf2fd3004e069b450d1ed7
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:45:45 2015 +0100
+
+    support for making connections to const
+
+11	2	src/simulator/network.cc
+11	2	src/simulator/network.h
+ 2 files changed, 22 insertions(+), 4 deletions(-)
+
+commit a3dc19f1d32397b7151ded328fc9d4a5d6168535
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:34:55 2015 +0100
+
+    Multiple bug fixes to the simulator wrt nesting
+
+1	1	src/parser/builder.cc
+1	1	src/simulator/basecomponent.h
+2	2	src/simulator/componentconstructors.cc
+18	12	src/simulator/network.cc
+3	0	src/simulator/signalgenerator.cc
+ 5 files changed, 25 insertions(+), 16 deletions(-)
+
+commit e1f91bc4310cd722fa25f6a668f5f870ccecdf24
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:31:05 2015 +0100
+
+    Added getOutputSignature methods to NodeTree
+
+43	0	src/structures/nodetree.cc
+6	1	src/structures/nodetree.h
+ 2 files changed, 49 insertions(+), 1 deletion(-)
+
+commit 1d3e576fc81c21d7e949bfc9bbf0b9e702945ec9
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 24 13:27:52 2015 +0100
+
+    'Toggle monitor' can now add a monitor point
+
+24	4	src/gui/componentview.cc
+5	0	src/gui/componentview.h
+2	7	src/gui/gui.cc
+4	4	src/gui/outputplot.cc
+ 4 files changed, 35 insertions(+), 15 deletions(-)
+
+commit 6e052ce6d7e5263ef50b22f5485b542de05e9c89
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 21:05:22 2015 +0100
+
+    OutputPlot no longer keeps local copy of monitor points
+    
+    Instead is now all handled by the main Monitor object
+
+5	0	src/gui/componentview.cc
+5	0	src/gui/componentview.h
+2	2	src/gui/gui.cc
+3	13	src/gui/outputplot.cc
+0	1	src/gui/outputplot.h
+ 5 files changed, 15 insertions(+), 16 deletions(-)
+
+commit 7677bbd06c64ac6c2aae0d84cf6779c7b8da62b3
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 21:03:35 2015 +0100
+
+    Consolidated NodeTree structs into one
+    
+    Also updated the relevant parts of the code which depended on it
+
+1	1	src/gui/componentview.cc
+2	2	src/gui/componentview.h
+1	1	src/gui/gui.cc
+4	4	src/gui/networkview.cc
+3	3	src/gui/networkview.h
+2	2	src/simulator/basecomponent.cc
+1	1	src/simulator/basecomponent.h
+5	3	src/simulator/network.cc
+1	1	src/simulator/network.h
+5	16	src/structures/nodetree.h
+ 10 files changed, 25 insertions(+), 34 deletions(-)
+
+commit d6099cd7f341242667d43286ebb8effd30bb8829
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 20:25:14 2015 +0100
+
+    More methods for Monitor
+    
+    Added a few more functions to the Monitor class, such that the gui won't have to keep a separate record of the monitor points any more.
+
+1	0	src/gui/gui.cc
+38	11	src/simulator/monitor.cc
+6	0	src/simulator/monitor.h
+3	0	src/simulator/network.cc
+ 4 files changed, 48 insertions(+), 11 deletions(-)
+
+commit aab30d47a2704438522493742eca6d583eb6f941
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 17:30:15 2015 +0100
+
+    Builder actually throws an error if no components field
+
+1	1	src/parser/builder.cc
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 83fa8c0802c325a0589b7c243140257779f8af78
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 16:53:10 2015 +0100
+
+    Dynamic generation of boolgate inputs names
+
+23	6	src/simulator/boolgates.cc
+2	1	src/simulator/boolgates.h
+ 2 files changed, 25 insertions(+), 7 deletions(-)
+
+commit a86ab093e938bccd27c58d1e1ff6843e0e9a5e94
+Merge: f14237c 5a2aa99
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 16:27:44 2015 +0100
+
+    Merge branch 'dan' into gui
+    
+    Merging componentView redesign into main GUI branch
+
+commit f14237c41255f80c6f4fcee836bfa37eefd08469
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 23 16:25:11 2015 +0100
+
+    Includes now build. Slightly more error checking in builder
+
+1	3	src/gui/gui.cc
+65	6	src/parser/builder.cc
+2	1	src/parser/builder.h
+11	7	tests/parser/test_files/test2.def
+21	0	tests/parser/test_files/test3.def
+ 5 files changed, 100 insertions(+), 17 deletions(-)
+
+commit d56d4b099061a2b330854a20d4fbb072de836b87
+Merge: cf56568 fe21a70
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 21:40:22 2015 +0100
+
+    Merge branch 'joe' into gui
+
+commit fe21a7010fd5935c1c6f38e2fd1fa40a05da78a3
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 21:40:12 2015 +0100
+
+    Min size for window
+
+1	0	src/gui/gui.cc
+ 1 file changed, 1 insertion(+)
+
+commit 917ee5350e306104126abacc0bb156f099d92945
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 19:21:15 2015 +0100
+
+    Complete redesign of Monitor
+    
+    The Monitor class is now much more fully featured. It stores a full signature of the point it references, as well as an optional nickname. Time information is also now stored alongside the log.
+    
+    Network and gui updated to accommodate the slightly changed interface.
+
+3	0	src/gui/gui.cc
+6	6	src/gui/outputplot.cc
+4	1	src/gui/outputplot.h
+91	9	src/simulator/monitor.cc
+32	5	src/simulator/monitor.h
+23	23	src/simulator/network.cc
+3	1	src/simulator/network.h
+ 7 files changed, 162 insertions(+), 45 deletions(-)
+
+commit cf565682505c224dea8eb3dfcf3b09ea51c556c9
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 15:20:25 2015 +0100
+
+    Travis dependency
+
+4	0	.travis.yml
+ 1 file changed, 4 insertions(+)
+
+commit 4f616d57a8edb487ed899a94bfc96836e2bc806e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 15:07:34 2015 +0100
+
+    Added OnRunSimulation to gui
+
+16	0	src/gui/gui.cc
+1	0	src/gui/gui.h
+ 2 files changed, 17 insertions(+)
+
+commit 0a5837a8000dba2430b09b30b949947855c6fdb1
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 15:05:24 2015 +0100
+
+    Refactored outputplot to access the monitor class
+
+29	22	src/gui/outputplot.cc
+12	2	src/gui/outputplot.h
+ 2 files changed, 41 insertions(+), 24 deletions(-)
+
+commit 573471ef62b63d17aa1e1db9d138a4adce25296c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 15:05:14 2015 +0100
+
+    Catch builder errors and setup monitor on file load
+
+25	2	src/gui/gui.cc
+2	0	src/gui/gui.h
+ 2 files changed, 27 insertions(+), 2 deletions(-)
+
+commit 15f00ee723cd5d251f0efd6a01b69d69acb645b6
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 15:00:36 2015 +0100
+
+    Minor fix to simulator
+    
+    Fixed a segfault which would occur when getting the nodeTree from a basecomponent with no inputs
+
+4	3	src/simulator/basecomponent.cc
+1	0	src/simulator/network.cc
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+commit 06992ce25ed55f785e1b1e907f5cf3fa6da18d67
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 14:04:09 2015 +0100
+
+    refactored outputplot rendering
+
+63	48	src/gui/outputplot.cc
+25	20	src/gui/outputplot.h
+ 2 files changed, 88 insertions(+), 68 deletions(-)
+
+commit f047697c95501405ef4a3484dee3c694213a9059
+Merge: 3524641 fa69654
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 13:27:13 2015 +0100
+
+    Merge branch 'gui' into joe
+
+commit 35246415c7b57cd5f0e4cf09f44ae726929fbc56
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 12:15:54 2015 +0100
+
+    flat test definition file
+
+26	0	tests/parser/test_files/test2.def
+ 1 file changed, 26 insertions(+)
+
+commit b6ef7f0e22cee1d5f0cef3786794bed71757fe77
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 12:11:25 2015 +0100
+
+    File open dialog now builds the network file
+
+5	11	src/gui/gui.cc
+6	2	src/gui/gui.h
+ 2 files changed, 11 insertions(+), 13 deletions(-)
+
+commit a26fe36ffe88c23b5dfcd07dd826fabf173ccff5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 12:10:59 2015 +0100
+
+    Basic logging added to the builder
+
+6	0	src/parser/builder.cc
+2	0	src/parser/builder.h
+ 2 files changed, 8 insertions(+)
+
+commit 2cd1438e3f26775f8f614383d0ce53ca9e7c606e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 01:04:34 2015 +0100
+
+    NodeTree view now works
+    
+    Revamped the recursive builder for the nodetree and added a small dummy test network.
+    
+    Also fixed a small bug in BaseComponent which would cause the NodeTree to not recurse into subnetworks
+
+9	0	src/gui/gui.cc
+4	0	src/gui/gui.h
+13	25	src/gui/networkview.cc
+2	0	src/gui/networkview.h
+1	1	src/simulator/basecomponent.h
+4	4	src/simulator/network.cc
+ 6 files changed, 33 insertions(+), 30 deletions(-)
+
+commit 7a21f9ef6f6f069281b0a3d6ec51956e4134f4d5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 00:21:17 2015 +0100
+
+    Formatted the about box
+
+5	2	src/gui/gui.cc
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+commit 132b7d296a0ba7bb6ebb1e481361cdf15d0aaf52
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 22 00:12:51 2015 +0100
+
+    Code cleanup
+    
+    Minor formatting and syntax corrections to standardise code across the project
+
+12	8	src/gui/componentview.cc
+10	9	src/gui/componentview.h
+23	15	src/gui/gui.cc
+15	18	src/gui/gui.h
+24	18	src/gui/networkview.cc
+11	11	src/gui/networkview.h
+30	22	src/gui/outputplot.cc
+20	21	src/gui/outputplot.h
+ 8 files changed, 145 insertions(+), 122 deletions(-)
+
+commit f21426fb7f1d56941d6dbac03575dc430039ebe5
+Merge: 576975b 02a7bd5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Thu May 21 23:59:14 2015 +0100
+
+    Merge branch 'master' into gui
+    
+    Conflicts:
+    	src/main.cc
+    
+    Moved the logging initialiser into the GUI init function
+
+commit 02a7bd53014fd21e48fc555c20a45ada6d9c7384
+Merge: f05d158 81e5122
+Author: Joe Roberts <Joey9801@users.noreply.github.com>
+Date:   Thu May 21 17:57:54 2015 +0100
+
+    Merge pull request #22 from Joey9801/joe
+    
+    Initial implementation of the Builder + Parser. Not much error checking, and just throws integer 1 on those that it does catch.
+    
+    Logging facilities added courtesy of Plog https://github.com/SergiusTheBest/plog
+    
+    Also now builds with Clang.
+
+commit 81e5122c82272fb634a2794b630d9a9854a981af
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Thu May 21 17:45:12 2015 +0100
+
+    Logging facilities added
+    
+    Logging with Plog: https://github.com/SergiusTheBest/plog
+    Basic logging added to Network and BaseComponent
+
+1	1	.gitattributes
+46	0	include/plog/Appenders/AndroidAppender.h
+26	0	include/plog/Appenders/ConsoleAppender.h
+14	0	include/plog/Appenders/IAppender.h
+106	0	include/plog/Appenders/RollingFileAppender.h
+45	0	include/plog/Compatibility.h
+28	0	include/plog/Converters/UTF8Converter.h
+53	0	include/plog/Formatters/CsvFormatter.h
+24	0	include/plog/Formatters/FuncMessageFormatter.h
+31	0	include/plog/Formatters/TxtFormatter.h
+94	0	include/plog/Init.h
+99	0	include/plog/Log.h
+69	0	include/plog/Logger.h
+132	0	include/plog/Record.h
+36	0	include/plog/Severity.h
+369	0	include/plog/Util.h
+4	18	src/main.cc
+9	0	src/simulator/basecomponent.cc
+2	0	src/simulator/basecomponent.h
+21	0	src/simulator/network.cc
+2	0	src/simulator/network.h
+ 21 files changed, 1211 insertions(+), 19 deletions(-)
+
+commit 019c57c3d848fca5397ca4db009a95fab4169e13
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Thu May 21 17:02:00 2015 +0100
+
+    Clang compatability
+    
+    Minor edits to compile with clang.
+    Clang adheres slightly better to the C++ spec so picks up small errors that gcc otherwise misses, even with -Wall and -pedantic
+
+1	0	src/simulator/network.h
+4	4	tests/parser/builder.cc
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 672b8f4e09caab18335a6e54eb563d94270653b0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 23:30:29 2015 +0100
+
+    Initial parser implementation
+    
+    Parser works for correctly formatted files.
+    
+    Error detection exists, but is fragile and needs seriously thinking about. All errors currently just throw 1 and print to stderr as a placeholder for the custom exceptions.
+    
+    Comments aren't handled at all yet.
+    
+    Basic unit testing of the parser functions has been added. Further tests should include checking how errors are handled once proper error checking is added.
+
+82	21	src/parser/parser.cc
+5	2	src/parser/parser.h
+79	38	tests/parser/parser.cc
+9	0	tests/parser/test_files/test1.def
+ 4 files changed, 175 insertions(+), 61 deletions(-)
+
+commit 670b650606e007ba1f5d5dbc2a6dbc58d55d46a5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 17:36:17 2015 +0100
+
+    Preemptive tests for some of the parser
+
+64	0	tests/parser/parser.cc
+ 1 file changed, 64 insertions(+)
+
+commit 706ca550f8a9daa7dc5d22b93adde3839d8a3f64
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 17:35:45 2015 +0100
+
+    Modified the parser to use istreams to make unit testing simpler
+
+4	4	src/parser/parser.cc
+5	5	src/parser/parser.h
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+commit 9c4a7405e74f34870f47884a62ecd5dd19d48cb2
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 17:13:06 2015 +0100
+
+    Basic parser structure
+    
+    Layout of parser functions with skeletons+pseudocode in the bodies
+
+47	0	src/parser/parser.cc
+15	0	src/parser/parser.h
+ 2 files changed, 62 insertions(+)
+
+commit 4e2f642f389fa035ae2b42cf60cfec7d718a62b7
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 16:28:13 2015 +0100
+
+    Change std::vector<string> to std::vector<wxString>
+    
+    wxString type properly supports the unicode box-drawing characters needed for drawing the graph.
+
+25	25	src/gui/outputplot.cc
+ 1 file changed, 25 insertions(+), 25 deletions(-)
+
+commit 58c6ef855481babc81e08e703e7212eb273a3d98
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 16:22:45 2015 +0100
+
+    Throw 1 where error (placeholder)=
+
+6	0	src/simulator/basecomponent.cc
+5	0	src/simulator/network.cc
+ 2 files changed, 11 insertions(+)
+
+commit 9cb5fbb445a9016ed3a3799df66899c6dc10025d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 16:10:23 2015 +0100
+
+    Initial builder tests
+    
+    Initial builder tests. Fixed small error in the flat bool dummy, and in the builder connect function.
+
+2	4	src/parser/builder.cc
+63	0	tests/parser/builder.cc
+1	1	tests/parser/dummies.cc
+ 3 files changed, 66 insertions(+), 5 deletions(-)
+
+commit ea2d8e7959a685c7cb339ce3fd46aa20f021df40
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 15:19:36 2015 +0100
+
+    Renamed dummyIO components in Network
+    
+    Renamed the DummyIO components in network so they their names mirror the keywords in the definition files.
+
+2	2	src/simulator/network.cc
+3	3	tests/simulator/network.cc
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit bd90664ab3b75deaa098b94a1f65d82ea52c6c04
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 15:18:37 2015 +0100
+
+    Initial builder implementation
+    
+    No testing, no semantic error checking. It does compile and not segfault though, so that's nice.
+
+84	1	src/parser/builder.cc
+ 1 file changed, 84 insertions(+), 1 deletion(-)
+
+commit c6f13622bc7c23abd7675137ac5b83e1f5393649
+Merge: 5c7b98c a4aa042
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 14:05:48 2015 +0100
+
+    Merge branch 'joe' of github:joey9801/gf2 into joe
+
+commit a4aa04210679745b6284f578468d173daa670c89
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 13:14:38 2015 +0100
+
+    simple definition dummy for testing
+
+65	0	tests/parser/dummies.cc
+10	0	tests/parser/dummies.h
+ 2 files changed, 75 insertions(+)
+
+commit 37e1b824b0b8b78bb0ff206025b224982ef04e79
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 11:54:38 2015 +0100
+
+    moved simulator tests to a dedicated subdirectory
+
+0	304	tests/boolgates.cc
+0	137	tests/flipflops.cc
+0	170	tests/network.cc
+0	80	tests/signalgenerator.cc
+304	0	tests/simulator/boolgates.cc
+137	0	tests/simulator/flipflops.cc
+170	0	tests/simulator/network.cc
+80	0	tests/simulator/signalgenerator.cc
+ 8 files changed, 691 insertions(+), 691 deletions(-)
+
+commit 5c7b98ce9e4eacba57de0b1b7168a84b68ad6b36
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 11:54:38 2015 +0100
+
+    moved simulaor tests to a dedicated subdirectory
+
+0	304	tests/boolgates.cc
+0	137	tests/flipflops.cc
+0	170	tests/network.cc
+0	80	tests/signalgenerator.cc
+304	0	tests/simulator/boolgates.cc
+137	0	tests/simulator/flipflops.cc
+170	0	tests/simulator/network.cc
+80	0	tests/simulator/signalgenerator.cc
+ 8 files changed, 691 insertions(+), 691 deletions(-)
+
+commit 145cacf027bc8e40d1adf22dac506caba875d5be
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 11:38:39 2015 +0100
+
+    Initial Builder header, and minimum parser header
+    
+    Initial layout for the builder, and a minimum declaration for the parser.
+
+59	0	src/parser/builder.cc
+23	0	src/parser/builder.h
+9	0	src/parser/parser.cc
+8	0	src/parser/parser.h
+ 4 files changed, 99 insertions(+)
+
+commit 8c2783d611b0f7be399967d3d4c278fdc6f096fa
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 10:57:19 2015 +0100
+
+    Iniial parser commit
+
+5	0	src/parser/builder.h
+4	0	src/parser/parser.h
+ 2 files changed, 9 insertions(+)
+
+commit 0f8a391d2dd8b9f653291319df200e2f9c212904
+Merge: 9f0db4b f9c8e5d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 10:15:25 2015 +0100
+
+    Merge branch 'interim-1' of github.com:joey9801/gf2 into interim-1
+
+commit 9f0db4b1b6245e75dbaaba2dffa00b13714ce51c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 10:12:14 2015 +0100
+
+    ebnf edits and teamwork planning
+
+4	2	reports/interim 1/ebnf
+-	-	reports/interim 1/report.pdf
+9	1	reports/interim 1/texfiles/report.tex
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+commit 58ccc08820ad83931f7d2ba15eac2e3cf30514cd
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 09:48:40 2015 +0100
+
+    more report
+
+3	4	reports/interim 1/def.schema
+2	3	reports/interim 1/ebnf
+-	-	reports/interim 1/report.pdf
+3	1	reports/interim 1/texfiles/report.tex
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+commit f7b7836378a18c5ee9f49c3ae40ee11f22251f2d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 09:28:32 2015 +0100
+
+    Include figures and example defs in report
+
+-	-	reports/interim 1/report.pdf
+19	2	reports/interim 1/texfiles/report.tex
+ 2 files changed, 19 insertions(+), 2 deletions(-)
+
+commit dd72bfe5c57c9b108e0a25bda27358a8ced62a0e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 19 09:21:21 2015 +0100
+
+    renamed example defs folder
+
+0	69	reports/interim 1/example defs/4to1multiplexer.def
+0	32	reports/interim 1/example defs/dividebythree.def
+0	44	reports/interim 1/example defs/jkflipflop.def
+0	50	reports/interim 1/example defs/shift-register.def
+0	28	reports/interim 1/example defs/sr-latch.def
+0	64	reports/interim 1/example defs/synchronouscounter.def
+69	0	reports/interim 1/example-defs/4to1multiplexer.def
+32	0	reports/interim 1/example-defs/dividebythree.def
+44	0	reports/interim 1/example-defs/jkflipflop.def
+50	0	reports/interim 1/example-defs/shift-register.def
+28	0	reports/interim 1/example-defs/sr-latch.def
+64	0	reports/interim 1/example-defs/synchronouscounter.def
+ 12 files changed, 287 insertions(+), 287 deletions(-)
+
+commit 934e2a614169e551451d3081d0d17b460effbdae
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 23:28:22 2015 +0100
+
+    Removed unused dependencies so that the report builds on cued machines
+
+0	3	reports/interim 1/texfiles/report.tex
+ 1 file changed, 3 deletions(-)
+
+commit 517cda42eabad684a1a203ebb504dc976f244f82
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 23:19:22 2015 +0100
+
+    Lowered indentation level on def.schema to better fit the page
+
+29	29	reports/interim 1/def.schema
+-	-	reports/interim 1/report.pdf
+1	0	reports/interim 1/texfiles/report.tex
+ 3 files changed, 30 insertions(+), 29 deletions(-)
+
+commit 8049e1d21710cd537d1e00dbb7c63d026c09319e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 23:08:29 2015 +0100
+
+    Proposed final ebnf
+
+6	4	reports/interim 1/ebnf
+-	-	reports/interim 1/report.pdf
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+commit b606be6d6c58b0c45f0c821039dcda2c5c011612
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 23:01:52 2015 +0100
+
+    Moved schema and ebnf into report folder, included them in report
+
+0	35	notes/def.schema
+0	18	notes/ebnf
+35	0	reports/interim 1/def.schema
+18	0	reports/interim 1/ebnf
+-	-	reports/interim 1/report.pdf
+8	2	reports/interim 1/texfiles/report.tex
+ 6 files changed, 61 insertions(+), 55 deletions(-)
+
+commit 50f47ddb55643d46c31324f0954b030449c08f12
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:09:31 2015 +0100
+
+    .gitignore for the report
+
+2	0	reports/interim 1/.gitignore
+ 1 file changed, 2 insertions(+)
+
+commit 34daab4ed70785475142db42fe2d6cd0d73e17b9
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:08:42 2015 +0100
+
+    Semantic errors section in report
+
+-	-	reports/interim 1/report.pdf
+27	0	reports/interim 1/texfiles/report.tex
+ 2 files changed, 27 insertions(+)
+
+commit 51c6b691b7b341613a4e9c507fb502e732196256
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:08:11 2015 +0100
+
+    File format overview and motivations
+
+4	0	reports/interim 1/texfiles/report.tex
+ 1 file changed, 4 insertions(+)
+
+commit f7d5f866e534bdb98328d43a5e5c1982f5d6a3cb
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:07:19 2015 +0100
+
+    General approach section
+
+6	0	reports/interim 1/texfiles/report.tex
+ 1 file changed, 6 insertions(+)
+
+commit d9ac134df3acf26d9612dcf6b14b903ef230be35
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:06:19 2015 +0100
+
+    autobuild for the report
+
+2	2	reports/interim 1/Makefile
+5	0	reports/interim 1/autobuild.conf
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 7b85c2feb412656a3faf402bc33c8baf67813537
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 22:05:22 2015 +0100
+
+    Semantic errors
+
+7	7	notes/semantic errors.txt
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 4335f15e65ef8ef9801775000a185263f0a10621
+Merge: 7766349 453cdcf
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 21:37:02 2015 +0100
+
+    Merge branch 'master' into interim-1
+
+commit 634071c4833ef8b0c129206fcc2460ff641f73da
+Merge: ee43749 453cdcf
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 17:07:06 2015 +0100
+
+    Merge branch 'master' into dan
+
+commit 453cdcf0758f1c30319ff6a460a96c3906cc47f4
+Merge: 9c6e13c dbaac2c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 16:51:10 2015 +0100
+
+    Merge branch 'joe'
+    
+    Full simulator functionality. Superficially everything works as expected with full nesting support.
+
+commit ee4374975049151f0150c427806725b8ee37626f
+Merge: cea5db2 9c6e13c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 16:44:31 2015 +0100
+
+    Merge branch 'master' into dan
+    
+    Conflicts:
+    	src/main.cc - kept copy from branch 'dan'
+
+commit c99801db9fa5dddfe9bf6c1996b90540653f3671
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 14:55:09 2015 +0100
+
+    Update ebnf, pair keys now have the option to be strings
+
+1	1	notes/ebnf
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 4d0fa2b61e846b767887d94931690054fa368154
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 14:52:51 2015 +0100
+
+    Updated ebnf, comments no longer need to have >=1 character
+
+2	2	notes/ebnf
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit dbaac2c24c57170090436d4a09355da9ac350b74
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 01:13:15 2015 +0100
+
+    Removed the DummyIO components from generated NodeTrees
+
+9	6	src/simulator/network.cc
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+commit 6e3a41abb19601bbad56ca40a0be22be5a5102f9
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 01:09:58 2015 +0100
+
+    New overloads to Network::addComponent
+    
+    New overloads for Network::addComponent allow for creating a new component by directly passing a pointer to a component. Allows for simple nesting syntax, eg:
+        rootNetwork.addComponent( protoNetwork.clone(), "Nested network" );
+
+16	0	src/simulator/network.cc
+2	0	src/simulator/network.h
+ 2 files changed, 18 insertions(+)
+
+commit ed03d9b4696584ee82fc793b8fb7d59b8165c1d8
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 18 01:05:45 2015 +0100
+
+    Added clone method to all components
+    
+    All components now have a clone method, which returns a pointer to a new object with the same configuration. State is not cloned. Informal testing shows that cloning a network works recursively correctly.
+    
+    Closes #11
+
+14	0	src/simulator/basecomponent.cc
+2	0	src/simulator/basecomponent.h
+1	0	src/simulator/componentconstructors.cc
+1	0	src/simulator/componentconstructors.h
+47	0	src/simulator/dummyio.cc
+25	0	src/simulator/dummyio.h
+26	53	src/simulator/network.cc
+3	16	src/simulator/network.h
+9	0	src/simulator/signalgenerator.cc
+2	0	src/simulator/signalgenerator.h
+ 10 files changed, 130 insertions(+), 69 deletions(-)
+
+commit bc3c73610ba41331ee4e2fa22f5928166524712c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 17 20:52:10 2015 +0100
+
+    Component _names are now the same as their keys in componentConstructor
+
+1	1	src/simulator/boolgates.cc
+4	4	src/simulator/boolgates.h
+1	1	src/simulator/flipflops.cc
+1	1	src/simulator/signalgenerator.cc
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+
+commit 1e01ac00e67f2ae678d809e478758593e778ccd9
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 17 20:46:13 2015 +0100
+
+    Moved componentConstructor to a global variable
+
+0	15	src/simulator/basecomponent.h
+11	0	src/simulator/componentconstructors.cc
+29	0	src/simulator/componentconstructors.h
+2	10	src/simulator/network.cc
+4	6	src/simulator/network.h
+11	11	tests/network.cc
+ 6 files changed, 57 insertions(+), 42 deletions(-)
+
+commit 9c6e13c8dbc91693ccf331ae1d2a07a5fcab094a
+Merge: d7d53e9 4be0f84
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 17 16:23:56 2015 +0100
+
+    Merge branch 'joe'
+    
+    Merging definition file structure.
+
+commit 4be0f8487f6abae39ca946009242946f7a9eba81
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 17 16:20:25 2015 +0100
+
+    Internal representation of definition file
+    
+    Added a new structure which mirrors the definition file syntax. To be used to communicate definition files between the parser and the network builder.
+    
+    Example usage in src/main.cc
+    
+    closes #12
+
+22	1	src/main.cc
+54	0	src/structures/definition.cc
+32	0	src/structures/definition.h
+ 3 files changed, 108 insertions(+), 1 deletion(-)
+
+commit d7d53e99bee3fb77dab0bac2af4287c3b33c03ad
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sun May 17 14:10:44 2015 +0100
+
+    more semantic errors
+
+5	3	notes/semantic errors.txt
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+commit bd8591e10e1770f8b59fa380efab09d856f617d6
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 23:53:59 2015 +0100
+
+    Initial commit for interim report 1
+
+5	0	reports/interim 1/Makefile
+50	0	reports/interim 1/example defs/shift-register.def
+29	0	reports/interim 1/example defs/sr-latch.def
+-	-	reports/interim 1/report.pdf
+57	0	reports/interim 1/texfiles/report.tex
+ 5 files changed, 141 insertions(+)
+
+commit 4dcadab31e6a34f76ffa01825913b4dd93ac63ff
+Merge: 738c253 1635e57
+Author: Joe Roberts <Joey9801@users.noreply.github.com>
+Date:   Sat May 16 22:13:56 2015 +0100
+
+    Merge pull request #15 from Joey9801/joe
+    
+    More tests for the Network class
+    Basic implementation of a monitor class - able to add monitor points at an arbitrary network nesting depth,
+    NodeTree data structure added, supported by all of the components. closes #9
+    Added a RootNetwork specialization of Network to act as the root network for the simulation.
+
+commit 1635e57d78d95f98b03ee79711c8f9aa954644e6
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 22:03:33 2015 +0100
+
+    Added RootNetwork
+    
+    Added a specialisation of Network to act as the root network in the simulation.
+    Contains new functions such as setInput and getOutput to directly manipulate the boolean values of the IO.
+
+79	0	src/simulator/network.cc
+21	0	src/simulator/network.h
+ 2 files changed, 100 insertions(+)
+
+commit 7b970e7f39ab2aaad3329af61dee90885d874bcb
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 21:31:56 2015 +0100
+
+    Rename setIn/Output methods to connectIn/Output
+    
+    Now that the network connect methods in Network have been consolidated, we can use the more intuitive method names for connecting the inputs and outputs to nodes.
+    This also frees up 'setInput' as a method name for actually setting the value of an input in the root network.
+
+6	6	src/simulator/basecomponent.cc
+4	4	src/simulator/basecomponent.h
+1	1	src/simulator/boolgates.cc
+1	1	src/simulator/boolgates.h
+2	2	src/simulator/network.cc
+1	1	src/simulator/network.h
+35	35	tests/boolgates.cc
+6	6	tests/flipflops.cc
+6	6	tests/network.cc
+ 9 files changed, 62 insertions(+), 62 deletions(-)
+
+commit 50aaca4e7d2689379c7cf2a37105f4d5446b716e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 21:19:28 2015 +0100
+
+    Nodetree generation functions
+    
+    BaseComponent and Network can now generate their own NodeTree structures.
+    Recursion should work properly, though not yet tested.
+    
+    Part of fix for #9
+
+19	0	src/simulator/basecomponent.cc
+4	0	src/simulator/basecomponent.h
+29	0	src/simulator/network.cc
+2	0	src/simulator/network.h
+5	0	src/structures/nodetree.h
+ 5 files changed, 59 insertions(+)
+
+commit e61f7d959a7c31d0690607213978fa2b5d9bd931
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 20:32:49 2015 +0100
+
+    NodeTree datastructure added
+    
+    Recursive data structure to communicate network topology to the gui.
+    Contains all the information needed to add an arbitrary-depth monitor point from the root network
+    
+    Possible solution to #9
+
+37	0	src/structures/nodetree.h
+ 1 file changed, 37 insertions(+)
+
+commit 738c253847d2198101f2e734dc2b9ba6f9271e1f
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 16 19:48:26 2015 +0100
+
+    Added .travis.yml
+
+15	0	.travis.yml
+ 1 file changed, 15 insertions(+)
+
+commit 3c609265638ecc70da3c1eb7b159c5d708aef4e4
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 23:25:48 2015 +0100
+
+    Added named output to BaseBoolgate
+
+1	0	src/simulator/boolgates.cc
+ 1 file changed, 1 insertion(+)
+
+commit 2c2272c85e065aac4da9fb84fc38477d92f9b6aa
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 23:24:55 2015 +0100
+
+    Basic monitor implementation
+
+16	0	src/simulator/monitor.cc
+16	0	src/simulator/monitor.h
+56	0	src/simulator/network.cc
+10	1	src/simulator/network.h
+ 4 files changed, 98 insertions(+), 1 deletion(-)
+
+commit 538b51ea95cc908c984fad81da27bcb728701949
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 23:23:13 2015 +0100
+
+    Added component configure methods to Network
+
+14	0	src/simulator/network.cc
+4	0	src/simulator/network.h
+ 2 files changed, 18 insertions(+)
+
+commit bdb8f11b84ad501e0454c4b664cbd691bdc9b284
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 23:17:34 2015 +0100
+
+    renamed config method on components to configure
+
+1	1	src/simulator/basecomponent.h
+1	1	src/simulator/signalgenerator.cc
+1	1	src/simulator/signalgenerator.h
+5	5	tests/signalgenerator.cc
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+commit 007d4aeb5acecb6a1b4fc0b33bacbf9c8baf5c76
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 15:11:38 2015 +0100
+
+    More Network tests
+
+94	54	tests/network.cc
+ 1 file changed, 94 insertions(+), 54 deletions(-)
+
+commit 8ce35abbe3f1717113bb69d1ee176a7e5f9e4946
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 13:13:36 2015 +0100
+
+    Semantic errors
+
+3	1	notes/def.schema
+1	1	notes/ebnf
+34	0	notes/semantic errors.txt
+ 3 files changed, 38 insertions(+), 2 deletions(-)
+
+commit 92296e578ac624a78a348c80014a60c7438f8432
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 12:50:26 2015 +0100
+
+    Added example included network in schema
+
+6	0	notes/def.schema
+ 1 file changed, 6 insertions(+)
+
+commit 86aea017ac8b49c2f137bbe9b2131741a2c08a80
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 12:40:44 2015 +0100
+
+    Notes
+    
+    Added full definition file definition, in EBNF + a schema.
+
+0	17	notes
+27	0	notes/def.schema
+17	0	notes/ebnf
+22	0	notes/notes
+ 4 files changed, 66 insertions(+), 17 deletions(-)
+
+commit 46e482a4ba8e84abde45e0cdaa34f79de0efaad5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 15 11:06:44 2015 +0100
+
+    Implemented a signal generator component
+    
+    Implemented a signal generator component, settable data and period. All fully tested.
+    Empty config method added to BaseComponent to allow loading data into the generator.
+    Closes #2
+
+2	0	src/simulator/basecomponent.h
+47	0	src/simulator/signalgenerator.cc
+28	0	src/simulator/signalgenerator.h
+80	0	tests/signalgenerator.cc
+ 4 files changed, 157 insertions(+)
+
+commit 9839486cdefc0c4939e41dd011f978b7d71cc399
+Merge: be1ffe9 7792ba0
+Author: Joe Roberts <Joey9801@users.noreply.github.com>
+Date:   Wed May 13 14:13:24 2015 +0100
+
+    Merge pull request #10 from Joey9801/joe
+    
+    Simulator fixes and improvements
+
+commit 7792ba05c28887b76652e85b85d422f9879602e2
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 13 13:54:11 2015 +0100
+
+    Dummy components for network IO
+    
+    Network input/output is now represented by two dummy components with id's 0 and 1, and component names 'input' and 'output'.
+    Network components can now have names + be renamed with same interface as BaseComponent pins
+    Network::connect function replaced, any combination of the four arguments may be strings/uints, meaning component/pin names or component/pin id's as appropriate.
+    
+    closes #1
+
+127	41	src/simulator/network.cc
+44	8	src/simulator/network.h
+8	8	tests/network.cc
+ 3 files changed, 179 insertions(+), 57 deletions(-)
+
+commit a8511299ce90beb327bd139e0d9320c099bd93c0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 13 13:45:45 2015 +0100
+
+    Basecomponent tidy up
+    
+    BaseComponent cleared up a little, unneeded virtual functions removed, and named access added to the setIn/Output function.
+
+2	57	src/main.cc
+14	9	src/simulator/basecomponent.cc
+3	12	src/simulator/basecomponent.h
+ 3 files changed, 19 insertions(+), 78 deletions(-)
+
+commit f135407801d1fcf6dca7c556a2f4f7f143345afd
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 16:18:38 2015 +0100
+
+    Functions to rename component IO
+    
+    renameInput/renameOutput are now a thing
+    Network::addInput/Output can now take a default name
+    
+    Closes #7
+
+56	0	src/simulator/basecomponent.cc
+5	0	src/simulator/basecomponent.h
+12	0	src/simulator/network.cc
+2	0	src/simulator/network.h
+ 4 files changed, 75 insertions(+)
+
+commit 4236dc17ec44d20f124b71163fe9c6316b198acc
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 15:52:31 2015 +0100
+
+    Const values in networks
+    
+    All networks created with two nodes.
+    Node 0 is forced to false each step.
+    Node 1 is forced to true each step.
+    
+    Closes #3
+
+10	0	src/simulator/network.cc
+ 1 file changed, 10 insertions(+)
+
+commit ac6a940e3140427c5e390ce34eba9eeb98492649
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 15:45:00 2015 +0100
+
+    Separated input and output maps added in components
+    
+    old variable = pinMap
+    new variables = _pinInMap, _pinOutMap
+    
+    Closes #6
+
+6	6	src/simulator/basecomponent.cc
+2	1	src/simulator/basecomponent.h
+5	4	src/simulator/boolgates.cc
+17	14	src/simulator/flipflops.cc
+31	0	tests/boolgates.cc
+4	4	tests/flipflops.cc
+ 6 files changed, 65 insertions(+), 29 deletions(-)
+
+commit be1ffe9c0ae74d6c24460f4cf64e073c8ab8b966
+Merge: fa7f150 32c020a
+Author: Joe Roberts <Joey9801@users.noreply.github.com>
+Date:   Tue May 12 15:04:07 2015 +0100
+
+    Merge pull request #5 from Joey9801/joe
+    
+    dummy edit
+
+commit 32c020a251eca7210ee25c69a4a1a404e48e0c94
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 15:03:33 2015 +0100
+
+    another dummy commit
+
+1	0	notes
+ 1 file changed, 1 insertion(+)
+
+commit ae05f0db52773af7ecdca72ace630bbc0c33c4d5
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 15:01:47 2015 +0100
+
+    dummy edit
+
+1	0	notes
+ 1 file changed, 1 insertion(+)
+
+commit fa7f150ab3972b20ab3c44c1195db10ab837fc4d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 12:47:50 2015 +0100
+
+    Exclude catch.h from language statistics on github
+
+1	0	.gitattributes
+ 1 file changed, 1 insertion(+)
+
+commit 2097e317d72e0545c47dc65eef55a7d3620230ce
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 12 12:34:08 2015 +0100
+
+    Added D-Type flip flop
+    
+    Added a D-Type flip flop to the simulator. Defined in header file flipflops.h, implemented in flipflops.cc.
+    Fully unit tested in test/flipflops.cc
+    Closes #4
+
+40	0	src/simulator/flipflops.cc
+24	0	src/simulator/flipflops.h
+1	0	src/simulator/network.cc
+1	0	src/simulator/network.h
+137	0	tests/flipflops.cc
+ 5 files changed, 203 insertions(+)
+
+commit 99881adc5d4c2dd29d09329bcd45e5bf989e107d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Mon May 11 13:10:31 2015 +0100
+
+    Fixed warnings generated by catch in GCC 4.4.7
+    
+    It turns out that GCC 4.4.7 (The compiler currently on the cued systems), #pragma diagnostic [push|pop] is not supported.
+    This was used in catch to enable specific warnings during compilation. This irrelevant, since we have the -Wall flag already, so is safe to just comment out the lines.
+    
+    -Werror now switched back on in Makefile
+
+4	1	Makefile
+2	2	include/catch.h
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+commit e6bc88ebcc62fa87a1b1132f0ab2bd7151c3c76a
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 9 13:47:46 2015 +0100
+
+    Alterations to make the sim compile on cued machines
+    
+    -Werror disabled, since Catch raises a couple of '#pragma GCC diagnostic' errors under -std=c++0x
+
+3	3	Makefile
+10	4	src/simulator/boolgates.cc
+1	0	src/simulator/boolgates.h
+4	2	src/simulator/network.cc
+ 4 files changed, 18 insertions(+), 9 deletions(-)
+
+commit 05f64987c7482f3d620ab70fa6a03ae523b675d2
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 9 13:22:58 2015 +0100
+
+    Added autobuild.conf
+
+8	0	autobuild.conf
+ 1 file changed, 8 insertions(+)
+
+commit c1ca5ae17c9cf25e96c79a60e8a8d23df25bad75
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Sat May 9 00:43:54 2015 +0100
+
+    basic Network tests
+
+130	0	tests/network.cc
+ 1 file changed, 130 insertions(+)
+
+commit 03bff733ba0a3b48ecebd9a645d408511276432d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 8 23:16:16 2015 +0100
+
+    added countComponents method to Network
+
+4	0	src/simulator/network.cc
+2	0	src/simulator/network.h
+ 2 files changed, 6 insertions(+)
+
+commit bdabd39da7265b959f925d735253cc7f57791d7e
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 8 21:51:34 2015 +0100
+
+    Minor formatting change
+
+1	1	tests/main.cc
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 59b2a8d2d0a9442129f53fc10884668baafe9ba8
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Thu May 7 00:57:49 2015 +0100
+
+    Makefile improvements - automatic dependencies
+    
+    Dependencies are automatically found, and stored alongside the built objects
+    Tests now run by default after a successful build
+
+9	2	Makefile
+2	2	tests/boolgates.cc
+1	1	tests/main.cc
+ 3 files changed, 12 insertions(+), 5 deletions(-)
+
+commit 1e6e4ca9a6c47cbd3df493fd4c0d64610e2fedae
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 6 16:47:02 2015 +0100
+
+    boolgate tests - discovered+fixed minor error
+
+1	1	src/simulator/basecomponent.cc
+273	0	tests/boolgates.cc
+ 2 files changed, 274 insertions(+), 1 deletion(-)
+
+commit d2ddfc47e0f633c61212f9d566e40167f5e71049
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 6 16:45:42 2015 +0100
+
+    minor makefile fix (test objects)
+
+1	1	Makefile
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 11b18cac5dcb2152cddf0d719191e6d27fcfa34d
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 6 14:47:45 2015 +0100
+
+    more phony targets in Makefile, and root test file
+
+9	2	Makefile
+15	0	tests/main.cc
+ 2 files changed, 24 insertions(+), 2 deletions(-)
+
+commit 73083b348e25053154d179964e6085105a892f02
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Wed May 6 14:37:39 2015 +0100
+
+    Setup testing framework (github.com/philsquared/Catch)
+
+22	6	Makefile
+9427	0	include/catch.h
+ 2 files changed, 9449 insertions(+), 6 deletions(-)
+
+commit e3389921e942d5c89a573234f27901bf017cd8b0
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 18:46:10 2015 +0100
+
+    Basic network test in main.cc
+
+45	18	src/main.cc
+ 1 file changed, 45 insertions(+), 18 deletions(-)
+
+commit ccbe89cbdd290158669555d0989f3391b99a54b8
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 18:45:25 2015 +0100
+
+    Initial network implementation
+
+89	0	src/simulator/network.cc
+38	0	src/simulator/network.h
+ 2 files changed, 127 insertions(+)
+
+commit 2456e5bcb616bee6493a1cce42c73c162577be88
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 18:44:49 2015 +0100
+
+    Minor boolgate refactoring
+
+4	4	src/simulator/boolgates.cc
+1	1	src/simulator/boolgates.h
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+commit 53db7b13b7d1ea2160068450277bf41534bbf580
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 18:44:27 2015 +0100
+
+    Feature padding on BaseComponent
+
+41	8	src/simulator/basecomponent.cc
+20	4	src/simulator/basecomponent.h
+ 2 files changed, 61 insertions(+), 12 deletions(-)
+
+commit abeb7b8e8366a5920012f816596649db340b4a9c
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 13:12:10 2015 +0100
+
+    Added Xor gate - _compare no longer a virtual function in BaseComponent
+
+7	7	src/main.cc
+5	0	src/simulator/basecomponent.cc
+1	1	src/simulator/basecomponent.h
+12	0	src/simulator/boolgates.cc
+9	0	src/simulator/boolgates.h
+ 5 files changed, 34 insertions(+), 8 deletions(-)
+
+commit f791a7b0aa59bfe6db000de2550bfb2d88d4411b
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue May 5 12:55:36 2015 +0100
+
+    Improved boolgates implementation - auto M-ary gates
+
+1	0	.gitignore
+0	39	src/components.cc
+0	70	src/components.h
+30	1	src/main.cc
+49	0	src/simulator/basecomponent.cc
+49	0	src/simulator/basecomponent.h
+46	0	src/simulator/boolgates.cc
+49	0	src/simulator/boolgates.h
+ 8 files changed, 224 insertions(+), 110 deletions(-)
+
+commit 5f73f712bdd3f5e612b0d2d7e27dc6b5c03d03f7
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Fri May 1 17:00:54 2015 +0100
+
+    Initial component implementation
+
+1	1	Makefile
+39	0	src/components.cc
+70	0	src/components.h
+ 3 files changed, 110 insertions(+), 1 deletion(-)
+
+commit d10fed92e1bda6b8181b7a81ea40b2e994f4911f
+Author: Joe Roberts <joe@jwjr.co.uk>
+Date:   Tue Apr 28 17:16:47 2015 +0100
+
+    Initial commit
+
+3	0	.gitignore
+27	0	Makefile
+15	0	notes
+5	0	src/main.cc
+ 4 files changed, 50 insertions(+)

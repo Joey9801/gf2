@@ -44,4 +44,3 @@ unsigned int DummyIO::addOutput(std::string name) {
   renameOutput(id, name);
   return id;
 }
-

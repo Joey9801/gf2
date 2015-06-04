@@ -1,0 +1,12 @@
+{
+    components: {
+        jk0: {
+            type: jk,
+            inputs: {
+                j: const.true, 
+                wronginputname: const.true, 
+                clock: const.false
+            }
+        }
+    }
+}

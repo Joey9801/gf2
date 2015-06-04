@@ -41,3 +41,53 @@ void DType::step(std::vector<bool>& a, std::vector<bool>& b) {
   _lastIn = clock;
   return;
 }
+
+void DType::Reset(){
+  _lastIn = false;
+  _lastOut = false;
+}
+
+JK::JK() :
+  BaseComponent("jk", 4, 2)
+{
+  _pinInMap["j"] = 0;
+  _pinInMap["k"] = 1;
+  _pinInMap["clock"] = 2;
+
+  _pinOutMap["q"] = 0;
+  _pinOutMap["qbar"] = 1;
+
+  _lastIn = false;
+  _lastOut = false;
+}
+
+JK::~JK() {}
+
+void JK::step(std::vector<bool>& a, std::vector<bool>& b) {
+  bool j = a[_inputs[_pinInMap["j"]]];
+  bool k = a[_inputs[_pinInMap["k"]]];
+  bool clock = a[_inputs[_pinInMap["clock"]]];
+
+  bool out = _lastOut;
+
+  if( clock and (not _lastIn) ) {
+    if( j and (not k) )
+      out = true;
+    if( k and (not j) )
+      out = false;
+    if( j and k )
+      out = not _lastOut;
+  }
+
+  b[_outputs[_pinOutMap["q"]]] = out;
+  b[_outputs[_pinOutMap["qbar"]]] = not out;
+
+  _lastIn = clock;
+  _lastOut = out;
+  return;
+}
+
+void JK::Reset(){
+  _lastIn = false;
+  _lastOut = false;
+}

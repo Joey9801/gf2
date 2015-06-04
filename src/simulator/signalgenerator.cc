@@ -49,8 +49,29 @@ void SignalGenerator::configure(std::string key, std::string value) {
 BaseComponent * SignalGenerator::clone(void) {
   SignalGenerator * c = new SignalGenerator();
 
+  c->_inputs = _inputs;
+  c->_outputs = _outputs;
   c->_period = _period;
   c->_data = _data;
+  c->_it = c->_data.begin();
 
   return (BaseComponent*)c;
+}
+
+void SignalGenerator::Reset(){
+  _count = 0;
+  _it = _data.begin();
+}
+
+Clock::Clock() {
+  _data.resize(2);
+  _data[0] = false;
+  _data[1] = true;
+}
+
+void Clock::configure(std::string key, std::string value) {
+  if (key=="period") {
+      std::istringstream ( value ) >> _period;
+  }
+  return;
 }

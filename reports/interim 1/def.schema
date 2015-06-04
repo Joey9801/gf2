@@ -7,13 +7,23 @@
   },
 
   inputs : {
-    input_nickname : initial_value (true|false|t|f|1|0)
+	input_nickname : initial_value (true|false|t|f|1|0),
+    input_nickname[bus_size] : initial_value (true|false|t|f|1|0)
   },
   outputs : {
-    output_nickname : dest_component_nickname[.dest_output_name]
+    output_nickname : dest_component_nickname,
+	output_nickname : dest_component_nickname.dest_output_name,
+	output_nickname : dest_component_nickname.dest_output_name[bus_index],
+	output_nickname[bus_size] : {
+		bus_index : dest_component_nickname,
+		bus_index : dest_component_nickname.dest_output_name,
+		bus_index : dest_component_nickname.dest_output_name[bus_index]
+	}
   },
   monitor : {
-    monitor_point_nickname : dest_component_nickname[.dest_output_name]
+    monitor_point_nickname : dest_component_nickname,
+	monitor_point_nickname : dest_component_nickname.dest_output_name,
+	monitor_point_nickname : dest_component_nickname.dest_output_name[bus_index]
   },
 
   components : {
@@ -21,13 +31,19 @@
       type : component_type (and|or|nand|nor|xor|dtype|siggen|includes.include_nickname),
       { config_param : config_data, }
       inputs : {
-        input_name : dest_component_nickname[.dest_output_name]
+        input_name : dest_component_nickname,
+		input_name : dest_component_nickname.dest_output_name,
+		input_name : dest_component_nickname.dest_output_name[bus_index],
+		input_name[] : dest_component_nickname.dest_output_name[]
       }
-    }
+    },
     component_nickname : {
       type : includes.include_nickname,
       inputs : {
-        input_name : dest_component_nickname[.dest_output_name]
+        input_name : dest_component_nickname,
+		input_name : dest_component_nickname.dest_output_name,
+		input_name : dest_component_nickname.dest_output_name[bus_index],
+		input_name[] : dest_component_nickname.dest_output_name[]
       }
     }
   }

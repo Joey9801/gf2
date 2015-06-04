@@ -1,0 +1,6 @@
+{
+    components : {
+        type : and,
+        { foo : bar } : baz
+    }
+}

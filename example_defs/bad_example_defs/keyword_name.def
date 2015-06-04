@@ -1,0 +1,7 @@
+{
+    components : {
+        inputs : {
+            type : and
+        }
+    }
+}

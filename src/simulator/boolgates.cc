@@ -14,7 +14,7 @@ void BaseBoolgate::connectInput(std::string inputName, unsigned int node) {
   unsigned int inputId;
   ss >> inputId;
 
-  if(leadingchar != 'i' or ss.fail() or inputID == 0) {
+  if(leadingchar != 'i' or ss.fail() or inputId == 0) {
     GF2Error e = GF2Error();
     e.name = "Bad input name";
     e.detail = "\"" + inputName + "\" is not an valid input name";
